@@ -6,8 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        :warning: Have checked existing issues to see whether someone else has already reported your issue?
-        :book: Please also read [Document](https://github.com/AntdUI/AntdUI/blob/main/doc/wiki/en/Home.md).
+        :warning: Before submitting:
+        - Read the [Document](https://github.com/AntdUI/AntdUI/blob/main/doc/wiki/en/Home.md) and search existing issues to see whether someone else has already asked the same question.
+        - If an existing feature is failing, throwing exceptions, or rendering incorrectly, use the **Bug** template.
+        - If the capability you need does not exist yet, use the **Enhancement** template.
 
   - type: input
     attributes:
@@ -31,8 +33,19 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: Requirement
-      description: What you hope to happen.
+      label: What is your question?
+      description: |
+        Please describe your question clearly and specifically. The following information helps you get an accurate answer faster:
+        - What you are trying to achieve
+        - Your current code or configuration (key code snippets are recommended)
+        - The expected result and the actual result
+        - What you have already tried
+      placeholder: |
+        Goal: ...
+        Current code: ...
+        Expected: ...
+        Actual: ...
+        Tried: ...
     validations:
       required: true
   - type: markdown

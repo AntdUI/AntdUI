@@ -6,8 +6,17 @@ body:
   - type: markdown
     attributes:
       value: |
-        :warning: Have checked existing issues to see whether someone else has already reported your issue?
-        :book: Please also read [Document](https://github.com/AntdUI/AntdUI/blob/main/doc/wiki/en/Home.md).
+        :warning: Please complete the following checks before submitting, otherwise the issue may be closed directly:
+
+        1. Read the [Document](https://github.com/AntdUI/AntdUI/blob/main/doc/wiki/en/Home.md) and search existing issues to see whether someone else has already reported the same problem.
+        2. Provide a **clear** reproduction flow and, if possible, a minimal repro demo, to save maintainers' time.
+
+        ### Bug vs. Enhancement
+        - **Bug (this template)**: something the library **already provides** is broken — not working, throwing exceptions, crashing, rendering incorrectly, or behaving differently from the documentation.
+        - **Enhancement (feature request template)**: a capability the library **does not have yet** — a new control, a new property/event/method, or an extension of existing behavior. It is about adding something from 0 to 1.
+
+        > Rule of thumb: **should work but doesn't = Bug**; **never existed but you want it = Enhancement**.
+        > Please use the correct template — issues filed with the wrong template will be closed.
 
   - type: input
     attributes:
@@ -29,6 +38,22 @@ body:
     validations:
       required: true
   - type: textarea
+    id: version_check
+    attributes:
+      label: Version check (answer each item)
+      description: |
+        1. Is the issue fixed in the latest version? If you have not upgraded yet, please upgrade and check again.
+        2. Have you tried other versions (upgrade/downgrade)? What was the result?
+        3. Is this a regression (it worked in an older version and broke after a certain version)?
+        4. If it is a regression, tell us: **which version worked, and from which version the problem started**.
+      placeholder: |
+        1. Latest version (x.x.x): still reproduces / fixed
+        2. Other versions tried: x.x.x (result), x.x.x (result)
+        3. Regression: yes / no / not sure
+        4. Regression info: worked in x.x.x, broken since x.x.x
+    validations:
+      required: true
+  - type: textarea
     attributes:
       label: Steps to reproduce
       description: Provide step by step guide to repro this issue. In case repro steps are complex, it would be helpful if you attach a GIF with repro actions. Attaching a sample app to repro the issue will help us investigate.
@@ -46,6 +71,16 @@ body:
 
         Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
         Tip: You can use https://www.screentogif.com/ to record animations and videos.
+  - type: textarea
+    id: demo
+    attributes:
+      label: Repro demo (optional, strongly recommended)
+      description: |
+        Attachments cannot be reliably uploaded here. Please upload a minimal repro demo to a public repository, a Gist, or a cloud drive (OneDrive, Google Drive, etc.) and paste the link below. You can also paste the key code snippet directly.
+        A demo greatly shortens the investigation time; issues that cannot be reproduced may be closed.
+      placeholder: |
+        Demo link: https://...
+        or key code:
   - type: markdown
     attributes:
       value: |

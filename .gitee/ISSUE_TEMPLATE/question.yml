@@ -6,7 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        注意看看 [Wiki文档](https://gitee.com/antdui/AntdUI/wikis) 或者有没有重复 [问题](https://gitee.com/antdui/AntdUI/issues)
+        提交前请先：
+        - 阅读 [Wiki文档](https://gitee.com/AntdUI/AntdUI/wikis) 并搜索是否已有重复 [问题](https://gitee.com/AntdUI/AntdUI/issues)
+        - 已有功能异常/报错，请使用「问题反馈（BUG）」模板
+        - 项目尚未提供的能力，请使用「功能建议」模板
   - type: input
     attributes:
       label: 版本号
@@ -29,8 +32,19 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: 你的需求是什么？
-      description: 清晰并简洁地描述你希望发生的事情。
+      label: 你的问题是什么？
+      description: |
+        请清晰、具体地描述你的疑问。附上以下信息能让你更快得到有效回答：
+        - 你想实现的目标
+        - 目前的写法或配置（建议附上关键代码）
+        - 期望的结果与实际的结果
+        - 已经尝试过的方式
+      placeholder: |
+        我想实现：...
+        目前的写法：...
+        期望结果：...
+        实际结果：...
+        已尝试：...
     validations:
       required: true
   - type: markdown

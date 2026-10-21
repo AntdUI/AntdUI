@@ -6,7 +6,17 @@ body:
   - type: markdown
     attributes:
       value: |
-        ⚠️ 请**明确指出**问题复现流程，以减少维护者在排查问题上浪费过多时间，并且仔细观看完 [文档📖](https://gitee.com/antdui/AntdUI/wikis) 后再提。
+        ⚠️ 提交前请务必完成以下确认，否则 Issue 可能被直接关闭：
+
+        1. 请先阅读完 [文档📖](https://gitee.com/AntdUI/AntdUI/blob/main/doc/wiki/zh/Home.md)，并搜索 [已有 Issue](https://gitee.com/AntdUI/AntdUI/issues) 确认无人反馈过相同问题。
+        2. 请**明确指出**问题复现流程，并尽量提供最小可复现 Demo，以减少维护者在排查问题上浪费的时间。
+
+        ### 如何区分「BUG」还是「增强」
+        - **BUG（本模板）**：项目**已有**的能力出了问题，例如功能失效、报错、崩溃、显示不正确、行为与文档描述不一致。
+        - **增强（功能建议模板）**：项目**还没有**的能力，例如希望新增控件、新增属性/事件/方法、扩展现有功能的用法。增强的本质是「从无到有」。
+
+        > 简单判断：**本该有但现在不正常 = BUG**；**本来就没有、希望它能 = 增强**。
+        > 请选择正确的模板，使用错误模板提交的 Issue 会被直接关闭。
   - type: input
     attributes:
       label: 版本号
@@ -27,6 +37,22 @@ body:
     validations:
       required: true
   - type: textarea
+    id: version_check
+    attributes:
+      label: 版本确认（请逐项回答）
+      description: |
+        1. 最新版本是否已修复该问题？如果没有升级到最新版，请先升级后再确认。
+        2. 是否尝试过其他版本（升级/降级）？结果如何？
+        3. 是否是回归 BUG（以前的版本正常，某个版本之后开始出问题）？
+        4. 如果是回归 BUG，请说明：**哪个版本正常，从哪个版本开始出现问题**。
+      placeholder: |
+        1. 最新版本（x.x.x）：问题依旧 / 已修复
+        2. 尝试过的其他版本：x.x.x（结果）、x.x.x（结果）
+        3. 是否回归 BUG：是 / 否 / 不确定
+        4. 回归信息：x.x.x 正常，从 x.x.x 开始出现该问题
+    validations:
+      required: true
+  - type: textarea
     attributes:
       label: 重现步骤
       description: 提供一步一步的指导来重新解决这个问题。如果复制步骤很复杂，如果你附上一个带有复制操作的GIF会很有帮助。附上一个示例应用程序来重新处理这个问题将有助于我们进行调查。
@@ -44,6 +70,16 @@ body:
 
         提示：您可以通过单击此区域将其高亮显示，然后拖动文件来附加图像或日志文件。
         提示：您可以使用 https://www.screentogif.com/ 录制动画和视频。
+  - type: textarea
+    id: demo
+    attributes:
+      label: 复现 Demo（非必填，强烈建议）
+      description: |
+        Gitee 暂不支持直接上传附件，请将最小复现 Demo 打包后上传到网盘（如蓝奏云、阿里云盘、OneDrive、123 云盘等），把分享链接粘贴到这里；也可以直接粘贴能复现代码的关键片段。
+        提供 Demo 可以大幅缩短排查时间，没有 Demo 且无法复现的 Issue 可能会被关闭。
+      placeholder: |
+        Demo 链接：https://...
+        或关键代码：
   - type: markdown
     attributes:
       value: |
