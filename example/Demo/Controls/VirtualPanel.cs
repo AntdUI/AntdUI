@@ -261,11 +261,11 @@ namespace Demo.Controls
                 #endregion
 
                 int y = e.Rect.Bottom - h2 - h3;
-                using (var font_desc = new Font(e.Panel.Font.FontFamily, 9F))
+                using (var font_desc = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * 0.75F))
                 {
                     g.String(desc, font_desc, Brushes.WhiteSmoke, new Rectangle(e.Rect.X, y, e.Rect.Width, h2), s_f);
                 }
-                using (var font_title = new Font(e.Panel.Font.FontFamily, 11F, FontStyle.Bold))
+                using (var font_title = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * 0.92F, FontStyle.Bold))
                 {
                     g.String(name, font_title, Brushes.White, new Rectangle(e.Rect.X, y - h1, e.Rect.Width, h1), s_f);
                 }

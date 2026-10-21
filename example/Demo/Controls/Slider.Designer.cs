@@ -131,7 +131,7 @@ namespace Demo.Controls
             panel3.Location = new Point(0, 110);
             panel3.Name = "panel3";
             panel3.Size = new Size(1179, 407);
-            panel3.TabIndex = 3;
+            panel3.TabIndex = 2;
             // 
             // slider9
             // 
@@ -155,7 +155,7 @@ namespace Demo.Controls
             slider9.Name = "slider9";
             slider9.Padding = new Padding(0, 0, 34, 0);
             slider9.Size = new Size(84, 398);
-            slider9.TabIndex = 1;
+            slider9.TabIndex = 2;
             slider9.ValueFormatChanged += slider7_ValueFormatChanged;
             // 
             // slider8
@@ -240,7 +240,7 @@ namespace Demo.Controls
             slider6.Name = "slider6";
             slider6.Padding = new Padding(4, 0, 4, 110);
             slider6.Size = new Size(647, 195);
-            slider6.TabIndex = 1;
+            slider6.TabIndex = 5;
             // 
             // slider5
             // 
@@ -299,7 +299,7 @@ namespace Demo.Controls
             slider5.Name = "slider5";
             slider5.Padding = new Padding(4, 0, 4, 100);
             slider5.Size = new Size(647, 172);
-            slider5.TabIndex = 1;
+            slider5.TabIndex = 4;
             slider5.Value = 6;
             // 
             // slider4
@@ -322,7 +322,7 @@ namespace Demo.Controls
             slider4.Padding = new Padding(0, 4, 0, 4);
             slider4.ShowValue = true;
             slider4.Size = new Size(84, 398);
-            slider4.TabIndex = 1;
+            slider4.TabIndex = 3;
             // 
             // slider7
             // 
@@ -345,7 +345,7 @@ namespace Demo.Controls
             slider7.Name = "slider7";
             slider7.Padding = new Padding(0, 0, 34, 0);
             slider7.Size = new Size(84, 398);
-            slider7.TabIndex = 1;
+            slider7.TabIndex = 0;
             slider7.ValueFormatChanged += slider7_ValueFormatChanged;
             // 
             // divider2
@@ -390,7 +390,7 @@ namespace Demo.Controls
             slider3.Name = "slider3";
             slider3.ShowValue = true;
             slider3.Size = new Size(245, 40);
-            slider3.TabIndex = 1;
+            slider3.TabIndex = 2;
             // 
             // slider1
             // 
@@ -398,7 +398,7 @@ namespace Demo.Controls
             slider1.Name = "slider1";
             slider1.ShowValue = true;
             slider1.Size = new Size(245, 40);
-            slider1.TabIndex = 1;
+            slider1.TabIndex = 0;
             // 
             // divider1
             // 

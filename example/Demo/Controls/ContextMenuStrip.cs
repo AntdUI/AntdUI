@@ -73,46 +73,6 @@ namespace Demo.Controls
             }
         }
 
-        #region 回调案例
-
-        private void Control_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                var config = new AntdUI.ContextMenuStrip.Config(this, RightKey, menulist)
-                {
-                    Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Bold)
-                };
-                AntdUI.ContextMenuStrip.open(config);
-            }
-        }
-
-        private void RightKey(AntdUI.IContextMenuStrip it)
-        {
-            if (it.Text.Equals("新增"))
-            {
-                // 执行对应的操作
-            }
-            if (it.Text.Equals("修改"))
-            {
-
-            }
-            if (it.Text.Equals("删除"))
-            {
-
-            }
-            if (it.Text.Equals("刷新"))
-            {
-
-            }
-            if (it.Text.Equals("重置"))
-            {
-
-            }
-        }
-
-        #endregion
-
         private void button1_MouseClick(object sender, MouseEventArgs e)
         {
             AntdUI.ContextMenuStrip.open(this, it =>

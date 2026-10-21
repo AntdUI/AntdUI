@@ -1,5 +1,21 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.15` 2026-10-21
+
+- ➕ PageHeader window loses focus style
+- ➕ standard keyboard navigation to Select dropdowns ([#173](https://github.com/AntdUI/AntdUI/pull/173))
+- ➕ allow removing control-specific color overrides ([#174](https://github.com/AntdUI/AntdUI/pull/174))
+- ✍️ Input adjustment AutoSize interaction supports Dock. Top multi line content with dynamic height based on content
+- ✍️ Input Composite Keyboard Shift Select Text Interaction
+- ✍️ Select DropDownTextAlign does not take effect under SelectItem
+- ✍️ Table handle changes and removals from binding lists ([#170](https://github.com/AntdUI/AntdUI/pull/170))
+- ✍️ Table navigate to the target data row ([#171](https://github.com/AntdUI/AntdUI/pull/171))
+- ✍️ Checkbox keep check mark thickness consistent ([#172](https://github.com/AntdUI/AntdUI/pull/172))
+- ✍️ Windows improves the flicker native window style in Win7
+- ✍️ Right clicking on Table CellButtons also triggers
+- ✍️ PerMonitorV2 primary and secondary screens have different scaling rates and font secondary scaling
+- ✍️ Global Text LineLimit
+
 ### `2.4.14` 2026-10-17
 
 - ✍️ Window exception

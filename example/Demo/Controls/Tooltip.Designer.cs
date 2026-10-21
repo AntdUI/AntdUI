@@ -288,68 +288,49 @@ namespace Demo.Controls
             divider1.TabIndex = 1;
             divider1.Text = "基本";
             // 
-            // tooltipComponent1
-            // 
-            tooltipComponent1.Font = new Font("Microsoft YaHei UI", 12F);
-            // 
             // tooltipTL
             // 
             tooltipTL.ArrowAlign = AntdUI.TAlign.TL;
-            tooltipTL.Font = new Font("Microsoft YaHei UI", 12F);
-            // 
-            // tooltipTop
-            // 
-            tooltipTop.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipTR
             // 
             tooltipTR.ArrowAlign = AntdUI.TAlign.TR;
-            tooltipTR.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRT
             // 
             tooltipRT.ArrowAlign = AntdUI.TAlign.RT;
-            tooltipRT.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRight
             // 
             tooltipRight.ArrowAlign = AntdUI.TAlign.Right;
-            tooltipRight.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipRB
             // 
             tooltipRB.ArrowAlign = AntdUI.TAlign.RB;
-            tooltipRB.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBR
             // 
             tooltipBR.ArrowAlign = AntdUI.TAlign.BR;
-            tooltipBR.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBottom
             // 
             tooltipBottom.ArrowAlign = AntdUI.TAlign.Bottom;
-            tooltipBottom.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipBL
             // 
             tooltipBL.ArrowAlign = AntdUI.TAlign.BL;
-            tooltipBL.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLB
             // 
             tooltipLB.ArrowAlign = AntdUI.TAlign.LB;
-            tooltipLB.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLeft
             // 
             tooltipLeft.ArrowAlign = AntdUI.TAlign.Left;
-            tooltipLeft.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // tooltipLT
             // 
             tooltipLT.ArrowAlign = AntdUI.TAlign.LT;
-            tooltipLT.Font = new Font("Microsoft YaHei UI", 12F);
             // 
             // Tooltip
             // 

@@ -1,5 +1,21 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.15` 2026-10-21
+
+- ➕ PageHeader 窗口失去焦点样式
+- ➕ Select 快捷键 `F4` and `Alt+Down` ([#173](https://github.com/AntdUI/AntdUI/pull/173))
+- ➕ Style 删除颜色 ([#174](https://github.com/AntdUI/AntdUI/pull/174))
+- ✍️ Input 调整 AutoSize 交互 支持 Dock.Top 多行内容根据内容动态高度
+- ✍️ Input 复合键盘 Shift 选中文本交互
+- ✍️ Select DropDownTextAlign 在 SelectItem 下不生效
+- ✍️ Table 处理绑定列表的变更和移除 ([#170](https://github.com/AntdUI/AntdUI/pull/170))
+- ✍️ Table 导航到目标数据行 ([#171](https://github.com/AntdUI/AntdUI/pull/171))
+- ✍️ Checkbox 保持复选标记厚度一致 ([#172](https://github.com/AntdUI/AntdUI/pull/172))
+- ✍️ Window 完善 Win7 下闪烁原生窗口样式
+- ✍️ Table CellButtonClick 右键也触发
+- ✍️ PerMonitorV2 主副屏缩放率不同 字体二次缩放
+- ✍️ 全局文本 LineLimit
+
 ### `2.4.14` 2026-10-17
 
 - ✍️ Window 窗口异常

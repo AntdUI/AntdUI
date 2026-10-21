@@ -614,7 +614,7 @@ namespace Demo
                 }
                 using (var fore = new SolidBrush(AntdUI.Style.Db.Text))
                 {
-                    using (var font_title = new Font(e.Panel.Font.FontFamily, 11F, FontStyle.Bold))
+                    using (var font_title = new Font(e.Panel.Font.FontFamily, e.Panel.Font.Size * 0.92F, FontStyle.Bold))
                     {
                         g.String(AntdUI.Localization.Get(data.id, LocalizationName), font_title, fore, rect_title, s_f);
                     }
