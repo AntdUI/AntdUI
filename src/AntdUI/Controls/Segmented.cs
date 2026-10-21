@@ -1826,7 +1826,7 @@ namespace AntdUI
         /// </summary>
         [Description("前景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
-        public new Color? ForeColor
+        public Color? ForeColor
         {
             get => fore;
             set

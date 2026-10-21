@@ -12,8 +12,14 @@ using System.Text;
 
 namespace AntdUI
 {
+    /// <summary>
+    /// Provides the Fluent Flat emoji SVG resources.
+    /// </summary>
     public class FluentFlat
     {
+        /// <summary>
+        /// Gets the emoji SVG resources by name.
+        /// </summary>
         public static Dictionary<string, string> Emoji;
         static FluentFlat()
         {

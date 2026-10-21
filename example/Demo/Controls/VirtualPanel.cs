@@ -20,21 +20,21 @@ namespace Demo.Controls
             form = _form;
             InitializeComponent();
 
-            foreach (AntdUI.TJustifyContent it in Enum.GetValues(typeof(AntdUI.TJustifyContent)))
+            foreach (AntdUI.TJustifyContent it in Enum.GetValues<AntdUI.TJustifyContent>())
             {
                 select1.Items.Add(it);
             }
             select1.SelectedValue = vpanel.JustifyContent;
             select1.SelectedValueChanged += Select1_SelectedValueChanged;
 
-            foreach (AntdUI.TAlignItems it in Enum.GetValues(typeof(AntdUI.TAlignItems)))
+            foreach (AntdUI.TAlignItems it in Enum.GetValues<AntdUI.TAlignItems>())
             {
                 select2.Items.Add(it);
             }
             select2.SelectedValue = vpanel.AlignItems;
             select2.SelectedValueChanged += Select2_SelectedValueChanged;
 
-            foreach (AntdUI.TAlignContent it in Enum.GetValues(typeof(AntdUI.TAlignContent)))
+            foreach (AntdUI.TAlignContent it in Enum.GetValues<AntdUI.TAlignContent>())
             {
                 select3.Items.Add(it);
             }

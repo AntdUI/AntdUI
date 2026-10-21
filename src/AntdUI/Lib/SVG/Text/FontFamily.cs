@@ -67,7 +67,7 @@ namespace AntdUI.Svg.Text
                 {
                     tblDir = new TT_TABLE_DIRECTORY();
                     tblDir.Initialize();
-                    fs.Read(tblDir.szTag, 0, tblDir.szTag.Length);
+                    ReadExactly(fs, tblDir.szTag);
                     tblDir.uCheckSum = ReadULong(fs);
                     tblDir.uOffset = ReadULong(fs);
                     tblDir.uLength = ReadULong(fs);
@@ -113,7 +113,7 @@ namespace AntdUI.Svg.Text
                     fs.Seek(tblDir.uOffset + ttRecord.uStringOffset + ttNTHeader.uStorageOffset, SeekOrigin.Begin);
 
                     byte[] buf = new byte[ttRecord.uStringLength];
-                    fs.Read(buf, 0, ttRecord.uStringLength);
+                    ReadExactly(fs, buf);
 
                     Encoding enc;
                     if (ttRecord.uEncodingID == 3 || ttRecord.uEncodingID == 1)
@@ -208,9 +208,20 @@ namespace AntdUI.Svg.Text
         private static byte[] ReadAndSwap(FileStream fs, int size)
         {
             byte[] buf = new byte[size];
-            fs.Read(buf, 0, buf.Length);
+            ReadExactly(fs, buf);
             Array.Reverse(buf);
             return buf;
+        }
+
+        private static void ReadExactly(FileStream fs, byte[] buffer)
+        {
+            int offset = 0;
+            while (offset < buffer.Length)
+            {
+                int read = fs.Read(buffer, offset, buffer.Length - offset);
+                if (read == 0) throw new EndOfStreamException();
+                offset += read;
+            }
         }
     }
 }

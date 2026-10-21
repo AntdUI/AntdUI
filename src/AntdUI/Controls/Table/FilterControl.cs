@@ -191,13 +191,13 @@ namespace AntdUI
                 }
                 else
                 {
-                    string text = _column.GetDisplayText(LoadValue(val, value)) ?? "";
-                    if (dir.TryGetValue(text, out var tmp)) tmp.Add(value);
+                    string text = _column.GetDisplayText(LoadValue(val, value!)) ?? "";
+                    if (dir.TryGetValue(text, out var tmp)) tmp.Add(value!);
                     else
                     {
-                        var tmps = new List<object> { value };
+                        var tmps = new List<object> { value! };
                         dir.Add(text, tmps);
-                        if (selects.TryGetValue(value, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.IconSvg)) });
+                        if (selects.TryGetValue(value!, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.IconSvg)) });
                         else items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", text) });
                     }
                 }

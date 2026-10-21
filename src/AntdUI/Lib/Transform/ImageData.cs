@@ -12,25 +12,25 @@ namespace AntdUI
 {
     public class ImageData : IDisposable
     {
-        byte[,] _red, _green, _blue, _alpha;
+        byte[,]? _red, _green, _blue, _alpha;
         bool _disposed = false;
 
-        public byte[,] A
+        public byte[,]? A
         {
             get => _alpha;
             set => _alpha = value;
         }
-        public byte[,] B
+        public byte[,]? B
         {
             get => _blue;
             set => _blue = value;
         }
-        public byte[,] G
+        public byte[,]? G
         {
             get => _green;
             set => _green = value;
         }
-        public byte[,] R
+        public byte[,]? R
         {
             get => _red;
             set => _red = value;
@@ -38,10 +38,10 @@ namespace AntdUI
 
         public ImageData Clone() => new ImageData
         {
-            A = (byte[,])_alpha.Clone(),
-            B = (byte[,])_blue.Clone(),
-            G = (byte[,])_green.Clone(),
-            R = (byte[,])_red.Clone()
+            A = (byte[,])_alpha!.Clone(),
+            B = (byte[,])_blue!.Clone(),
+            G = (byte[,])_green!.Clone(),
+            R = (byte[,])_red!.Clone()
         };
 
         public void FromBitmap(Bitmap srcBmp)
@@ -111,10 +111,10 @@ namespace AntdUI
             {
                 for (int x = 0; x < width; x++)
                 {
-                    rgbValues[i] = checkArray(_blue, x, y) ? _blue[x, y] : (byte)0;
-                    rgbValues[i + 1] = checkArray(_green, x, y) ? _green[x, y] : (byte)0;
-                    rgbValues[i + 2] = checkArray(_red, x, y) ? _red[x, y] : (byte)0;
-                    rgbValues[i + 3] = checkArray(_alpha, x, y) ? _alpha[x, y] : (byte)255;
+                    rgbValues[i] = GetValue(_blue, x, y, 0);
+                    rgbValues[i + 1] = GetValue(_green, x, y, 0);
+                    rgbValues[i + 2] = GetValue(_red, x, y, 0);
+                    rgbValues[i + 3] = GetValue(_alpha, x, y, 255);
                     i += 4;
                 }
                 i += offset;
@@ -124,13 +124,8 @@ namespace AntdUI
             return bmp;
         }
 
-        private static bool checkArray(byte[,] array, int x, int y)
-        {
-            if (array == null) return false;
-            if (x < array.GetLength(0) && y < array.GetLength(1))
-                return true;
-            else return false;
-        }
+        private static byte GetValue(byte[,]? array, int x, int y, byte defaultValue) =>
+            array != null && x < array.GetLength(0) && y < array.GetLength(1) ? array[x, y] : defaultValue;
 
         public void Dispose()
         {

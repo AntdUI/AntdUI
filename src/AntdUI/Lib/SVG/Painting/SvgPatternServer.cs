@@ -188,14 +188,14 @@ namespace AntdUI.Svg
 
             var childElem = chain.Where((p) => p.Children != null && p.Children.Count > 0).FirstOrDefault();
             if (childElem == null) return null;
-            var widthElem = chain.Where((p) => p.Width != null && p.Width != SvgUnit.None).FirstOrDefault();
-            var heightElem = chain.Where((p) => p.Height != null && p.Height != SvgUnit.None).FirstOrDefault();
+            var widthElem = chain.Where((p) => p.Width != SvgUnit.None).FirstOrDefault();
+            var heightElem = chain.Where((p) => p.Height != SvgUnit.None).FirstOrDefault();
             if (widthElem == null && heightElem == null) return null;
 
-            var viewBoxElem = chain.Where((p) => p.ViewBox != null && p.ViewBox != SvgViewBox.Empty).FirstOrDefault();
+            var viewBoxElem = chain.Where((p) => p.ViewBox != SvgViewBox.Empty).FirstOrDefault();
             var viewBox = viewBoxElem == null ? SvgViewBox.Empty : viewBoxElem.ViewBox;
-            var xElem = chain.Where((p) => p.X != null && p.X != SvgUnit.None).FirstOrDefault();
-            var yElem = chain.Where((p) => p.Y != null && p.Y != SvgUnit.None).FirstOrDefault();
+            var xElem = chain.Where((p) => p.X != SvgUnit.None).FirstOrDefault();
+            var yElem = chain.Where((p) => p.Y != SvgUnit.None).FirstOrDefault();
             var xUnit = xElem == null ? SvgUnit.Empty : xElem.X;
             var yUnit = yElem == null ? SvgUnit.Empty : yElem.Y;
 

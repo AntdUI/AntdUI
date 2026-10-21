@@ -833,7 +833,7 @@ namespace AntdUI
             if (!string.IsNullOrEmpty(item.IconSvg))
             {
                 var svgRect = Rectangle.Round(iconRect);
-                using (var bmp = SvgExtend.GetImgExtend(item.IconSvg, svgRect, iconColor))
+                using (var bmp = SvgExtend.GetImgExtend(item.IconSvg!, svgRect, iconColor))
                 {
                     if (bmp != null) g.Image(bmp, svgRect);
                 }

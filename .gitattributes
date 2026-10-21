@@ -1,5 +1,8 @@
 *.cs linguist-language=C#
 src/AntdUI/Lib/** linguist-language=C#
-src/AntdUI/Lib/SVG/** linguist-vendored  # https://github.com/svg-net/SVG
-src/AntdUI/Lib/Vanara/** linguist-vendored  # https://github.com/dahall/Vanara
-src/AntdUI/Lib/ChineseCalendar/** linguist-vendored  # https://gitee.com/lipz89/ChineseCalendar
+# https://github.com/svg-net/SVG
+src/AntdUI/Lib/SVG/** linguist-vendored
+# https://github.com/dahall/Vanara
+src/AntdUI/Lib/Vanara/** linguist-vendored
+# https://gitee.com/lipz89/ChineseCalendar
+src/AntdUI/Lib/ChineseCalendar/** linguist-vendored
