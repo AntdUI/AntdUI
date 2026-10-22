@@ -168,6 +168,11 @@ namespace AntdUI
         public static bool TouchClickEnabled { get; set; }
 
         /// <summary>
+        /// 触屏键盘模式
+        /// </summary>
+        public static TouchKeyboardMode TouchKeyboard { get; set; } = TouchKeyboardMode.Accessibility;
+
+        /// <summary>
         /// 鼠标悬停时长（毫秒）
         /// </summary>
         public static int MouseHoverDelay { get; set; } = 100;

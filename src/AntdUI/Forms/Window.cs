@@ -224,7 +224,7 @@ namespace AntdUI
                 return ScreenRectangle.Location;
             }
             set => base.Location = value;
-            }
+        }
 
         /// <summary>
         /// 控件的顶部坐标
@@ -234,7 +234,7 @@ namespace AntdUI
         {
             get => Location.Y;
             set => base.Top = value;
-            }
+        }
 
         /// <summary>
         /// 控件的左侧坐标
@@ -244,7 +244,7 @@ namespace AntdUI
         {
             get => Location.X;
             set => base.Left = value;
-            }
+        }
 
         /// <summary>
         /// 控件的右坐标

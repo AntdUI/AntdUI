@@ -44,7 +44,15 @@ namespace AntdUI
                 get
                 {
                     var state = base.State;
-                    if (input.readOnly) state |= AccessibleStates.ReadOnly;
+                    switch (Config.TouchKeyboard)
+                    {
+                        case TouchKeyboardMode.Accessibility:
+                            if (input.readOnly || input.BanInput) state |= AccessibleStates.ReadOnly;
+                            break;
+                        default:
+                            state |= AccessibleStates.ReadOnly;
+                            break;
+                    }
                     return state;
                 }
             }

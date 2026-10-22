@@ -2112,7 +2112,10 @@ namespace AntdUI
             HasFocus = true;
             CaretInfo.Show = CaretVisible;
             ExtraMouseDown = true;
+            if (Config.TouchKeyboard == TouchKeyboardMode.OpenOsk && Helper.IsTouch()) OpenTouchKeyboard();
         }
+
+        protected virtual bool OpenTouchKeyboard() => Helper.OpenOsk();
 
         protected override void OnLostFocus(EventArgs e)
         {
