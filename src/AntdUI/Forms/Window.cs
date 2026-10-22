@@ -106,9 +106,18 @@ namespace AntdUI
         {
             DwmEnabled = Win32.IsCompositionEnabled;
             Win32.User32.DisableProcessWindowsGhosting();
+            if (WindowState != FormWindowState.Maximized) SetSize(base.ClientSize);
             HandMessage();
             if (DwmEnabled) DwmArea();
             base.OnHandleCreated(e);
+        }
+
+        void SetSize(Size size)
+        {
+            Size max = MaximumSize, min = MinimumSize;
+            MaximumSize = MinimumSize = base.ClientSize = size;
+            MinimumSize = min;
+            MaximumSize = max;
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -215,7 +224,7 @@ namespace AntdUI
                 return ScreenRectangle.Location;
             }
             set => base.Location = value;
-        }
+            }
 
         /// <summary>
         /// 控件的顶部坐标
@@ -225,7 +234,7 @@ namespace AntdUI
         {
             get => Location.Y;
             set => base.Top = value;
-        }
+            }
 
         /// <summary>
         /// 控件的左侧坐标
@@ -235,7 +244,7 @@ namespace AntdUI
         {
             get => Location.X;
             set => base.Left = value;
-        }
+            }
 
         /// <summary>
         /// 控件的右坐标
