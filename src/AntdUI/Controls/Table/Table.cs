@@ -1006,12 +1006,33 @@ namespace AntdUI
         /// <summary>
         /// 选中真实行
         /// </summary>
+        /// <remarks>返回可直接传入 <see cref="GetRow(int)"/> 取到对应行内容的索引（已兼容排序与子表折叠）</remarks>
         public int[] SelectedIndexsReal()
         {
-            if (SortData == null || selectedIndex.Length < 1) return selectedIndex;
+            if (selectedIndex.Length < 1) return selectedIndex;
             if (selectedIndex.Length == 1 && selectedIndex[0] == 0) return selectedIndex;
-            var list = new List<int>(SortData.Length);
-            foreach (var it in selectedIndex) list.Add(SortData[it - 1] + 1);
+            var list = new List<int>(selectedIndex.Length);
+            if (SortData != null)
+            {
+                // 排序时 GetRow 的参数为显示（排序后）位置：GetRow(index) => rows[SortData[index]]
+                foreach (var it in selectedIndex)
+                {
+                    if (it > 0 && it <= SortData.Length) list.Add(it - 1);
+                }
+            }
+            else if (dataTmp == null) return selectedIndex;
+            else
+            {
+                // 无排序时 GetRow 的参数为数据行下标，通过可见行定位得到选中行的真实下标（子表折叠时显示序号与数据下标不一致）
+                var dir = new Dictionary<IRow, int>(dataTmp.rows.Length);
+                for (int i = 0; i < dataTmp.rows.Length; i++) dir[dataTmp.rows[i]] = i;
+                var rowList = rows;
+                foreach (var it in selectedIndex)
+                {
+                    var rd = rowList?[it]?.RD;
+                    if (rd != null && dir.TryGetValue(rd, out var index)) list.Add(index);
+                }
+            }
             return list.ToArray();
         }
 
