@@ -75,7 +75,7 @@ namespace AntdUI
         public override string name => nameof(TimePicker);
         string cname;
 
-        void ScrollTime()
+        internal void ScrollTime()
         {
             if (SelDate.HasValue)
             {

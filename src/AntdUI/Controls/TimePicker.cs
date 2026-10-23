@@ -197,6 +197,11 @@ namespace AntdUI
             if (close) subForm?.IClose();
             subForm = null;
             ExpandDrop = false;
+            if (change > 0)
+            {
+                change = 0;
+                SetText(_value);
+            }
         }
         void OpenSubForm()
         {
@@ -269,15 +274,35 @@ namespace AntdUI
         {
             if (keyData == Keys.Escape) ExpandDrop = false;
             else if (keyData == Keys.Down) ExpandDrop = true;
-            else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d)) PValue(_d);
+            else if (keyData == Keys.Enter && DateTime.TryParse("1997-1-1 " + Text, out var _d))
+            {
+                PValue(_d);
+                ExpandDrop = false;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        int change = 0;
         protected override void OnSetText(string text, bool isempty)
         {
-            if (EnabledValueTextChange && !isempty)
+            if (isempty) return;
+            if (EnabledValueTextChange)
             {
                 if (DateTime.TryParseExact(text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
+            }
+            else
+            {
+                if (subForm == null)
+                {
+                    if (HasFocus) ExpandDrop = true;
+                    return;
+                }
+                if (subForm is LayeredFormTimePicker _SubForm && DateTime.TryParseExact(text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d))
+                {
+                    change++;
+                    _SubForm.SelDate = new TimeSpan(_d.Hour, _d.Minute, _d.Second);
+                    _SubForm.ScrollTime();
+                }
             }
         }
 
@@ -287,7 +312,7 @@ namespace AntdUI
             if (subForm is LayeredFormTimePicker _SubForm)
             {
                 _SubForm.SelDate = Value;
-                _SubForm.Print();
+                _SubForm.ScrollTime();
             }
         }
 

@@ -344,7 +344,12 @@ namespace AntdUI
                 {
                     if (part.Hover)
                     {
-                        if (hoverStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
+                        if (hoverStyle == null)
+                        {
+                            var colorlink = Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel), Name);
+                            g.DrawText(part.Text, Font, colorlink, part.Bounds);
+                            PaintText(g, 1, colorlink, part.Bounds, linkPadding);
+                        }
                         else
                         {
                             var colorlink = hoverStyle.LinkColor ?? Style.Get(Colour.PrimaryActive, nameof(HyperlinkLabel), Name);
@@ -352,12 +357,17 @@ namespace AntdUI
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);
                             }
-                            PaintText(g, hoverStyle, colorlink, part.Bounds, linkPadding);
+                            PaintText(g, hoverStyle.UnderlineThickness, hoverStyle.UnderlineColor ?? colorlink, part.Bounds, linkPadding);
                         }
                     }
                     else
                     {
-                        if (normalStyle == null) g.DrawText(part.Text, Font, color, part.Bounds);
+                        if (normalStyle == null)
+                        {
+                            var colorlink = Style.Get(Colour.Primary, nameof(HyperlinkLabel), Name);
+                            g.DrawText(part.Text, Font, colorlink, part.Bounds);
+                            PaintText(g, 1, colorlink, part.Bounds, linkPadding);
+                        }
                         else
                         {
                             var colorlink = normalStyle.LinkColor ?? Style.Get(Colour.Primary, nameof(HyperlinkLabel), Name);
@@ -365,17 +375,17 @@ namespace AntdUI
                             {
                                 g.DrawText(part.Text, font, colorlink, part.Bounds);
                             }
-                            PaintText(g, normalStyle, colorlink, part.Bounds, linkPadding);
+                            PaintText(g, normalStyle.UnderlineThickness, normalStyle.UnderlineColor ?? colorlink, part.Bounds, linkPadding);
                         }
                     }
                 }
             }
         }
-        void PaintText(Canvas g, LinkAppearance style, Color color, Rectangle rect, Padding linkPadding)
+        void PaintText(Canvas g, int underlineThickness, Color color, Rectangle rect, Padding linkPadding)
         {
-            if (style.UnderlineThickness > 0)
+            if (underlineThickness > 0)
             {
-                using var pen = new Pen(style.UnderlineColor ?? color, style.UnderlineThickness * Dpi);
+                using var pen = new Pen(color, underlineThickness * Dpi);
                 int y = rect.Bottom;
                 g.DrawLine(pen, rect.Left + linkPadding.Left, y, rect.Right - linkPadding.Right, y);
             }
