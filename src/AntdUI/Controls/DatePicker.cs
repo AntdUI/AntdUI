@@ -328,7 +328,11 @@ namespace AntdUI
         {
             if (keyData == Keys.Escape) ExpandDrop = false;
             else if (keyData == Keys.Down) ExpandDrop = true;
-            else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d)) PValue(_d);
+            else if (keyData == Keys.Enter && DateTime.TryParse(Text, out var _d))
+            {
+                PValue(_d);
+                ExpandDrop = false;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
