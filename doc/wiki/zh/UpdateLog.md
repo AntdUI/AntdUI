@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.16` 2026-10-23
+
+- ✍️ HyperlinkLabel 空默认样式
+- ✍️ DatePicker 回车关闭下拉 (#177)
+- ✍️ DatePicker/TimePicker 优化交互
+- ✍️ Table SelectedIndexsReal 准确获取启用折叠行后的当前选中行索引
+- ✍️ Table 列宽 MaxWidth 未生效 并覆盖至 EnableHeaderResizing
+- ✍️ Input 无障碍 适配 Select List
+- ✍️ Config 回归 TouchKeyboard 支持禁用和老版本 Osk
+- ✍️ NET Framework 窗口还原大小不一
+- ✍️ 窗口大小不一
+
 ### `2.4.15` 2026-10-21
 
 - ➕ PageHeader 窗口失去焦点样式

@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.16` 2026-10-23
+
+- ✍️ HyperlinkLabel empty default style
+- ✍️ DatePicker close dropdown after valid Enter ([#177](https://github.com/AntdUI/AntdUI/pull/177))
+- ✍️ DatePicker/TimePicker optimized interaction
+- ✍️ Table SelectedIndexsReal accurately obtains the index of the current selected row after enabling the folding of rows
+- ✍️ The column width MaxWidth in the table is not effective and has been overwritten to the enablerHeaderResizing
+- ✍️ Input Accessibility Adaptation Select List
+- ✍️ Config Returns TouchKeyboard Support to Disable and Old Version Osk
+- ✍️ NET Framework window restoration varies in size
+- ✍️ Window sizes vary
+
 ### `2.4.15` 2026-10-21
 
 - ➕ PageHeader window loses focus style
