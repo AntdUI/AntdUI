@@ -507,7 +507,11 @@ namespace AntdUI
 
         protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
         {
+#if NET40 || NET46 || NET48
+            if (!DesignMode && WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
+#else
             if (OS.Win7OrLower && !DesignMode && WindowState == FormWindowState.Normal && sizeNormal.HasValue) base.SetBoundsCore(x, y, sizeNormal.Value.Width, sizeNormal.Value.Height, BoundsSpecified.None);
+#endif
             else base.SetBoundsCore(x, y, width, height, specified);
         }
 
