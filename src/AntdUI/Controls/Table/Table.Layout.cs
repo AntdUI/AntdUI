@@ -803,7 +803,12 @@ namespace AntdUI
             var width_cell = GetColumnWidths(read_width, rect.Width, use_width, max_width, col_width, check_size, sort_size, gap2);
             var fill_count = new List<int>(col_width.Count);
             sum_width = 0;
-            foreach (var it in width_cell) sum_width += it.Value;
+            foreach (var it in width_cell)
+            {
+                sum_width += it.Value;
+                if (col_width.TryGetValue(it.Key, out var value) && value is int fillWidth && fillWidth == -2)
+                    fill_count.Add(it.Key);
+            }
             if (fill_count.Count > 0)
             {
                 DistributeFillWidths(rect.Width - sum_width, fill_count, read_width, width_cell);
