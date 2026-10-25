@@ -25,7 +25,8 @@ namespace AntdUI
             if (IsHandleCreated && rect.Width > 1 && rect.Height > 1)
             {
                 LoadLayout(rect);
-                EditModeClose();
+                if (rowEditing) EditModeReposition();
+                else EditModeClose();
                 base.OnSizeChanged(e);
             }
         }
@@ -544,12 +545,14 @@ namespace AntdUI
         public virtual void OnShowYChanged(bool value) { }
         public virtual void OnValueXChanged(int value)
         {
-            EditModeClose();
+            if (rowEditing) EditModeReposition();
+            else EditModeClose();
         }
         public virtual void OnValueYChanged(int value)
         {
             if (VirtualMode) LoadLayout();
-            EditModeClose();
+            if (rowEditing) EditModeReposition();
+            else EditModeClose();
         }
 
         #region 通用循环
