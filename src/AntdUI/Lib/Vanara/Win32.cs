@@ -593,7 +593,11 @@ namespace AntdUI
         static bool HasScrollbar(Control control, out bool set)
         {
             set = false;
-            if (control is IControl) return false;
+            if (control is In.Panel p)
+            {
+                set = p.AutoScroll;
+                return true;
+            }
             if (control is ScrollableControl scrollableControl)
             {
                 set = scrollableControl.AutoScroll;
@@ -604,6 +608,7 @@ namespace AntdUI
                 set = panel.AutoScroll;
                 return true;
             }
+            if (control is IControl) return false;
             if (control is TextBoxBase) return true;
             if (control is ListBox) return true;
             if (control is DataGridView) return true;

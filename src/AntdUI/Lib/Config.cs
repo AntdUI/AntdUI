@@ -14,6 +14,24 @@ namespace AntdUI
     /// </summary>
     public class Config
     {
+#if NET10_0_OR_GREATER
+        static Config()
+        {
+            switch (System.Windows.Forms.Application.ColorMode)
+            {
+                case System.Windows.Forms.SystemColorMode.Classic:
+                    mode = TMode.Light;
+                    break;
+                case System.Windows.Forms.SystemColorMode.Dark:
+                    mode = TMode.Dark;
+                    break;
+                case System.Windows.Forms.SystemColorMode.System:
+                    mode = System.Windows.Forms.Application.SystemColorMode == System.Windows.Forms.SystemColorMode.Dark ? TMode.Dark : TMode.Light;
+                    break;
+            }
+        }
+#endif
+
         #region 色彩模式
 
         static TMode mode = TMode.Light;
@@ -26,12 +44,16 @@ namespace AntdUI
             set
             {
                 mode = value;
-                EventHub.Dispatch(EventType.THEME, value);
+#if NET10_0_OR_GREATER
+                var colormode = mode == TMode.Light ? System.Windows.Forms.SystemColorMode.Classic : System.Windows.Forms.SystemColorMode.Dark;
+                System.Windows.Forms.Application.SetColorMode(colormode);
+#endif
                 if (Style.tmp_primary.HasValue) Style.SetPrimaryCore(Style.tmp_primary.Value);
                 if (Style.tmp_success.HasValue) Style.SetSuccessCore(Style.tmp_success.Value);
                 if (Style.tmp_warning.HasValue) Style.SetWarningCore(Style.tmp_warning.Value);
                 if (Style.tmp_error.HasValue) Style.SetErrorCore(Style.tmp_error.Value);
                 if (Style.tmp_info.HasValue) Style.SetInfoCore(Style.tmp_info.Value);
+                EventHub.Dispatch(EventType.THEME, value);
             }
         }
 

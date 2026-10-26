@@ -1486,127 +1486,139 @@ namespace AntdUI
 
         #region 模糊
 
-        public static void Blur(Bitmap bmp, int range) => Blur(bmp, range, new Rectangle(0, 0, bmp.Width, bmp.Height));
-        public static void Blur(Bitmap bmp, int range, Rectangle rect)
+        public static unsafe void Blur(Bitmap bmp, int range)
         {
             if (range > 1)
             {
+                int width = bmp.Width, height = bmp.Height;
                 using (var unsafeBitmap = new UnsafeBitmap(bmp, true))
                 {
                     int halfRange = range / 2;
-                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
-                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
-                    BlurHorizontal(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
-                    BlurVertical(unsafeBitmap, halfRange, rect.X, rect.Y, rect.Right, rect.Bottom);
+                    ColorBgra* pointer = unsafeBitmap.Pointer;
+                    var tmp = new ColorBgra[width > height ? width : height];
+                    fixed (ColorBgra* line = tmp)
+                    {
+                        // 横向 → 纵向 → 横向 → 纵向
+                        for (int y = 0; y < height; y++) BlurLine(pointer + y * width, 1, width, halfRange, line);
+                        for (int x = 0; x < width; x++) BlurLine(pointer + x, width, height, halfRange, line);
+                        for (int y = 0; y < height; y++) BlurLine(pointer + y * width, 1, width, halfRange, line);
+                        for (int x = 0; x < width; x++) BlurLine(pointer + x, width, height, halfRange, line);
+                    }
                 }
             }
         }
 
-        static void BlurHorizontal(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
+        /// <summary>
+        /// 单行/单列盒式模糊（滑动窗口，单像素 O(1)）
+        /// </summary>
+        /// <param name="p">起始像素指针</param>
+        /// <param name="stride">步进（横向为 1，纵向为宽度）</param>
+        /// <param name="n">像素个数</param>
+        /// <param name="h">半径</param>
+        /// <param name="tmp">长度不小于 n 的临时缓冲</param>
+        static unsafe void BlurLine(ColorBgra* p, int stride, int n, int h, ColorBgra* tmp)
         {
-            ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Width];
+            if (n < 1 || h < 1) return;
 
-            for (int y = top; y < bottom; y++)
+            // 复制到临时缓冲（后面要就地写回），顺便检测整条线是否全透明
+            // 全透明时模糊结果依旧全透明，可直接跳过
+            uint any = 0;
+            ColorBgra* s = p;
+            for (int i = 0; i < n; i++)
             {
-                int hits = 0;
-                int r = 0;
-                int g = 0;
-                int b = 0;
-                int a = 0;
+                uint bgra = s->Bgra;
+                tmp[i].Bgra = bgra;
+                any |= bgra;
+                s += stride;
+            }
+            if (any == 0) return;
 
-                for (int x = left - halfRange; x < right; x++)
+            int w = h + h + 1;// 完整窗口大小
+            int r = 0, g = 0, b = 0, a = 0, hits = 0;
+            if (n >= w)
+            {
+                // 起始边缘：窗口尚未填满，除数递增
+                for (int j = 0; j < w - 1; j++)
                 {
-                    int oldPixel = x - halfRange - 1;
-                    if (oldPixel >= left)
+                    ColorBgra color = tmp[j];
+                    b += color.Blue;
+                    g += color.Green;
+                    r += color.Red;
+                    a += color.Alpha;
+                    hits++;
+                    if (j >= h) (p + ((j - h) * stride))->Bgra = BlurPack(b, g, r, a, hits);
+                }
+
+                // 中段：窗口恒为 w，用 乘法+移位 取代整除
+                uint m = (uint)((((ulong)1 << 32) + (uint)w - 1) / (uint)w);
+                ColorBgra colorAdd = tmp[w - 1];
+                b += colorAdd.Blue;
+                g += colorAdd.Green;
+                r += colorAdd.Red;
+                a += colorAdd.Alpha;
+                hits++;
+                (p + ((w - 1 - h) * stride))->Bgra = BlurPackFast(b, g, r, a, m);
+                for (int j = w; j < n; j++)
+                {
+                    ColorBgra ca = tmp[j], cr = tmp[j - w];
+                    b += ca.Blue - cr.Blue;
+                    g += ca.Green - cr.Green;
+                    r += ca.Red - cr.Red;
+                    a += ca.Alpha - cr.Alpha;
+                    (p + ((j - h) * stride))->Bgra = BlurPackFast(b, g, r, a, m);
+                }
+
+                // 结束边缘：窗口逐步滑出，除数递减
+                for (int j = n; j < n + h; j++)
+                {
+                    ColorBgra cr = tmp[j - w];
+                    b -= cr.Blue;
+                    g -= cr.Green;
+                    r -= cr.Red;
+                    a -= cr.Alpha;
+                    hits--;
+                    (p + ((j - h) * stride))->Bgra = BlurPack(b, g, r, a, hits);
+                }
+            }
+            else
+            {
+                // 长度小于窗口的退化场景
+                for (int j = 0; j < n + h; j++)
+                {
+                    if (j < n)
                     {
-                        ColorBgra color = unsafeBitmap.GetPixel(oldPixel, y);
-
-                        if (color.Bgra != 0)
-                        {
-                            r -= color.Red;
-                            g -= color.Green;
-                            b -= color.Blue;
-                            a -= color.Alpha;
-                        }
-
-                        hits--;
-                    }
-
-                    int newPixel = x + halfRange;
-                    if (newPixel < right)
-                    {
-                        ColorBgra color = unsafeBitmap.GetPixel(newPixel, y);
-
-                        if (color.Bgra != 0)
-                        {
-                            r += color.Red;
-                            g += color.Green;
-                            b += color.Blue;
-                            a += color.Alpha;
-                        }
-
+                        ColorBgra color = tmp[j];
+                        b += color.Blue;
+                        g += color.Green;
+                        r += color.Red;
+                        a += color.Alpha;
                         hits++;
                     }
-
-                    if (x >= left) newColors[x] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
-                }
-
-                for (int x = left; x < right; x++) unsafeBitmap.SetPixel(x, y, newColors[x]);
-            }
-        }
-
-        static void BlurVertical(UnsafeBitmap unsafeBitmap, int halfRange, int left, int top, int right, int bottom)
-        {
-            ColorBgra[] newColors = new ColorBgra[unsafeBitmap.Height];
-
-            for (int x = left; x < right; x++)
-            {
-                int hits = 0;
-                int r = 0;
-                int g = 0;
-                int b = 0;
-                int a = 0;
-
-                for (int y = top - halfRange; y < bottom; y++)
-                {
-                    int oldPixel = y - halfRange - 1;
-                    if (oldPixel >= top)
+                    if (j >= w)
                     {
-                        ColorBgra color = unsafeBitmap.GetPixel(x, oldPixel);
-
-                        if (color.Bgra != 0)
-                        {
-                            r -= color.Red;
-                            g -= color.Green;
-                            b -= color.Blue;
-                            a -= color.Alpha;
-                        }
-
+                        ColorBgra color = tmp[j - w];
+                        b -= color.Blue;
+                        g -= color.Green;
+                        r -= color.Red;
+                        a -= color.Alpha;
                         hits--;
                     }
-
-                    int newPixel = y + halfRange;
-                    if (newPixel < bottom)
+                    if (j >= h)
                     {
-                        ColorBgra color = unsafeBitmap.GetPixel(x, newPixel);
-
-                        if (color.Bgra != 0)
-                        {
-                            r += color.Red;
-                            g += color.Green;
-                            b += color.Blue;
-                            a += color.Alpha;
-                        }
-
-                        hits++;
+                        int x = j - h;
+                        if (x < n) (p + (x * stride))->Bgra = BlurPack(b, g, r, a, hits);
                     }
-
-                    if (y >= top) newColors[y] = new ColorBgra((byte)(b / hits), (byte)(g / hits), (byte)(r / hits), (byte)(a / hits));
                 }
-
-                for (int y = top; y < bottom; y++) unsafeBitmap.SetPixel(x, y, newColors[y]);
             }
         }
+
+        static uint BlurPack(int b, int g, int r, int a, int d) => (uint)(b / d) | ((uint)(g / d) << 8) | ((uint)(r / d) << 16) | ((uint)(a / d) << 24);
+
+        /// <summary>定窗口求均值：用 ceil(2^32/d) 魔数乘法代替整除</summary>
+        static uint BlurPackFast(int b, int g, int r, int a, uint m) => (uint)(((ulong)(uint)b * m) >> 32)
+            | ((uint)(((ulong)(uint)g * m) >> 32) << 8)
+            | ((uint)(((ulong)(uint)r * m) >> 32) << 16)
+            | ((uint)(((ulong)(uint)a * m) >> 32) << 24);
 
         #endregion
 

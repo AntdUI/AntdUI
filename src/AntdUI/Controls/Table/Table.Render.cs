@@ -51,9 +51,14 @@ namespace AntdUI
                     if (_radius > 0)
                     {
                         clipath = Helper.RoundPath(rect_divider, _radius, true, true, false, false);
+                        if (back.HasValue) g.Fill(back.Value, clipath);
                         g.SetClip(clipath);
                     }
-                    else g.SetClip(rect_divider);
+                    else
+                    {
+                        if (back.HasValue) g.Fill(back.Value, rect_divider);
+                        g.SetClip(rect_divider);
+                    }
                     if (fixedHeader)
                     {
                         DirtyByVisibleHeaderFixedHeader(rows, sy, out shows, out summarys);
@@ -145,9 +150,14 @@ namespace AntdUI
                     if (_radius > 0)
                     {
                         clipath = Helper.RoundPath(rect_divider, _radius);
+                        if (back.HasValue) g.Fill(back.Value, clipath);
                         g.SetClip(clipath);
                     }
-                    else g.SetClip(rect_divider);
+                    else
+                    {
+                        if (back.HasValue) g.Fill(back.Value, rect_divider);
+                        g.SetClip(rect_divider);
+                    }
                     DirtyByNone(rows, sy, out shows, out summarys);
 
                     g.TranslateTransform(0, -sy);
@@ -764,7 +774,7 @@ namespace AntdUI
                 case TableTreeStyle.Button:
                     using (var path_check = Helper.RoundPath(it.ROW.RectExpand, check_radius))
                     {
-                        g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), path_check);
+                        g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), path_check);
                         g.Draw(Colour.BorderColor.Get(ColorScheme, nameof(Table), Name), check_border, path_check);
                         PaintArrow(g, it.ROW, fore, it.ROW.Expand ? 90 : 0);
                     }
@@ -837,12 +847,12 @@ namespace AntdUI
                 if (radius > 0)
                 {
                     clipath = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader);
-                    g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
+                    g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
                     g.SetClip(clipath);
                 }
                 else
                 {
-                    g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
+                    g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
                     g.SetClip(rect_Fixed);
                 }
 
@@ -935,12 +945,12 @@ namespace AntdUI
                         if (radius > 0)
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false);
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
                             g.SetClip(clipath);
                         }
                         else
                         {
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
                             g.SetClip(rect_Fixed);
                         }
 
@@ -1056,12 +1066,12 @@ namespace AntdUI
                         if (radius > 0 && !visibleHeader)
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, false, true, true);
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
                             g.SetClip(clipath);
                         }
                         else
                         {
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
                             g.SetClip(rect_Fixed);
                         }
 
@@ -1132,12 +1142,12 @@ namespace AntdUI
                     {
                         clipath = Helper.RoundPath(rect_Fixed, radius, true, false, false, !visibleHeader);
                         g.SetClip(clipath, CombineMode.Intersect);
-                        g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
+                        g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
                     }
                     else
                     {
                         g.SetClip(rect_Fixed, CombineMode.Intersect);
-                        g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
+                        g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
                     }
 
                     #endregion
@@ -1193,12 +1203,12 @@ namespace AntdUI
                         {
                             clipath = Helper.RoundPath(rect_Fixed, radius, false, true, !visibleHeader, false);
                             g.SetClip(clipath, CombineMode.Intersect);
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), clipath);
                         }
                         else
                         {
                             g.SetClip(rect_Fixed, CombineMode.Intersect);
-                            g.Fill(Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
+                            g.Fill(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name), rect_Fixed);
                         }
 
                         #endregion
@@ -1241,7 +1251,7 @@ namespace AntdUI
             var state = g.Save();
             if (visibleHeader && fixedHeader) g.SetClip(new Rectangle(rect_read.X, rect_read.Y + rows[0].Height, rect_read.Width, rect_read.Height));
             g.TranslateTransform(-sx, -sy);
-            using (var bg = new SolidBrush(Colour.BgBase.Get(ColorScheme, nameof(Table), Name)))
+            using (var bg = new SolidBrush(back ?? Colour.BgBase.Get(ColorScheme, nameof(Table), Name)))
             {
                 foreach (var it in CellRanges) PaintMergeCells(g, rows, bg, fore, foreEnable, it);
             }

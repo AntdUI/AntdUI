@@ -97,6 +97,24 @@ namespace AntdUI
             }
         }
 
+        Color? back;
+        /// <summary>
+        /// 背景颜色
+        /// </summary>
+        [Description("背景颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? Back
+        {
+            get => back;
+            set
+            {
+                if (back == value) return;
+                back = value;
+                Invalidate();
+                OnPropertyChanged(nameof(Back));
+            }
+        }
+
         Color? fore;
         /// <summary>
         /// 文字颜色

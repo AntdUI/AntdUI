@@ -14,11 +14,11 @@ namespace AntdUI
         /// <summary>
         /// 浅色模式
         /// </summary>
-        Light,
+        Light = 0,
         /// <summary>
         /// 深色模式
         /// </summary>
-        Dark
+        Dark = 2
     }
 
     /// <summary>
