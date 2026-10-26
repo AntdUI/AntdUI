@@ -805,9 +805,8 @@ namespace AntdUI
             sum_width = 0;
             foreach (var it in width_cell)
             {
-                sum_width += it.Value;
-                if (col_width.TryGetValue(it.Key, out var value) && value is int fillWidth && fillWidth == -2)
-                    fill_count.Add(it.Key);
+                if (col_width.TryGetValue(it.Key, out var value) && value is int fillWidth && fillWidth == -2) fill_count.Add(it.Key);
+                else sum_width += it.Value;
             }
             if (fill_count.Count > 0)
             {
