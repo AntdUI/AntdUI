@@ -1198,7 +1198,7 @@ namespace AntdUI
                     int size2 = size * 2, sp = (int)(size * .34F), use_r = 0, r = _rect.Right - (gap.x > 0 ? gap.x : sp);
                     if (COLUMN.HasFilter)
                     {
-                        rect_filter = new Rectangle(r - use_r - size, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        rect_filter = new Rectangle(r - use_r - size - sp, _rect.Y, size + sp * 2, _rect.Height);
                         use_r = size + sp;
                     }
                     if (COLUMN.SortOrder)
@@ -1257,7 +1257,9 @@ namespace AntdUI
                 }
                 if (COLUMN.HasFilter)
                 {
-                    g.Svg(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
+                    int sp = (int)(rect_filter.Width * .34F);
+                    Rectangle rectFilter = new Rectangle(rect_filter.X + sp / 2, rect_filter.Y, rect_filter.Width, rect_filter.Height);
+                    g.Svg(SvgDb.IcoTableFilter, rectFilter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
                 }
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
                 else PrintText(g, font, fore, COLUMN.ColStyle);
