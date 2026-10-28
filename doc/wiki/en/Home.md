@@ -264,7 +264,7 @@
 
 
 
-### Data Display `22`
+### Data Display `23`
 
 #### [Avatar](Control/Avatar.md)
 
@@ -311,6 +311,14 @@
 > A content area which can be collapsed and expanded.
 > 
 > [![Collapse](Icon/Collapse.png)](Control/Collapse.md)
+
+
+
+#### Descriptions
+
+> Display multiple read-only fields in a group.
+> 
+> ![Descriptions](Icon/Descriptions.png)
 
 
 
@@ -503,7 +511,7 @@
 > [![Watermark](Icon/Watermark.png)](Control/Watermark.md)
 
 
-### Other `5`
+### Other `6`
 
 ### ~~[WindowBar](Control/WindowBar.md)~~
 
@@ -543,6 +551,13 @@
 > used to display 3D effect images
 > 
 > [![Image3D](Icon/Image3D.gif)](Control/Image3D.md)
+
+
+#### Markdown
+
+> Markdown rendering control
+> 
+> ![Markdown](Icon/Markdown.png)
 
 ---
 

@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.17` 2026-10-28
+
+- ➕ Markdown 🚧
+- ➕ Descriptions 🚧
+- ➕ Tabel Back 背景颜色
+- ➕ Svg 适配 image base64
+- ✍️ Table 筛选栏触发区域，避免误触发排序
+- ✍️ In.Panel 中途修改颜色模式滚动条不应用
+- ✍️ Table Fill 填充列失效
+- ✍️ 色彩模式 适配 NET10 带来的
+- ✍️ 优化 模糊 性能
+
 ### `2.4.16` 2026-10-23
 
 - ✍️ HyperlinkLabel 空默认样式

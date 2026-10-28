@@ -261,7 +261,7 @@
 
 
 
-### 数据展示 `22`
+### 数据展示 `23`
 
 #### [Avatar 头像](Control/Avatar.md)
 
@@ -308,6 +308,14 @@
 > 可以折叠/展开的内容区域
 > 
 > [![Collapse](Icon/Collapse.png)](Control/Collapse.md)
+
+
+
+#### Descriptions 描述列表
+
+> 展示多个只读字段的组合。
+> 
+> ![Descriptions](Icon/Descriptions.png)
 
 
 
@@ -501,7 +509,7 @@
 
 
 
-### 其他 `5`
+### 其他 `6`
 
 #### ~~[WindowBar 窗口栏](Control/WindowBar.md)~~
 
@@ -546,6 +554,13 @@
 > 展示3D效果图片
 > 
 > [![Image3D](Icon/Image3D.gif)](Control/Image3D.md)
+
+
+#### Markdown
+
+> MD渲染控件
+> 
+> ![Markdown](Icon/Markdown.png)
 
 
 

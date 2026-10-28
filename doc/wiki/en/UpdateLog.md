@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.17` 2026-10-28
+
+- ➕ Markdown 🚧
+- ➕ Descriptions 🚧
+- ➕ Tabel Back Background Color
+- ➕ Svg adapted to image base64
+- ✍️ Table filtering column triggers area to avoid accidentally triggering sorting
+- ✍️ In. Panel, changing color mode midway does not apply scrollbar
+- ✍️ Table Fill column failure
+- ✍️ Color mode adaptation brought by NET10
+- ✍️ Optimize fuzzy performance
+
 ### `2.4.16` 2026-10-23
 
 - ✍️ HyperlinkLabel empty default style
