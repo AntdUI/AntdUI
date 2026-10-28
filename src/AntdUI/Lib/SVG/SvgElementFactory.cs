@@ -92,6 +92,9 @@ namespace AntdUI.Svg
                         case "switch":
                             createdElement = new SvgSwitch();
                             break;
+                        case "image":
+                            createdElement = new SvgImage();
+                            break;
                         case "title":
                             createdElement = new SvgTitle();
                             break;
@@ -419,7 +422,7 @@ namespace AntdUI.Svg
                     }
                 }
 
-                #region »ù´¡
+                #region åŸºç¡€
 
                 if (attributeName == "id")
                 {
@@ -721,6 +724,39 @@ namespace AntdUI.Svg
                 //else if (element is SvgForeignObject foreignObject)
                 //{
                 //}
+                else if (element is SvgImage image)
+                {
+                    if (attributeName == "x")
+                    {
+                        image.X = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "y")
+                    {
+                        image.Y = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "width")
+                    {
+                        image.Width = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "height")
+                    {
+                        image.Height = SvgUnitConverter.Parse(attributeValue);
+                        return true;
+                    }
+                    else if (attributeName == "href")
+                    {
+                        image.Href = attributeValue;
+                        return true;
+                    }
+                    else if (attributeName == "preserveAspectRatio")
+                    {
+                        image.AspectRatio = SvgPreserveAspectRatioConverter.Parse(attributeValue);
+                        return true;
+                    }
+                }
                 else if (element is SvgGradientStop stop)
                 {
                     if (attributeName == "offset")

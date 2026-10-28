@@ -247,7 +247,14 @@ namespace AntdUI
             return nCounter;
         }
 
-        public static bool IsEmoji(int type, string txt) => type == 18 || (type == 4 && SvgDb.Emoji.ContainsKey(txt));
+        public static bool IsEmoji(int type, string txt)
+        {
+            if (type == Extended_Pictographic) return true;
+            // 含变体选择符 VS16（U+FE0F）表示要求 emoji 呈现：必须走 Emoji 字体（Config.EmojiFont），
+            // 否则 GDI+ 会为 FE0F 单独绘制缺字方块（tofu），并与前面的字形堆叠
+            if (txt.Length > 1 && txt.IndexOf('\uFE0F') >= 0) return true;
+            return type == Extend && SvgDb.Emoji.ContainsKey(txt);
+        }
 
         public static bool IsArabic(int type, string txt) => type == 0 && IsArabic(GetCodePoint(txt, 0));
 

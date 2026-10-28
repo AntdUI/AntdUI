@@ -1185,7 +1185,7 @@ namespace AntdUI
 
             #region 布局
 
-            public Rectangle rect_up, rect_down, rect_filter;
+            public Rectangle rect_up, rect_down, rect_filter, rect_filter_full;
 
             public override void SetSize(Canvas g, Font font, Size font_size, Rectangle _rect, int ox, TableGaps gap)
             {
@@ -1198,7 +1198,9 @@ namespace AntdUI
                     int size2 = size * 2, sp = (int)(size * .34F), use_r = 0, r = _rect.Right - (gap.x > 0 ? gap.x : sp);
                     if (COLUMN.HasFilter)
                     {
-                        rect_filter = new Rectangle(r - use_r - size - sp, _rect.Y, size + sp * 2, _rect.Height);
+                        int ux = r - use_r - size;
+                        rect_filter = new Rectangle(ux, _rect.Y + (_rect.Height - size) / 2, size, size);
+                        rect_filter_full = new Rectangle(ux - sp, _rect.Y, size + sp * 2, _rect.Height);
                         use_r = size + sp;
                     }
                     if (COLUMN.SortOrder)
@@ -1255,12 +1257,7 @@ namespace AntdUI
                     g.Svg(SvgDb.IcoTableSortUp, rect_up, COLUMN.SortMode == SortMode.ASC ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
                     g.Svg(SvgDb.IcoTableSortDown, rect_down, COLUMN.SortMode == SortMode.DESC ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
                 }
-                if (COLUMN.HasFilter)
-                {
-                    int sp = (int)(rect_filter.Width * .34F);
-                    Rectangle rectFilter = new Rectangle(rect_filter.X + sp / 2, rect_filter.Y, rect_filter.Width, rect_filter.Height);
-                    g.Svg(SvgDb.IcoTableFilter, rectFilter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
-                }
+                if (COLUMN.HasFilter) g.Svg(SvgDb.IcoTableFilter, rect_filter, COLUMN.Filter!.Enabled ? Colour.Primary.Get(colorScheme, nameof(Table), PARENT.Name) : Colour.TextQuaternary.Get(colorScheme, nameof(Table), PARENT.Name));
                 if (COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle) PaintCheck(g, colorScheme, columnCheck);
                 else PrintText(g, font, fore, COLUMN.ColStyle);
             }

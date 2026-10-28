@@ -160,6 +160,8 @@ namespace AntdUI.Svg
                 case "windowframe": return SystemColors.WindowFrame;
                 case "windowtext": return SystemColors.WindowText;
             }
+            var named = Color.FromName(colour);
+            if (named.IsKnownColor) return named;
             return Color.Transparent;
         }
 

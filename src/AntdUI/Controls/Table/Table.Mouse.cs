@@ -76,7 +76,7 @@ namespace AntdUI
 
                             if (db.cell is TCellColumn cellColumn && (cellColumn.rect_up.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
                                 cellColumn.rect_down.Contains(db.x - db.offset_x, db.y - db.offset_xi) ||
-                                (db.col.Filter != null && cellColumn.rect_filter.Contains(db.x - db.offset_x, db.y - db.offset_xi)))) return;
+                                (db.col.Filter != null && cellColumn.rect_filter_full.Contains(db.x - db.offset_x, db.y - db.offset_xi)))) return;
                             if (ColumnDragSort && db.col.DragSort)
                             {
                                 dragHeader = new DragHeader(e.X, e.Y, db.col.INDEX_REAL, e.X);
@@ -483,15 +483,14 @@ namespace AntdUI
                     }
                     else if (it.row.IsColumn && it.cell is TCellColumn col)
                     {
-                        if (it.cell.COLUMN.Filter != null && col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety))
+                        if (it.cell.COLUMN.Filter != null && col.rect_filter_full.Contains(db.x - col.offsetx, db.y - col.offsety))
                         {
                             //点击筛选
                             var focusColumn = it.cell.COLUMN;
                             if (OnFilterPopupBegin(focusColumn, out var customSource, out var fnt, out var filterHeight))
                             {
                                 fnt ??= Font;
-                                int sp = (int)(col.rect_filter.Width * .34F);
-                                int tmp_offset = col.offsetx - db.offset_xi + sp / 2;
+                                int tmp_offset = col.offsetx - db.offset_xi;
                                 var editor = new FilterControl(this, fnt, focusColumn, customSource);
                                 if (filterHeight.HasValue) editor.Height = filterHeight.Value;
                                 editor.Set(new Popover.Config(this, editor)
@@ -500,7 +499,7 @@ namespace AntdUI
                                     Tag = focusColumn.Filter,
                                     ArrowAlign = TAlign.Bottom,
                                     Font = fnt,
-                                    Offset = new Rectangle(col.rect_filter.X + tmp_offset, col.rect_filter.Y + col.offsety, col.rect_filter.Width, col.rect_filter.Height - sp),
+                                    Offset = new Rectangle(col.rect_filter.X + tmp_offset, col.rect_filter.Y + col.offsety, col.rect_filter.Width, col.rect_filter.Height),
                                     Padding = new Size(6, 6)
                                 }.open());
                             }
@@ -604,7 +603,7 @@ namespace AntdUI
                 {
                     if (it.cell.COLUMN.Filter != null)
                     {
-                        if (col.rect_filter.Contains(db.x - col.offsetx, db.y - col.offsety)) return false;
+                        if (col.rect_filter_full.Contains(db.x - col.offsetx, db.y - col.offsety)) return false;
                     }
                     else if (it.cell.COLUMN.SortOrder)
                     {
@@ -764,7 +763,7 @@ namespace AntdUI
                             }
                             if (has_check && cel.COLUMN is ColumnCheck columnCheck && columnCheck.NoTitle && cel.CONTAIN_REAL(db.x, db.y)) SetCursor(true);
                             else if (cel.COLUMN.SortOrder) SetCursor(true);
-                            else if (cel.COLUMN.Filter != null && cel.rect_filter.Contains(db.x - cel.offsetx, db.y - cel.offsety)) SetCursor(true);
+                            else if (cel.COLUMN.Filter != null && cel.rect_filter_full.Contains(db.x - cel.offsetx, db.y - cel.offsety)) SetCursor(true);
                             else if (ColumnDragSort && cel.COLUMN.DragSort) SetCursor(CursorType.SizeAll);
                             else SetCursor(false);
                         }
