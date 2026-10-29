@@ -61,7 +61,7 @@ namespace AntdUI
                 var dir = new Dictionary<int, object>(List.Length);
                 foreach (var it in List)
                 {
-                    if (it.INDEX_REAL > -1) dir.Add(it.INDEX_REAL, it.RECORD);
+                    if (it.Type == RowType.None && it.INDEX_REAL > -1 && !dir.ContainsKey(it.INDEX_REAL)) dir.Add(it.INDEX_REAL, it.RECORD);
                 }
                 return dir;
             }

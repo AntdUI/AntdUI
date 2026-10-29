@@ -1057,6 +1057,7 @@ namespace AntdUI
         /// <summary>
         /// 选中真实行数据
         /// </summary>
+        /// <remarks>适用于排序后的普通表格；树表格（折叠展开导致显示序号与数据下标错位）请使用 <see cref="SelectedsTree"/></remarks>
         public object[] SelectedsReal()
         {
             if (rows == null || selectedIndex.Length < 1) return new object[0];
@@ -1076,6 +1077,35 @@ namespace AntdUI
                 {
                     if (dir.TryGetValue((SortData[it - 1]), out var r)) list.Add(r);
                 }
+            }
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// 选中真实行数据（适配树表格）
+        /// </summary>
+        /// <remarks>
+        /// 树表格折叠/展开后，显示序号（<see cref="SelectedIndex"/>）与数据下标不再一致，<see cref="SelectedsReal"/> 会取不到数据；
+        /// 此方法按显示行直接命中行对象，排序/折叠/展开均有效。虚拟模式下行未参与布局时回退到数据层
+        /// </remarks>
+        /// <returns>选中行的原始数据</returns>
+        public object[] SelectedsTree()
+        {
+            if (rows == null || selectedIndex.Length < 1) return new object[0];
+            bool virtualMode = VirtualMode;
+            var list = new List<object>(selectedIndex.Length);
+            foreach (var it in selectedIndex)
+            {
+                var row = rows[it];
+                if (row != null)
+                {
+                    if (row.Type == RowType.None) list.Add(row.RECORD);
+                    continue;
+                }
+                if (!virtualMode) continue;
+                // 虚拟模式下行可能未参与布局，回退到数据层（此时显示序号即数据下标）
+                var data = GetRow(it - 1);
+                if (data != null) list.Add(data.record);
             }
             return list.ToArray();
         }
@@ -1840,6 +1870,49 @@ namespace AntdUI
         }
 
         #endregion
+
+        /// <summary>
+        /// 获取当前可见区域的行范围。
+        /// </summary>
+        /// <returns>
+        /// 长度为 2 的数组：<c>[0]</c> 为开始行，<c>[1]</c> 为结束行（闭区间，从 0 开始，不含表头）；
+        /// 当前没有任何可见行时返回 <see langword="null"/>。
+        /// </returns>
+        /// <remarks>
+        /// 行序号按当前显示顺序计算（不含表头，从 0 开始），排序、树形节点折叠/展开后同样适用；
+        /// 被固定表头遮挡的部分不计入可见范围。
+        /// </remarks>
+        public int[]? GetVisibleRange()
+        {
+            if (rows == null) return null;
+            int height = rect_read.Height;
+            if (height < 1) return null;
+            int sy = ScrollBarRealY;
+            int top = rect_read.Y, bottom = rect_read.Bottom;
+            //固定表头始终绘制在顶部，被其遮挡的行不算可见
+            if (fixedHeader && visibleHeader) top += rows.HeaderHeight;
+            if (top >= bottom) return null;
+            var list = rows.List;
+            //行按 Y 递增排列，二分定位第一条越过顶界的行
+            int lo = 1, hi = list.Length - 1, i = -1;
+            while (lo <= hi)
+            {
+                int mid = (lo + hi) >> 1;
+                if (list[mid].RECT.Bottom - sy <= top) lo = mid + 1;
+                else { i = mid; hi = mid - 1; }
+            }
+            int start =-1, end = -1;
+            for (; i > 0 && i < list.Length; i++)
+            {
+                var it = list[i];
+                if (it.RECT.Y - sy >= bottom) break;
+                if (it.Type != RowType.None) continue;
+                int index = it.INDEX - 1;
+                if (start < 0) start = index;
+                end = index;
+            }
+            return new int[] { start, end };
+        }
 
         public CELL? HitTest(int x, int y)
         {
