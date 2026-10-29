@@ -116,7 +116,7 @@ namespace AntdUI
     internal sealed class MDInline
     {
         public MDInlineKind Kind;
-        public string Text = "";
+        public string Text = string.Empty;
         /// <summary>链接地址 / 图片地址</summary>
         public string? Url;
         /// <summary>图片被超链接包裹时的链接地址</summary>
@@ -278,7 +278,7 @@ namespace AntdUI
     /// </summary>
     internal sealed class MDRun
     {
-        public string Text = "";
+        public string Text = string.Empty;
         public Font? Font;
         public Color Fore;
         public MDInlineKind Kind;
@@ -298,7 +298,7 @@ namespace AntdUI
     /// </summary>
     internal sealed class MDFragment
     {
-        public string Text = "";
+        public string Text = string.Empty;
         public Font? Font;
         public Color Fore;
         /// <summary>内容坐标</summary>

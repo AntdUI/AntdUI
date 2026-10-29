@@ -1366,7 +1366,7 @@ namespace AntdUI
         /// <summary>
         /// 清除所有文本
         /// </summary>
-        public void Clear() => Text = "";
+        public void Clear() => Text = string.Empty;
 
         /// <summary>
         /// 清除撤消缓冲区信息
@@ -2277,7 +2277,7 @@ namespace AntdUI
         /// <summary>
         /// 清空值
         /// </summary>
-        protected virtual void OnClearValue() => Text = "";
+        protected virtual void OnClearValue() => Text = string.Empty;
 
         /// <summary>
         /// 点击内容

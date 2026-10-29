@@ -122,7 +122,7 @@ namespace AntdUI
                 if (dateFormat == value) return;
                 dateFormat = value;
                 ShowTime = dateFormat.Contains("H");
-                if (_value == null) Text = "";
+                if (_value == null) Text = string.Empty;
                 else Text = _value[0].ToString(dateFormat) + "\t" + _value[1].ToString(dateFormat);
             }
         }
@@ -144,7 +144,7 @@ namespace AntdUI
 
         void SetText(DateTime[]? value)
         {
-            if (value == null) Text = "";
+            if (value == null) Text = string.Empty;
             else Text = value[0].ToString(Format) + "\t" + value[1].ToString(Format);
         }
 

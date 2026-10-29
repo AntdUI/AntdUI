@@ -746,7 +746,7 @@ namespace AntdUI
                     };
                     foreach (var it in pageSizeOptions) input.Items.Add(it);
                     input.SelectedValue = pageSize;
-                    input.Text = "";
+                    input.Text = string.Empty;
                     input.SelectedValueChanged += (a, b) =>
                     {
                         if (b.Value is int pageSize) PageSize = pageSize;

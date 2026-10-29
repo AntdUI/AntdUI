@@ -193,7 +193,7 @@ namespace AntdUI
                 }
                 CalculateRect();
                 Invalidate();
-                Text = "";
+                Text = string.Empty;
                 OnSelectedValueChanged(selectedValue);
             }
         }

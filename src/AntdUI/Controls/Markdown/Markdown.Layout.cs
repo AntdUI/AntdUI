@@ -854,6 +854,27 @@ namespace AntdUI
         }
 
         /// <summary>
+        /// 换行判定需要额外计入的宽度（行内代码片段的左右内边距）
+        /// </summary>
+        /// <remarks>
+        /// 片段的左右内边距是在 <see cref="FlushLine"/> 里计入片段宽度的；换行判定若不预先计入，
+        /// 含行内代码的行就会超出内容宽度、压住右侧内边距（Padding.Right）——纯文本行不受影响。
+        /// 同一个 code 运行内连续的 token 属于同一片段，只在片段起点计一次；
+        /// 行内换行后片段被拆开，新行首的片段重新计一次（与 FlushLine 的片段划分口径一致）。
+        /// </remarks>
+        int TokenExtra(Canvas g, List<MDRun> runs, List<MDTokenItem> tokens, int index, int start)
+        {
+            var cur = tokens[index];
+            if (runs[cur.Run].Kind != MDInlineKind.Code) return 0;
+            if (index > start)
+            {
+                var prev = tokens[index - 1];
+                if (prev.Run == cur.Run && prev.Start + prev.Len == cur.Start) return 0;
+            }
+            return InlineCodePadX(g) * 2;
+        }
+
+        /// <summary>
         /// 将内联内容排版为视觉行
         /// </summary>
         List<MDVisualLine> WrapRuns(Canvas g, int bi, List<MDRun> runs, int x, int width, int y, MDAlign align)
@@ -925,7 +946,7 @@ namespace AntdUI
                     start = i + 1;
                     continue;
                 }
-                if (!lineEmpty && cx + t.Width > width)
+                if (!lineEmpty && cx + TokenExtra(g, runs, tokens, i, start) + t.Width > width)
                 {
                     FlushLine(g, bi, runs, tokens, start, i - 1, x, width, cy, align, result);
                     if (result.Count > 0) cy = result[result.Count - 1].Bottom;
@@ -939,7 +960,7 @@ namespace AntdUI
                         continue;
                     }
                 }
-                cx += t.Width;
+                cx += TokenExtra(g, runs, tokens, i, start) + t.Width;
                 lineEmpty = false;
             }
             return result;

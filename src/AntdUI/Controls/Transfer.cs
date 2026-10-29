@@ -1309,7 +1309,7 @@ namespace AntdUI
 
         #region 私有变量
 
-        private string sourceSearchText = "", targetSearchText = "";
+        private string sourceSearchText = string.Empty, targetSearchText = string.Empty;
 
         private CheckState sourceSelectAll = CheckState.Unchecked, targetSelectAll = CheckState.Unchecked;
 
@@ -1710,7 +1710,7 @@ namespace AntdUI
         /// </summary>
         public TransferItem()
         {
-            Text = "";
+            Text = string.Empty;
         }
 
         /// <summary>

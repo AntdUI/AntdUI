@@ -13,7 +13,7 @@ namespace AntdUI
     {
         bool SetText(string value, bool active, bool changed = true)
         {
-            value ??= "";
+            value ??= string.Empty;
             if (_text == value) return false;
             _text = value;
             isempty = string.IsNullOrEmpty(_text);

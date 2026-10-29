@@ -219,7 +219,7 @@ namespace AntdUI
         void ChangeValueNULL()
         {
             noex = true;
-            Text = "";
+            Text = string.Empty;
             selectedItem = null;
             selectedValue = null;
             selectedIndex = -1;
