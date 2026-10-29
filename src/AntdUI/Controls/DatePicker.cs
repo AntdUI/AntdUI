@@ -287,21 +287,18 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            ILostFocus();
             base.OnLostFocus(e);
+            if (LostFocusClose) ExpandDrop = false;
+            if (IsTextEmpty) Value = null;
+            else if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
         }
 
-        void ILostFocus()
+        bool LostFocusClose
         {
-            ExpandDrop = false;
-            if (IsHandleCreated)
+            get
             {
-                if (IsTextEmpty)
-                {
-                    Value = null;
-                    return;
-                }
-                if (DateTime.TryParseExact(Text, Format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var _d)) PValue(_d);
+                if (OS.Win7OrLower && (subForm?.Focused ?? false)) return true;
+                return false;
             }
         }
 

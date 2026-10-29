@@ -463,22 +463,14 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            ILostFocus();
             base.OnLostFocus(e);
-        }
-
-        void ILostFocus()
-        {
-            if (IsHandleCreated)
+            if (IsTextEmpty)
             {
-                if (IsTextEmpty)
-                {
-                    Value = minimum ?? 0;
-                    return;
-                }
-                if (decimal.TryParse(Text, out var _d)) Value = _d;
-                Text = GetNumberText(currentValue);
+                Value = minimum ?? 0;
+                return;
             }
+            if (decimal.TryParse(Text, out var _d)) Value = _d;
+            Text = GetNumberText(currentValue);
         }
 
         protected override void OnSetText(string text, bool isempty)

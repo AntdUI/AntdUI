@@ -774,8 +774,9 @@ namespace AntdUI
 
         protected override void OnLostFocus(EventArgs e)
         {
-            ExpandDrop = false;
             base.OnLostFocus(e);
+            if (OS.Win7OrLower && (subForm?.Focused ?? false)) return;
+            ExpandDrop = false;
         }
 
         #endregion
