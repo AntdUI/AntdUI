@@ -983,14 +983,21 @@ namespace AntdUI
 
         #region 图标
 
-        public StepsItem SetIcon(Image? img)
+        public StepsItem SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 
         public StepsItem SetIcon(string? svg)
         {
+            iconSvg = svg;
+            return this;
+        }
+
+        public StepsItem SetIcon(Image? value, string? svg)
+        {
+            icon = value;
             iconSvg = svg;
             return this;
         }

@@ -228,9 +228,15 @@ namespace AntdUI
             prefix = value;
             return this;
         }
-        public CellText SetPrefix(string? value)
+        public CellText SetPrefix(string? svg)
         {
-            prefixSvg = value;
+            prefixSvg = svg;
+            return this;
+        }
+        public CellText SetPrefix(Image? value, string? svg)
+        {
+            prefix = value;
+            prefixSvg = svg;
             return this;
         }
         public CellText SetSuffix(Image? value)
@@ -238,9 +244,15 @@ namespace AntdUI
             suffix = value;
             return this;
         }
-        public CellText SetSuffix(string? value)
+        public CellText SetSuffix(string? svg)
         {
-            suffixSvg = value;
+            suffixSvg = svg;
+            return this;
+        }
+        public CellText SetSuffix(Image? value, string? svg)
+        {
+            suffix = value;
+            suffixSvg = svg;
             return this;
         }
         public CellText SetIconRatio(float value)

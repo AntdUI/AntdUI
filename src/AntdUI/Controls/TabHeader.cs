@@ -1528,14 +1528,21 @@ namespace AntdUI
 
         #region 图标
 
-        public TagTabItem SetIcon(Image? img)
+        public TagTabItem SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 
         public TagTabItem SetIcon(string? svg)
         {
+            iconSvg = svg;
+            return this;
+        }
+
+        public TagTabItem SetIcon(Image? value, string? svg)
+        {
+            icon = value;
             iconSvg = svg;
             return this;
         }

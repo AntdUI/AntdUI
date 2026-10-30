@@ -652,9 +652,9 @@ namespace AntdUI
 
             #region 图标
 
-            public ConfigBtn SetIcon(Image? img, Size? size = null)
+            public ConfigBtn SetIcon(Image? value, Size? size = null)
             {
-                icon = img;
+                icon = value;
                 iconSize = size;
                 return this;
             }
@@ -663,6 +663,13 @@ namespace AntdUI
             {
                 iconSvg = svg;
                 iconSize = size;
+                return this;
+            }
+
+            public ConfigBtn SetIcon(Image? value, string? svg)
+            {
+                icon = value;
+                iconSvg = svg;
                 return this;
             }
 

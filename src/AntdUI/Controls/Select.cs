@@ -927,14 +927,21 @@ namespace AntdUI
 
         #region 图标
 
-        public SelectItem SetIcon(Image? img)
+        public SelectItem SetIcon(Image? value)
         {
-            Icon = img;
+            Icon = value;
             return this;
         }
 
         public SelectItem SetIcon(string? svg)
         {
+            IconSvg = svg;
+            return this;
+        }
+
+        public SelectItem SetIcon(Image? value, string? svg)
+        {
+            Icon = value;
             IconSvg = svg;
             return this;
         }

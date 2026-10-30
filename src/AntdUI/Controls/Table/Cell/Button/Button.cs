@@ -452,9 +452,9 @@ namespace AntdUI
 
         #region 图标
 
-        public CellButton SetIcon(Image? img)
+        public CellButton SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 

@@ -3393,14 +3393,21 @@ namespace AntdUI
 
         #region 图标
 
-        public TreeItem SetIcon(Image? img)
+        public TreeItem SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 
         public TreeItem SetIcon(string? svg)
         {
+            iconSvg = svg;
+            return this;
+        }
+
+        public TreeItem SetIcon(Image? value, string? svg)
+        {
+            icon = value;
             iconSvg = svg;
             return this;
         }

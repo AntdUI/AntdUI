@@ -197,7 +197,7 @@ namespace AntdUI
                     {
                         var tmps = new List<object> { value! };
                         dir.Add(text, tmps);
-                        if (selects.TryGetValue(value!, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.IconSvg)) });
+                        if (selects.TryGetValue(value!, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.Icon, find.IconSvg)) });
                         else items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", text) });
                     }
                 }
@@ -230,7 +230,7 @@ namespace AntdUI
                 {
                     var tmps = new List<object> { value };
                     dir.Add(text, tmps);
-                    if (selects.TryGetValue(value, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.IconSvg)) });
+                    if (selects.TryGetValue(value, out var find)) items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", new CellText(find.Text).SetPrefix(find.Icon, find.IconSvg)) });
                     else items.Add(new AntItem[] { new AntItem("tag", tmps), new AntItem("check", check), new AntItem("text", text) });
                 }
             }

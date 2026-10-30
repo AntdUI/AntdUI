@@ -2162,9 +2162,9 @@ namespace AntdUI
 
         #region 图标
 
-        public SegmentedItem SetIcon(Image? img)
+        public SegmentedItem SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 

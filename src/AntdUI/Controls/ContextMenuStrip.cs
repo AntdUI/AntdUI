@@ -401,14 +401,21 @@ namespace AntdUI
 
         #region 图标
 
-        public ContextMenuStripItem SetIcon(Image? img)
+        public ContextMenuStripItem SetIcon(Image? value)
         {
-            Icon = img;
+            Icon = value;
             return this;
         }
 
         public ContextMenuStripItem SetIcon(string? svg)
         {
+            IconSvg = svg;
+            return this;
+        }
+
+        public ContextMenuStripItem SetIcon(Image? value, string? svg)
+        {
+            Icon = value;
             IconSvg = svg;
             return this;
         }
@@ -572,14 +579,21 @@ namespace AntdUI
 
         #region 图标
 
-        public ContextMenuStripItemButton SetIcon(Image? img)
+        public ContextMenuStripItemButton SetIcon(Image? value)
         {
-            Icon = img;
+            Icon = value;
             return this;
         }
 
         public ContextMenuStripItemButton SetIcon(string? svg)
         {
+            IconSvg = svg;
+            return this;
+        }
+
+        public ContextMenuStripItemButton SetIcon(Image? value, string? svg)
+        {
+            Icon = value;
             IconSvg = svg;
             return this;
         }

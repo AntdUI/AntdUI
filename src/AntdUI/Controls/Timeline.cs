@@ -541,14 +541,21 @@ namespace AntdUI
 
         #region 图标
 
-        public TimelineItem SetIcon(Image? img)
+        public TimelineItem SetIcon(Image? value)
         {
-            Icon = img;
+            Icon = value;
             return this;
         }
 
         public TimelineItem SetIcon(string? svg)
         {
+            IconSvg = svg;
+            return this;
+        }
+
+        public TimelineItem SetIcon(Image? value, string? svg)
+        {
+            Icon = value;
             IconSvg = svg;
             return this;
         }

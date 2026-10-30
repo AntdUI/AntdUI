@@ -3059,9 +3059,9 @@ namespace AntdUI
 
         #region 图标
 
-        public MenuItem SetIcon(Image? img)
+        public MenuItem SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 
@@ -3611,9 +3611,9 @@ namespace AntdUI
 
         #region 图标
 
-        public MenuButton SetIcon(Image? img)
+        public MenuButton SetIcon(Image? value)
         {
-            icon = img;
+            icon = value;
             return this;
         }
 
