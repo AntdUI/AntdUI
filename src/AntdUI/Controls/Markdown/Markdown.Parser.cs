@@ -119,6 +119,18 @@ namespace AntdUI
 
         public static List<MDBlock> ParseBlocks(List<string> lines)
         {
+            return ParseBlocks(lines, false);
+        }
+
+        /// <summary>
+        /// 解析块级元素
+        /// </summary>
+        /// <param name="hardLineBreak">
+        /// 为 true 时段落内的每个换行都渲染为硬换行（各自成行、行距紧凑），用于引用内部：
+        /// 中文等无空格语言的相邻两行若按软换行合并，会被拼接成同一行而“粘连”
+        /// </param>
+        public static List<MDBlock> ParseBlocks(List<string> lines, bool hardLineBreak)
+        {
             var blocks = new List<MDBlock>();
             var indentStack = new List<int>();
             int i = 0;
@@ -301,6 +313,8 @@ namespace AntdUI
                 var inlines = ParseInlines(line.TrimEnd());
                 // 软换行：段落内的单行换行合并到同一段落（不产生换行，宽度不足时才自动折行），与 CommonMark 一致
                 // 行尾两个及以上空格视为硬换行，插入换行符
+                // 引用内部（hardLineBreak）每个换行都按硬换行处理：各自成行、行距紧凑，
+                // 避免中文等无空格语言相邻两行被软换行拼接成同一行而“粘连”
                 while (i + 1 < lines.Count && ParseAlert(line.Trim()) == MDAlert.None)
                 {
                     string next = lines[i + 1];
@@ -313,7 +327,7 @@ namespace AntdUI
                     line = lines[i];
                     string curText = line.TrimEnd();
                     rawText.Append('\n').Append(curText);
-                    if (hard) inlines.Add(new MDInline(MDInlineKind.Break, ""));
+                    if (hard || hardLineBreak) inlines.Add(new MDInline(MDInlineKind.Break, ""));
                     else if (SoftBreakSpace(LastChar(prevText), FirstChar(curText))) inlines.Add(new MDInline(MDInlineKind.Text, " "));
                     inlines.AddRange(ParseInlines(curText));
                 }
@@ -570,7 +584,8 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 解析块引用：聚合连续引用行，内部递归解析（支持嵌套引用、标题、列表等元素）
+        /// 解析块引用：聚合**连续**引用行（中间没有空行）为同一个引用块，内部递归解析。
+        /// 空行（上一个换行没有内容）才是块分隔：后续引用行另起一个引用块。
         /// </summary>
         static MDBlock ParseQuote(List<string> lines, ref int index)
         {
@@ -587,6 +602,13 @@ namespace AntdUI
                     while (k < t.Length && t[k] == '>') k++;
                     string content = t.Substring(k);
                     if (content.Length > 0 && content[0] == ' ') content = content.Substring(1);
+                    // 引用内的空行（> 后没有内容）：上一个换行没有内容 → 当前引用块到此为止
+                    if (content.Trim().Length == 0)
+                    {
+                        i++;
+                        if (inner.Count == 0) continue;
+                        break;
+                    }
                     // 新的提示块标记：结束当前引用块，另起一个（支持连续 [!NOTE] / [!TIP] ...）
                     if (inner.Count > 0 && ParseAlert(content) != MDAlert.None) break;
                     inner.Add(content);
@@ -595,20 +617,16 @@ namespace AntdUI
                 }
                 if (IsBlank(line) && inner.Count > 0)
                 {
-                    // 引用内部空行：仅当后续仍是引用行才延续（空行属于同一引用块的分段）
+                    // 引用外部空行同样结束当前引用块（后续若仍是引用行，由下一轮另起一块）
                     int j = i;
                     while (j < lines.Count && IsBlank(lines[j])) j++;
-                    if (j < lines.Count && lines[j].Trim().Length > 0 && lines[j].Trim()[0] == '>')
-                    {
-                        inner.Add("");
-                        i = j;
-                        continue;
-                    }
+                    if (j < lines.Count && lines[j].Trim().Length > 0 && lines[j].Trim()[0] == '>') break;
                 }
                 break;
             }
             index = i;
-            var children = ParseBlocks(inner);
+            // 引用内部每个换行都按硬换行渲染：各自成行、行距紧凑（同一引用块内不粘连成一行）
+            var children = ParseBlocks(inner, true);
             var block = new MDBlock(MDBlockKind.Quote);
             // GitHub 提示块：首个子段落为 [!XXX] 时转换为提示头
             if (children.Count > 0 && children[0].Kind == MDBlockKind.Paragraph)
