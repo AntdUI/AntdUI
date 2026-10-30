@@ -1,5 +1,16 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.18` 2026-10-30
+
+- ➕ Table SelectedsTree 获取树表格选中行真实数据
+- ➕ Table GetVisibleRange 获取当前可见区域的行范围
+- ➕ Pagination ForeColor 文本颜色
+- ✍️ Drawer 上 Spin 最小化后不显示问题
+- ✍️ Table 筛选下拉 未适配 ColumnSelect 图标
+- ✍️ Select Win7 下拉无法选中
+- ✍️ Markdown 布局超出 Right
+- ✍️ Markdown 引用块粘连
+
 ### `2.4.17` 2026-10-28
 
 - ➕ Markdown 🚧

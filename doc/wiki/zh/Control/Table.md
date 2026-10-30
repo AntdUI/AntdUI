@@ -96,6 +96,8 @@
 :--|:--|:--|:--|
 **SelectedIndexsReal** | 选中真实行 | int[] ||
 **SelectedsReal** | 选中真实行数据 | object[] ||
+**SelectedsTree** | 选中真实行数据（适配树表格折叠展开） | object[] ||
+**GetVisibleRange** | 获取可见区域行范围（0开始，不含表头） | int[]? | |
 **GetRow** | 获取指定行的数据 | IRow`?` | int index `序号` |
 **RowCount** | 行总数 | int ||
 **Refresh** | 刷新界面 | void ||

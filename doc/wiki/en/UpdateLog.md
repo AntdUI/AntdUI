@@ -1,5 +1,16 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.18` 2026-10-30
+
+- ➕ Table SelectesTree retrieves the real data of the selected row in the tree table
+- ➕ Table GetVisibleRange retrieves the row range of the current visible area
+- ➕ Pagination ForeColor Text Color
+- ✍️ Problem of not displaying after minimizing Spin on Drawer
+- ✍️ Table filtering dropdown menu not adapted to ColumnSelect icon
+- ✍️ Select Win7 dropdown cannot be selected
+- ✍️ Markdown layout exceeds Right
+- ✍️ Markdown reference block adhesion
+
 ### `2.4.17` 2026-10-28
 
 - ➕ Markdown 🚧

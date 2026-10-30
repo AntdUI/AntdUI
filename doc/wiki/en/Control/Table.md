@@ -121,6 +121,8 @@ Name | Description | Return Value | Parameters |
 **SetSelected** | Set selected row | void | object record, bool expand `Whether to expand` |
 **SelectedIndexsReal** | Get selected real rows | int[] ||
 **SelectedsReal** | Get selected real row data | object[] ||
+**SelectedsTree** | Get selected real row data (adapts to tree expand/collapse) | object[] ||
+**GetVisibleRange** | Get the row range of the visible area (0-based, header excluded) | int[]? | |
 **ToDataTable** | Export table data | DataTable`?` ||
 **LoadLayout** | Refresh Layout | bool ||
 **Refresh** | Refresh UI | void ||

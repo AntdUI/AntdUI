@@ -25,6 +25,9 @@ namespace Demo
             AntdUI.Localization.DefaultLanguage = "zh-CN";
             var lang = AntdUI.Localization.CurrentLanguage;
             if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
+#if NET10_0
+            Application.SetColorMode(SystemColorMode.System);
+#endif
             AntdUI.Config.Theme().Dark("#000", "#fff").Light("#fff", "#000").FormBorderColor();
             AntdUI.Config.TextRenderingHighQuality = true;
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
