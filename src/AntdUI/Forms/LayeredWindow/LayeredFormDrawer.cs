@@ -558,8 +558,16 @@ namespace AntdUI
             formMask?.IClose();
         }
 
+        internal Action? DClose;
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            var r = false;
+            if (DClose != null)
+            {
+                r = true;
+                DClose();
+                DClose = null;
+            }
             task_start?.Dispose();
             if (!ok_end)
             {
@@ -590,7 +598,7 @@ namespace AntdUI
                         {
                             ok_end = true;
                             IClose(true);
-                        });
+                        }, r ? 200 : 0);
                     }
                 }
                 else

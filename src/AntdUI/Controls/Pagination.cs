@@ -240,6 +240,24 @@ namespace AntdUI
         int pyr = 0;
         public override Rectangle DisplayRectangle => ClientRectangle.PaddingRect(Padding, 0, 0, pyr, 0, borderWidth * Dpi / 2F);
 
+        Color? fore;
+        /// <summary>
+        /// 文字颜色
+        /// </summary>
+        [Description("文字颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public new Color? ForeColor
+        {
+            get => fore;
+            set
+            {
+                if (fore == value) return;
+                fore = value;
+                Invalidate();
+                OnPropertyChanged(nameof(ForeColor));
+            }
+        }
+
         Color? fill;
         /// <summary>
         /// 颜色
@@ -341,7 +359,7 @@ namespace AntdUI
             var s_f = FormatFlags.Center | FormatFlags.NoWrap;
             if (Enabled)
             {
-                Color fore = Colour.Text.Get(ColorScheme, nameof(Pagination), Name), color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Pagination), Name);
+                Color _fore = fore ?? Colour.Text.Get(ColorScheme, nameof(Pagination), Name), color = fill ?? Colour.Primary.Get(ColorScheme, nameof(Pagination), Name);
                 using (var brush_hover = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Pagination), Name)))
                 {
                     #region 渲染上下
@@ -354,7 +372,7 @@ namespace AntdUI
                             g.Fill(brush_hover, path_previous);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_previous.enabled ? fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
+                    using (var pen_arrow = new Pen(btn_previous.enabled ? _fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Left.TriangleLines(btn_previous.rect));
                     }
@@ -368,14 +386,14 @@ namespace AntdUI
                             g.Fill(brush_hover, path_next);
                         }
                     }
-                    using (var pen_arrow = new Pen(btn_next.enabled ? fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
+                    using (var pen_arrow = new Pen(btn_next.enabled ? _fore : Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), border))
                     {
                         g.DrawLines(pen_arrow, TAlignMini.Right.TriangleLines(btn_next.rect));
                     }
 
                     #endregion
 
-                    using (var brush = new SolidBrush(fore))
+                    using (var brush = new SolidBrush(_fore))
                     {
                         if (showTotal != null) g.String(showTotal, Font, brush, rect_text, s_f);
                         for (int i = 2; i < buttons.Length; i++)
@@ -388,13 +406,7 @@ namespace AntdUI
                                     g.Fill(brush_hover, path);
                                 }
                             }
-                            if (btn.prog > 0)
-                            {
-                                using (var brush_prog = new SolidBrush(Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name)))
-                                {
-                                    g.String("•••", Font, brush_prog, btn.rect, s_f);
-                                }
-                            }
+                            if (btn.prog > 0) g.String("•••", Font, Colour.TextQuaternary.Get(ColorScheme, nameof(Pagination), Name), btn.rect, s_f);
                             else
                             {
                                 if (current == btn.num)
@@ -436,10 +448,7 @@ namespace AntdUI
                     for (int i = 2; i < buttons.Length; i++)
                     {
                         var btn = buttons[i];
-                        if (btn.prog > 0)
-                        {
-                            g.String("•••", Font, brush, btn.rect, s_f);
-                        }
+                        if (btn.prog > 0) g.String("•••", Font, brush, btn.rect, s_f);
                         else
                         {
                             if (current == btn.num)

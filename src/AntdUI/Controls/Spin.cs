@@ -903,6 +903,15 @@ namespace AntdUI
                 if (_config.Radius.HasValue) Radius = _config.Radius.Value;
                 else if (_control is IControl icontrol) RenderRegion = () => icontrol.RenderRegion;
             }
+            if (parent is LayeredFormDrawer drawer)
+            {
+                drawer.DClose = () =>
+                {
+                    config.CancelTokenSource?.Cancel();
+                    spin_core.Dispose();
+                    Close();
+                };
+            }
         }
 
         public override string name => nameof(Spin);
@@ -912,6 +921,7 @@ namespace AntdUI
         bool HasBor = false;
 
         Control[]? controls;
+        Form? root;
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -936,7 +946,27 @@ namespace AntdUI
                 }
                 controls = list.ToArray();
             }
+            root = RootForm(control);
+            if (root != null)
+            {
+                if (ReferenceEquals(root, parent)) root = null;
+                else
+                {
+                    root.VisibleChanged += Parent_VisibleChanged;
+                    root.LocationChanged += Parent_LocationChanged;
+                }
+            }
             LoadVisible();
+        }
+
+        /// <summary>
+        /// 获取最外层窗口（逐级向上找 Owner）
+        /// </summary>
+        static Form? RootForm(Control control)
+        {
+            Form? form = control.FindPARENT();
+            while (form?.Owner != null) form = form.Owner;
+            return form;
         }
 
         bool visible = false;
@@ -945,12 +975,35 @@ namespace AntdUI
             var tmp = GetVisible();
             if (visible == tmp) return;
             visible = tmp;
-            if (tmp) spin_core.Start(this);
+            if (tmp)
+            {
+                spin_core.Start(this);
+                RestoreZOrder();
+            }
             else
             {
                 spin_core.Stop();
                 Print();
             }
+        }
+
+        /// <summary>
+        /// 恢复 Spin 的窗口层级
+        /// </summary>
+        /// <remarks>
+        /// 宿主窗口最小化再还原时，系统会重新排列同线程窗口的 z 序，
+        /// 此时 Spin 可能被排到内容窗口（DoubleBufferForm）之下而被遮挡，
+        /// 表现为 Spin 不再显示、需要点击宿主窗口激活后才恢复。
+        /// 这里重新把 Spin 插到宿主窗口上方。
+        /// </remarks>
+        void RestoreZOrder()
+        {
+            if (!visible || IsDisposed || !IsHandleCreated) return;
+            // 置顶模式下保持 TOPMOST，否则提升到同级窗口最上层
+            Win32.User32.SetWindowPos(Handle, topMost ? new IntPtr(-1) : IntPtr.Zero, 0, 0, 0, 0,
+                Win32.User32.SetWindowPosFlags.SWP_NOMOVE |
+                Win32.User32.SetWindowPosFlags.SWP_NOSIZE |
+                Win32.User32.SetWindowPosFlags.SWP_NOACTIVATE);
         }
         bool GetVisible()
         {
@@ -977,6 +1030,7 @@ namespace AntdUI
             {
                 if (control is Form form) SetLocation(form.Location);
                 else SetLocation(control.PointToScreen(Point.Empty));
+                RestoreZOrder();
                 PrintCache();
             }
         }
@@ -995,6 +1049,7 @@ namespace AntdUI
                     SetLocation(control.PointToScreen(Point.Empty));
                     SetSize(control.Size);
                 }
+                RestoreZOrder();
             }
         }
 
@@ -1069,6 +1124,11 @@ namespace AntdUI
                 parent.VisibleChanged -= Parent_VisibleChanged;
                 parent.LocationChanged -= Parent_LocationChanged;
                 parent.SizeChanged -= Parent_SizeChanged;
+            }
+            if (root != null)
+            {
+                root.VisibleChanged -= Parent_VisibleChanged;
+                root.LocationChanged -= Parent_LocationChanged;
             }
             if (controls != null)
             {
