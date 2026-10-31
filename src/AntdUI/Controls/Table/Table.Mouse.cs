@@ -314,7 +314,7 @@ namespace AntdUI
                 {
                     if (cellMDown == null)
                     {
-                        EditModeClose();
+                        if (!rowEditing) EditModeClose();
                         if (summaryCustomize && e.Button == MouseButtons.Right)
                         {
                             var celdb = CellContains(rows.List, false, e.X, e.Y);
@@ -329,7 +329,7 @@ namespace AntdUI
                 {
                     if (btnMDown == null)
                     {
-                        EditModeClose();
+                        if (!rowEditing) EditModeClose();
                         return;
                     }
                     if (btnMDown.cell.ExtraMouseDown)
@@ -551,6 +551,7 @@ namespace AntdUI
                 var doubleClick = ItemMouseClick(it.row.RECORD, it.row.Type, db.i_row, db.i_cel, db.col, RealRect(db.cell.RECT, db.offset_xi, db.offset_y), e);
                 if (e.Button == MouseButtons.Left && editmode == (doubleClick ? TEditMode.DoubleClick : TEditMode.Click))
                 {
+                    if (rowEditing) return;
                     EditModeClose();
                     int i_row = db.i_row, i_cel = db.i_cel;
                     db.cell = RealCELL(db.cell, rows, ref i_row, ref i_cel, ref it, out var crect);
