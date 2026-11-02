@@ -23,10 +23,13 @@ build.log
 *.apk
 
 # Projects
-/.vs
-/.claude
-/.vscode
-/.idea
-/.workbuddy
-/packages
-**/.mimosa/
+.vs/
+.vscode/
+.idea/
+.claude/
+.codex/
+.gemini/
+.copilot/
+.cursor/
+.workbuddy/
+.mimosa/
