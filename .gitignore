@@ -29,3 +29,4 @@ build.log
 /.idea
 /.workbuddy
 /packages
+**/.mimosa/

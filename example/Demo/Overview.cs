@@ -164,6 +164,8 @@ namespace Demo
 #else
                     return new Controls.TableAOT(this);
 #endif
+                case "EditableTable":
+                    return new Controls.EditableTable(this);
                 case "Image":
                     return new Controls.Preview(this);
                 case "VirtualPanel":
@@ -482,6 +484,7 @@ namespace Demo
                 new IList("Popover", "气泡卡片", res_light.Popover, res_dark.Popover),
                 new IList("Segmented", "分段控制器", res_light.Segmented, res_dark.Segmented),
                 new IList("Table", "表格", res_light.Table, res_dark.Table),
+                new IList("EditableTable", "可编辑表格", res_light.Table, res_dark.Table),
                 new IList("Tabs", "标签页", res_light.Tabs, res_dark.Tabs),
                 new IList("Tag", "标签", res_light.Tag, res_dark.Tag),
                 new IList("Timeline", "时间轴", res_light.Timeline, res_dark.Timeline),
