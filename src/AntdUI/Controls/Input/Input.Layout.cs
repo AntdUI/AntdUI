@@ -171,6 +171,13 @@ namespace AntdUI
                 text = _text;
                 emoji = _emoji;
                 width = _width;
+                if (text == "\n" || text == "\r\n")
+                {
+                    ret = true;
+                    hide = true;
+                }
+                else if (text == " " || text == "\t") space = true;
+                else if (text == "\r") hide = true;
             }
             public int i { get; set; }
             public int line { get; set; }
@@ -178,6 +185,7 @@ namespace AntdUI
             public Rectangle rect { get; set; }
             public bool ret { get; set; }
             public bool hide { get; set; }
+            public bool space { get; set; }
             public bool emoji { get; set; }
             public int width { get; set; }
 
@@ -435,9 +443,8 @@ namespace AntdUI
             bool rtl = IsRTL;
             foreach (var it in cache_font)
             {
-                if (it.text == "\n" || it.text == "\r\n")
+                if (it.ret)
                 {
-                    it.hide = it.ret = true;
                     it.line = line;
                     line++;
                     if (usex > maxx) maxx = usex;
@@ -446,21 +453,16 @@ namespace AntdUI
                     it.rect = new Rectangle(rtl ? rectText.Right - usex : rectText.X + usex, rectText.Y + usey, 0, CaretInfo.Height);
                     continue;
                 }
-                else if (it.text == " " || it.text == "\t") it.hide = true;
-                else
+                else if (it.hide)
                 {
-                    if (it.text == "\r")
-                    {
-                        it.hide = true;
-                        it.rect = new Rectangle(rtl ? rectText.Right - usex - it.width : rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);
-                        continue;
-                    }
-                    else if (wordwrap && usex + it.width > rectText.Width)
-                    {
-                        line++;
-                        usey += lineHeight;
-                        usex = 0;
-                    }
+                    it.line = line;
+                    continue;
+                }
+                else if (wordwrap && usex + it.width > rectText.Width)
+                {
+                    line++;
+                    usey += lineHeight;
+                    usex = 0;
                 }
                 it.line = line;
                 it.rect = new Rectangle(rtl ? rectText.Right - usex - it.width : rectText.X + usex, rectText.Y + usey, it.width, CaretInfo.Height);

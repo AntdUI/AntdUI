@@ -1073,18 +1073,18 @@ namespace AntdUI.Chat
             var cache_fonts = new List<CacheFont>(font_widths.Count);
             foreach (var it in item.cache_font)
             {
-                if (it.text == "\r")
-                {
-                    it.ret = true;
-                    it.line = line;
-                    continue;
-                }
-                if (it.text == "\n" || it.text == "\r\n")
+                if (it.ret)
                 {
                     it.ret = true;
                     it.line = line;
                     line++;
                     HandNewLine(font_height, ref usex, ref usey, ref max_emoji_height, ref max_line_height, ref cache_fonts);
+                    continue;
+                }
+                else if (it.hide)
+                {
+                    it.ret = true;
+                    it.line = line;
                     continue;
                 }
                 else if (usex + it.width > max_width)
@@ -1936,6 +1936,13 @@ namespace AntdUI.Chat
             emoji = _emoji;
             width = _width;
             type = Type;
+            if (text == "\n" || text == "\r\n")
+            {
+                ret = true;
+                hide = true;
+            }
+            else if (text == " " || text == "\t") space = true;
+            else if (text == "\r") hide = true;
         }
         public int i { get; set; }
         public int line { get; set; }
@@ -1950,6 +1957,9 @@ namespace AntdUI.Chat
         internal void SetOffset(int x, int y) => _rect.Offset(x, y);
 
         public bool ret { get; set; }
+        public bool hide { get; set; }
+        public bool space { get; set; }
+
         public bool emoji { get; set; }
         public int width { get; set; }
 

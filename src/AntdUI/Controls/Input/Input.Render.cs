@@ -414,7 +414,6 @@ namespace AntdUI
                 {
                     foreach (var it in cache_font)
                     {
-                        if (it.hide) continue;
                         bool show = it.rect.Y > ScrollY.Value - it.rect.Height && it.rect.Bottom < ScrollY.Value + h + it.rect.Height;
                         if (show) tmp.Add(it);
                     }
@@ -423,18 +422,13 @@ namespace AntdUI
                 {
                     foreach (var it in cache_font)
                     {
-                        if (it.hide) continue;
                         bool show = it.rect.X > ScrollX.Value - it.rect.Width && it.rect.Right < ScrollX.Value + w + it.rect.Width;
                         if (show) tmp.Add(it);
                     }
                 }
                 else
                 {
-                    foreach (var it in cache_font)
-                    {
-                        if (it.hide) continue;
-                        tmp.Add(it);
-                    }
+                    foreach (var it in cache_font) tmp.Add(it);
                 }
             }
             return tmp;
@@ -559,7 +553,11 @@ namespace AntdUI
             }
         }
 
-        void String(Canvas g, Font font, CacheFont cache, Brush brush) => g.String(cache.text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
+        void String(Canvas g, Font font, CacheFont cache, Brush brush)
+        {
+            if (cache.hide||cache.space) return;
+            g.String(cache.text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
+        }
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush) => g.String(text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
 
         protected virtual void PaintRIcon(Canvas g, Rectangle rect) { }

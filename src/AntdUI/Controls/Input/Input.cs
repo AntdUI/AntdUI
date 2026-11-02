@@ -2861,14 +2861,14 @@ namespace AntdUI
                     if (wordwrap && (Dock == DockStyle.Top || Dock == DockStyle.Bottom)) wrap_width = Width - UR - bor - ux - (int)(PaddingLR * Dpi) * 2;
                     foreach (var it in cache_font)
                     {
-                        if (it.text == "\n" || it.text == "\r\n")
+                        if (it.ret)
                         {
                             if (usex > maxx) maxx = usex;
                             usey += lineHeight;
                             usex = 0;
                             continue;
                         }
-                        else if (it.text == "\r") continue;
+                        else if (it.hide) continue;
                         else if (wrap_width.HasValue && usex + it.width > wrap_width.Value)
                         {
                             //自动换行

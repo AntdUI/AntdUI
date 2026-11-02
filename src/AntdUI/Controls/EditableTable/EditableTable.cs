@@ -1,4 +1,4 @@
-// Copyright (C) 17379620 Tom. All Rights Reserved.
+// Copyright (C) Tom <17379620>. All Rights Reserved.
 // AntdUI WinForm Library | Licensed under Apache-2.0 License
 // Gitee: https://gitee.com/AntdUI/AntdUI
 // GitHub: https://github.com/AntdUI/AntdUI
@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
