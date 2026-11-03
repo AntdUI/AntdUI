@@ -555,7 +555,7 @@ namespace AntdUI
 
         void String(Canvas g, Font font, CacheFont cache, Brush brush)
         {
-            if (cache.hide||cache.space) return;
+            if (cache.hide || cache.space) return;
             g.String(cache.text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);
         }
         void StringEmoji(Canvas g, string? text, Font font, CacheFont cache, Brush brush) => g.String(text, cache.font ?? font, cache.fore, brush, cache.rect, sf_center);

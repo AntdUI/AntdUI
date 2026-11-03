@@ -367,6 +367,96 @@ namespace AntdUI
 
         #endregion
 
+        #region 边框
+
+        float borderWidth = 0F;
+        /// <summary>
+        /// 边框宽度
+        /// </summary>
+        [Description("边框宽度（需设置边框颜色）"), Category("边框"), DefaultValue(0F)]
+        public float BorderWidth
+        {
+            get => borderWidth;
+            set
+            {
+                if (borderWidth == value) return;
+                borderWidth = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BorderWidth));
+            }
+        }
+
+        Color? borderColor;
+        /// <summary>
+        /// 边框颜色
+        /// </summary>
+        [Description("边框颜色"), Category("边框"), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? BorderColor
+        {
+            get => borderColor;
+            set
+            {
+                if (borderColor == value) return;
+                borderColor = value;
+                if (borderWidth > 0) Invalidate();
+                OnPropertyChanged(nameof(BorderColor));
+            }
+        }
+
+        TAlignBorder borderAlign = TAlignBorder.ALL;
+        /// <summary>
+        /// 边框方向
+        /// </summary>
+        [Description("边框方向"), Category("边框"), DefaultValue(TAlignBorder.ALL)]
+        public TAlignBorder BorderAlign
+        {
+            get => borderAlign;
+            set
+            {
+                if (borderAlign == value) return;
+                borderAlign = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BorderAlign));
+            }
+        }
+
+        int radius = 0;
+        /// <summary>
+        /// 圆角
+        /// </summary>
+        [Description("圆角"), Category("边框"), DefaultValue(0)]
+        public int Radius
+        {
+            get => radius;
+            set
+            {
+                if (radius == value) return;
+                radius = value < 0 ? 0 : value;
+                Invalidate();
+                OnPropertyChanged(nameof(Radius));
+            }
+        }
+
+        int? borderTextGap;
+        /// <summary>
+        /// 边框距文本区域距离
+        /// </summary>
+        [Description("边框距文本区域距离（null 按控件区域渲染）"), Category("边框"), DefaultValue(null)]
+        public int? BorderTextGap
+        {
+            get => borderTextGap;
+            set
+            {
+                if (borderTextGap == value) return;
+                borderTextGap = value;
+                Invalidate();
+                OnPropertyChanged(nameof(BorderTextGap));
+            }
+        }
+
+        #endregion
+
         #region 阴影
 
         int shadow = 0;
@@ -489,6 +579,7 @@ namespace AntdUI
                 }
             }
             PaintText(g, Text, _fore, rect_read);
+            if (borderWidth > 0) PaintBorder(g, rect_read);
             base.OnDraw(e);
         }
 
@@ -896,6 +987,166 @@ namespace AntdUI
         Rectangle RecFix(int x, int w, Rectangle rect_read) => new Rectangle(x, rect_read.Y, w, rect_read.Height);
         Rectangle RecFixT(int x, int w, Rectangle rect_read, Size font_size) => new Rectangle(x, rect_read.Y, w, font_size.Height);
         Rectangle RecFixB(int x, int w, Rectangle rect_read, Size font_size) => new Rectangle(x, rect_read.Bottom - font_size.Height, w, font_size.Height);
+
+        #endregion
+
+        #region 边框渲染
+
+        void PaintBorder(Canvas g, Rectangle rect_read)
+        {
+            int gap = borderTextGap.HasValue ? (int)Math.Round(borderTextGap.Value * Dpi) : 0;
+            bool has_text = !string.IsNullOrEmpty(Text);
+            Rectangle rect;
+            if (has_text && (borderAlign == TAlignBorder.TopNoIcon || borderAlign == TAlignBorder.BottomNoIcon))
+            {
+                // 排除 Prefix+Suffix 的宽度
+                var text_rect = ContentRect(g, rect_read, true);
+                rect = new Rectangle(text_rect.X - gap, rect_read.Y, text_rect.Width + gap * 2, rect_read.Height);
+            }
+            else if (has_text && borderTextGap.HasValue)
+            {
+                // 依据文本实际区域渲染
+                var content_rect = ContentRect(g, rect_read, false);
+                rect = new Rectangle(content_rect.X - gap, content_rect.Y - gap, content_rect.Width + gap * 2, content_rect.Height + gap * 2);
+            }
+            else rect = rect_read;
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+
+            float width = borderWidth * Dpi, half = width / 2F;
+            var rect_paint = new RectangleF(rect.X + half, rect.Y + half, rect.Width - width, rect.Height - width);
+            if (rect_paint.Width <= 0F || rect_paint.Height <= 0F) return;
+
+            using (var pen = new Pen(borderColor ?? Colour.BorderColor.Get(ColorScheme, nameof(Label), Name), width))
+            using (var path = BorderPath(rect_paint, radius * Dpi))
+            {
+                pen.LineJoin = LineJoin.Round;
+                g.Draw(pen, path);
+            }
+        }
+
+        /// <summary>
+        /// 文本实际区域
+        /// </summary>
+        /// <param name="g">画布</param>
+        /// <param name="rect_read">可用区域</param>
+        /// <param name="textOnly">仅文本（排除 Prefix+Suffix）</param>
+        Rectangle ContentRect(Canvas g, Rectangle rect_read, bool textOnly)
+        {
+            var font_size = g.MeasureText(Text ?? "", Font, textMultiLine ? rect_read.Width : 0);
+            int text_width = Math.Min(font_size.Width, rect_read.Width), text_height = Math.Min(font_size.Height, rect_read.Height);
+
+            int gap = (int)(iconGap * Dpi), prefix = 0, suffix = 0;
+            if (prefixSvg != null || prefixIcon != null) prefix = (int)(font_size.Height * iconratio) + gap;
+            else if (Prefix != null) prefix = g.MeasureText(Prefix, Font, 0, sf_wrap).Width + gap;
+            if (suffixSvg != null || suffixIcon != null) suffix = (int)(font_size.Height * iconratio) + gap;
+            else if (Suffix != null) suffix = g.MeasureText(Suffix, Font, 0, sf_wrap).Width + gap;
+
+            int total = Math.Min(text_width + prefix + suffix, rect_read.Width), x;
+            switch (textAlign)
+            {
+                case ContentAlignment.TopRight:
+                case ContentAlignment.MiddleRight:
+                case ContentAlignment.BottomRight:
+                    x = rect_read.Right - total;
+                    break;
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.BottomCenter:
+                    x = rect_read.X + (rect_read.Width - total) / 2;
+                    break;
+                default:
+                    x = rect_read.X;
+                    break;
+            }
+            int y;
+            switch (textAlign)
+            {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.TopRight:
+                    y = rect_read.Y;
+                    break;
+                case ContentAlignment.BottomLeft:
+                case ContentAlignment.BottomCenter:
+                case ContentAlignment.BottomRight:
+                    y = rect_read.Bottom - text_height;
+                    break;
+                default:
+                    y = rect_read.Y + (rect_read.Height - text_height) / 2;
+                    break;
+            }
+            if (textOnly) return new Rectangle(x + prefix, y, text_width, text_height);
+            return new Rectangle(x, y, total, text_height);
+        }
+
+        GraphicsPath BorderPath(RectangleF rect, float r)
+        {
+            float x = rect.X, y = rect.Y, right = rect.Right, bottom = rect.Bottom, d = r * 2F;
+            if (r > 0F)
+            {
+                float max = Math.Min(rect.Width / 2F, rect.Height / 2F);
+                if (r > max)
+                {
+                    r = max;
+                    d = r * 2F;
+                }
+            }
+            switch (borderAlign)
+            {
+                case TAlignBorder.Top:
+                case TAlignBorder.TopNoIcon:
+                    {
+                        var path = new GraphicsPath();
+                        if (r <= 0F) path.AddLine(x, y, right, y);
+                        else
+                        {
+                            path.AddArc(x, y, d, d, 180, 90);
+                            path.AddLine(x + r, y, right - r, y);
+                            path.AddArc(right - d, y, d, d, 270, 90);
+                        }
+                        return path;
+                    }
+                case TAlignBorder.Right:
+                    {
+                        var path = new GraphicsPath();
+                        if (r <= 0F) path.AddLine(right, y, right, bottom);
+                        else
+                        {
+                            path.AddArc(right - d, y, d, d, 270, 90);
+                            path.AddLine(right, y + r, right, bottom - r);
+                            path.AddArc(right - d, bottom - d, d, d, 0, 90);
+                        }
+                        return path;
+                    }
+                case TAlignBorder.Bottom:
+                case TAlignBorder.BottomNoIcon:
+                    {
+                        var path = new GraphicsPath();
+                        if (r <= 0F) path.AddLine(x, bottom, right, bottom);
+                        else
+                        {
+                            path.AddArc(x, bottom - d, d, d, 180, -90);
+                            path.AddLine(x + r, bottom, right - r, bottom);
+                            path.AddArc(right - d, bottom - d, d, d, 90, -90);
+                        }
+                        return path;
+                    }
+                case TAlignBorder.Left:
+                    {
+                        var path = new GraphicsPath();
+                        if (r <= 0F) path.AddLine(x, y, x, bottom);
+                        else
+                        {
+                            path.AddArc(x, y, d, d, 270, -90);
+                            path.AddLine(x, y + r, x, bottom - r);
+                            path.AddArc(x, bottom - d, d, d, 180, -90);
+                        }
+                        return path;
+                    }
+                default:
+                    return rect.RoundPath(r);
+            }
+        }
 
         #endregion
 

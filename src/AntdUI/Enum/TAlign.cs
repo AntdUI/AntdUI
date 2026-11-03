@@ -180,6 +180,41 @@ namespace AntdUI
     }
 
     /// <summary>
+    /// 边框方向
+    /// </summary>
+    public enum TAlignBorder
+    {
+        /// <summary>
+        /// 全部
+        /// </summary>
+        ALL = 0,
+        /// <summary>
+        /// ↑上
+        /// </summary>
+        Top = 10,
+        /// <summary>
+        /// → 右
+        /// </summary>
+        Right = 20,
+        /// <summary>
+        /// ↓ 下
+        /// </summary>
+        Bottom = 30,
+        /// <summary>
+        /// ← 左
+        /// </summary>
+        Left = 40,
+        /// <summary>
+        /// ↑上 (无图标)
+        /// </summary>
+        TopNoIcon = 100,
+        /// <summary>
+        /// ↓ 下 (无图标)
+        /// </summary>
+        BottomNoIcon = 130,
+    }
+
+    /// <summary>
     /// 方向
     /// </summary>
     public enum TAlignFrom
