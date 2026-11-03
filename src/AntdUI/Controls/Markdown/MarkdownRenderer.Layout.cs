@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace AntdUI
 {
-    partial class Markdown
+    partial class MarkdownRenderer
     {
         #region 布局状态
 
@@ -18,13 +18,13 @@ namespace AntdUI
         readonly List<MDPaint> paints = new List<MDPaint>();
         /// <summary>标题锚点 → 内容坐标 Y（布局时登记，供 #锚点 跳转定位）</summary>
         readonly Dictionary<string, int> anchorPos = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        /// <summary>待定位锚点（布局尚未完成时暂存，布局结束后执行滚动）</summary>
-        string? pendingAnchor;
         int[] blockLine = new int[0];
         int[] blockPaint = new int[0];
         MDDocument? doc, docOld;
         int contentHeight;
         bool layouting;
+        /// <summary>上次排版的可用宽度（宽度变化必须完整重建）</summary>
+        int lastWidth;
 
         readonly Dictionary<Font, int> fontKeys = new Dictionary<Font, int>();
         readonly Dictionary<string, int> widthCache = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -46,23 +46,6 @@ namespace AntdUI
         internal List<MDVisualLine> TestLines => lines;
 
         /// <summary>
-        /// 重新解析并布局
-        /// </summary>
-        void LoadLayout(bool full = false)
-        {
-            if (layouting) return;
-            var rect = ClientRectangle;
-            if (rect.Width == 0 || rect.Height == 0) return;
-            if (!IsHandleCreated) return;
-            layouting = true;
-            try
-            {
-                this.GDI(g => LayoutCore(g, rect, full ? 0 : FirstChangedBlock()));
-            }
-            finally { layouting = false; }
-        }
-
-        /// <summary>
         /// 计算首个发生变化块（用于流式增量布局）
         /// </summary>
         int FirstChangedBlock()
@@ -77,35 +60,6 @@ namespace AntdUI
             }
             // 仅尾部新增
             return count > 0 ? count - 1 : 0;
-        }
-
-        void LayoutCore(Canvas g, Rectangle rect, int fromBlock)
-        {
-            var document = doc;
-            if (document == null) return;
-            EnsureFont();
-            rect = rect.PaddingRect(Padding);
-            int reserve = ScrollBar.ShowY ? ScrollBar.SIZE : 0;
-            for (int pass = 0; pass < 2; pass++)
-            {
-                int w = rect.Width - reserve;
-                if (w <= 0) return;
-                LayoutBlocks(g, document, w, pass == 0 ? fromBlock : 0);
-                ScrollBar.SetVrSize(contentHeight, rect);
-                int now = ScrollBar.ShowY ? ScrollBar.SIZE : 0;
-                if (now == reserve) break;
-                reserve = now;
-            }
-            docOld = document;
-            // 延迟锚点定位：文档刚切换 / 句柄刚创建时布局在这一步才就绪
-            if (pendingAnchor != null)
-            {
-                string key = pendingAnchor;
-                pendingAnchor = null;
-                int y = FindAnchorY(key);
-                if (y >= 0) ApplyAnchor(y);
-            }
-            Invalidate();
         }
 
         void LayoutBlocks(Canvas g, MDDocument document, int width, int fromBlock)

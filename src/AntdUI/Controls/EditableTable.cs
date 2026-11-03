@@ -15,29 +15,6 @@ using System.Windows.Forms;
 namespace AntdUI
 {
     /// <summary>
-    /// 单元格编辑器类型
-    /// </summary>
-    public enum TEditorType
-    {
-        /// <summary>
-        /// 文本
-        /// </summary>
-        Text,
-        /// <summary>
-        /// 数字
-        /// </summary>
-        Number,
-        /// <summary>
-        /// 日期
-        /// </summary>
-        Date,
-        /// <summary>
-        /// 下拉选择
-        /// </summary>
-        Select
-    }
-
-    /// <summary>
     /// 可编辑表格 EditableTable
     /// </summary>
     /// <remarks>
@@ -671,6 +648,29 @@ namespace AntdUI
         public event EventHandler<RowEventArgs>? RowAdded;
 
         #endregion
+    }
+
+    /// <summary>
+    /// 单元格编辑器类型
+    /// </summary>
+    public enum TEditorType
+    {
+        /// <summary>
+        /// 文本
+        /// </summary>
+        Text,
+        /// <summary>
+        /// 数字
+        /// </summary>
+        Number,
+        /// <summary>
+        /// 日期
+        /// </summary>
+        Date,
+        /// <summary>
+        /// 下拉选择
+        /// </summary>
+        Select
     }
 
     #region 事件参数

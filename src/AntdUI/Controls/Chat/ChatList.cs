@@ -21,7 +21,7 @@ namespace AntdUI.Chat
     /// <remarks>气泡聊天列表。</remarks>
     [Description("ChatList 气泡聊天列表")]
     [ToolboxItem(true)]
-    public class ChatList : IControl
+    public partial class ChatList : IControl
     {
         #region 属性
 
@@ -318,6 +318,12 @@ namespace AntdUI.Chat
                         g.DrawText(tip.TextTmp, Font, brush, tip.rect_text);
                     }
                 }
+                else if (it is MdChatItem md)
+                {
+                    PaintMdItem(g, md, sy, radius, forebubble, bgbubble, bgActiveBubble, forebubbleme, bgbubbleme, bgActiveBubbleme, name);
+                    if (IconLess) return;
+                    if (md.Icon != null) g.Image(md.rect_icon, md.Icon, TFit.Cover, 0, true);
+                }
             }
         }
 
@@ -520,9 +526,24 @@ namespace AntdUI.Chat
                                 LoadLayout(true);
                             }
                         }
+                        else if (it is MdChatItem md)
+                        {
+                            if (md.ContainsReadIcon(e.X, e.Y, 0, scrolly)) mouseDT = 2;
+                            else if (md.SelectDown(e.X, e.Y, 0, scrolly))
+                            {
+                                mouseDownMove = false;
+                                mouseDT = 3;
+                                oldMouseDown = e.Location;
+                                Invalidate();
+                            }
+                        }
                         OnItemClick(it, e);
                     }
-                    else if (it is TextChatItem text) text.SelectionLength = 0;
+                    else
+                    {
+                        if (it is TextChatItem text) text.SelectionLength = 0;
+                        else if (it is MdChatItem md) md.ClearSelection();
+                    }
                 }
             }
         }
@@ -548,6 +569,19 @@ namespace AntdUI.Chat
                     }
                     else return;
                 }
+                SetCursor(CursorType.IBeam);
+            }
+            else if (mouseDT == 3 && mouseDown is MdChatItem mdChatItem)
+            {
+                FocusedChatItem = mdChatItem;
+                if (ShowTimeFocused) Invalidate(mdChatItem.rect);
+                int cx = e.X - oldMouseDown.X, cy = e.Y - oldMouseDown.Y;
+                if (!mouseDownMove && e.Button == MouseButtons.Left)
+                {
+                    int threshold = (int)(Config.TouchThreshold * Dpi);
+                    if (Math.Abs(cx) > threshold || Math.Abs(cy) > threshold) mouseDownMove = true;
+                }
+                if (mouseDownMove) mdChatItem.SelectMove(e.X, e.Y, 0, scrolly);
                 SetCursor(CursorType.IBeam);
             }
             else if (ScrollBar.MouseMove(e.X, e.Y))
@@ -586,6 +620,13 @@ namespace AntdUI.Chat
                                 if (tip.SetHover(false)) count++;
                             }
                         }
+                        else if (it is MdChatItem md)
+                        {
+                            FocusedChatItem = md;
+                            bool link = md.UpdateHover(e.X, e.Y, 0, scrolly);
+                            if (link) hand++;
+                            else if (md.ContainsRead(e.X, e.Y, 0, scrolly)) ibeam++;
+                        }
                     }
                 }
                 if (hand > 0) SetCursor(true);
@@ -605,6 +646,18 @@ namespace AntdUI.Chat
                 return;
             }
             if (mouseDown is TextChatItem text) OnTextChatItemClick(e, text, e.X, e.Y);
+            else if (mouseDown is MdChatItem md)
+            {
+                if (mouseDT == 3)
+                {
+                    int scrolly = ScrollBar.Value;
+                    if (mouseDownMove) md.SelectMove(e.X, e.Y, 0, scrolly);
+                    md.SelectUp();
+                    if (!mouseDownMove) md.Click(e.X, e.Y, 0, scrolly);
+                }
+                else if (mouseDT == 2 && md.ContainsReadIcon(e.X, e.Y, 0, ScrollBar.Value)) OnItemIconClick(md, e);
+                Invalidate();
+            }
             mouseDown = null;
             mouseDownMove = false;
             mouseDT = 0;
@@ -670,6 +723,23 @@ namespace AntdUI.Chat
             ScrollBar.Leave();
             SetCursor(false);
             base.OnMouseLeave(e);
+        }
+
+        protected override void OnDoubleClick(EventArgs e)
+        {
+            base.OnDoubleClick(e);
+            if (items == null || items.Count == 0) return;
+            var pos = PointToClient(MousePosition);
+            int scrolly = ScrollBar.Value;
+            foreach (IChatItem it in Items)
+            {
+                if (!it.show) continue;
+                if (it is MdChatItem md && md.SelectWord(pos.X, pos.Y, 0, scrolly))
+                {
+                    Invalidate();
+                    return;
+                }
+            }
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -764,6 +834,13 @@ namespace AntdUI.Chat
                     if (set_s || set_e) Invalidate();
                     return;
                 }
+                if (it is MdChatItem md && md.HasSelection)
+                {
+                    mouseDownMove = false;
+                    md.SelectAll();
+                    Invalidate();
+                    return;
+                }
             }
         }
 
@@ -776,6 +853,13 @@ namespace AntdUI.Chat
                     var _text = GetSelectionText(text);
                     if (_text == null) return;
                     this.ClipboardSetText(_text);
+                    return;
+                }
+                if (it is MdChatItem md && md.HasSelection)
+                {
+                    string value = md.GetSelectedText(true);
+                    if (value.Length == 0) return;
+                    this.ClipboardSetText(value);
                     return;
                 }
             }
@@ -917,24 +1001,7 @@ namespace AntdUI.Chat
                     foreach (var it in items!)
                     {
                         it.PARENT = this;
-                        if (it is TextChatItem text)
-                        {
-                            y += text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess) + gapYH;
-                            text.InitLoading();
-                        }
-                        else if (it is ImageChatItem image)
-                        {
-                            int imgWidth = image.Width, imgHeight = image.Height;
-                            if (imgWidth > max_width)
-                            {
-                                float scaleRatio = (float)max_width / imgWidth;
-                                imgWidth = max_width;
-                                imgHeight = (int)(imgHeight * scaleRatio);
-                            }
-                            y += image.SetRect(rect, y, g, Font, new Size(imgWidth + spilt, imgHeight + spilt), size, spilt, spilt2, item_height, IconLess) + gapYH;
-                            image.InitLoading();
-                        }
-                        else if (it is TipChatItem tip) y += tip.SetRect(rect, y, g, Font, item_height, spilt, tipShowFull) + gapYH;
+                        y += SetItemRect(g, it, rect, y, size, item_height, spilt, spilt2, max_width) + gapYH;
                     }
                     return y;
                 });
@@ -943,7 +1010,41 @@ namespace AntdUI.Chat
             }
             if (print && canPrint) Invalidate();
         }
-        internal void LoadLayout(TextChatItem chatItem, bool print = false)
+        /// <summary>
+        /// 计算单项的位置与高度（按类型分派）
+        /// </summary>
+        int SetItemRect(Canvas g, IChatItem it, Rectangle rect, int y, int size, int item_height, int spilt, int spilt2, int max_width)
+        {
+            if (it is TextChatItem text)
+            {
+                int h = text.SetRect(rect, y, g, Font, FixFontWidth(g, Font, text, max_width, spilt2), size, spilt, spilt2, item_height, IconLess);
+                text.InitLoading();
+                return h;
+            }
+            if (it is ImageChatItem image)
+            {
+                int imgWidth = image.Width, imgHeight = image.Height;
+                if (imgWidth > max_width)
+                {
+                    float scaleRatio = (float)max_width / imgWidth;
+                    imgWidth = max_width;
+                    imgHeight = (int)(imgHeight * scaleRatio);
+                }
+                int h = image.SetRect(rect, y, g, Font, new Size(imgWidth + spilt, imgHeight + spilt), size, spilt, spilt2, item_height, IconLess);
+                image.InitLoading();
+                return h;
+            }
+            if (it is TipChatItem tip) return tip.SetRect(rect, y, g, Font, item_height, spilt, tipShowFull);
+            if (it is MdChatItem md)
+            {
+                int h = md.SetRect(rect, y, g, Font, max_width, size, spilt, spilt2, item_height, IconLess, Dpi, ColorScheme, nameof(ChatList));
+                md.InitLoading();
+                return h;
+            }
+            return 0;
+        }
+
+        internal void LoadLayout(IChatItem chatItem, bool print = false)
         {
             if (CanLayout(out var canPrint))
             {
@@ -960,7 +1061,7 @@ namespace AntdUI.Chat
                             itemGap = (int)(ItemGap * Dpi),
                             spilt = item_height - gap, spilt2 = spilt * 2, max_width = (int)(rect.Width * .8F) - item_height;
 
-                        int newh = chatItem.SetRect(rect, chatItem.rect.Y, g, Font, FixFontWidth(g, Font, chatItem, max_width, spilt2), size, spilt, spilt2, item_height, IconLess);
+                        int newh = SetItemRect(g, chatItem, rect, chatItem.rect.Y, size, item_height, spilt, spilt2, max_width);
                         if (old == newh) return;
                         else
                         {

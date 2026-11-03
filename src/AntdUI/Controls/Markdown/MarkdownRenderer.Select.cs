@@ -12,7 +12,7 @@ using System.Text;
 
 namespace AntdUI
 {
-    partial class Markdown
+    partial class MarkdownRenderer
     {
         #region 选择属性
 
@@ -97,10 +97,10 @@ namespace AntdUI
         }
 
         /// <summary>
-        /// 复制选中内容到剪贴板
+        /// 复制选中内容到剪贴板（由宿主执行，引擎只负责产出文本）
         /// </summary>
         /// <param name="keepFormat">是否保留 Markdown 格式</param>
-        public bool Copy(bool keepFormat = true) => this.ClipboardSetText(GetSelectedText(keepFormat));
+        public string CopyText(bool keepFormat = true) => GetSelectedText(keepFormat);
 
         /// <summary>
         /// 获取选中文本
@@ -110,7 +110,7 @@ namespace AntdUI
         {
             if (!HasSelection) return "";
             string result = "";
-            this.GDI(g => result = BuildSelectedText(g, keepFormat));
+            Helper.GDI(g => result = BuildSelectedText(g, keepFormat));
             return result;
         }
 
@@ -121,13 +121,15 @@ namespace AntdUI
         /// <summary>
         /// 将点击坐标转换为（行索引，行内 X）
         /// </summary>
+        /// <remarks>坐标均为内容坐标（y 已包含滚动偏移）</remarks>
         bool HitPoint(int mx, int my, out int lineIndex, out int x)
         {
             lineIndex = -1;
             x = 0;
             if (lines.Count == 0) return false;
-            int cy = my + ScrollBar.Value;
-            int index = FirstVisibleLine(ScrollBar.Value);
+            var tmp = lines.ToArray();
+            int cy = my;
+            int index = FirstVisibleLine(my, tmp);
             if (index >= lines.Count) index = lines.Count - 1;
             int i = index;
             while (i > 0 && lines[i].Y > cy) i--;
@@ -246,7 +248,7 @@ namespace AntdUI
             if (count >= frag.Text.Length) return frag.Width;
             string value = frag.Text.Substring(0, count);
             int w = 0;
-            this.GDI(g => w = Measure(g, value, frag.Font));
+            Helper.GDI(g => w = Measure(g, value, frag.Font));
             return w;
         }
 

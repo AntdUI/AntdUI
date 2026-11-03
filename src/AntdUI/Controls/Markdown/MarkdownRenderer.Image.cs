@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace AntdUI
 {
-    partial class Markdown
+    partial class MarkdownRenderer
     {
         readonly Dictionary<string, MDImageEntry> imageCache = new Dictionary<string, MDImageEntry>(StringComparer.Ordinal);
 
@@ -68,7 +68,7 @@ namespace AntdUI
         /// <summary>
         /// 释放缓存中由控件解码创建的图片（外部传入的不释放）
         /// </summary>
-        void DisposeImages()
+        internal void DisposeImages()
         {
             foreach (var entry in imageCache.Values) DisposeImage(entry.Image);
             imageCache.Clear();
@@ -118,7 +118,7 @@ namespace AntdUI
         /// 排版结果是布局的中间产物，会被重新布局清空重建，且未加载的图片在排版中尺寸为占位值，
         /// 一旦以排版结果为准就会漏请求（历史上只请求到第一张图片）。
         /// </remarks>
-        void RequestImages()
+        internal void RequestImages()
         {
             var document = doc;
             if (document == null) return;
@@ -205,7 +205,7 @@ namespace AntdUI
                 {
                     var entry = new MDImageEntry();
                     imageCache[url] = entry;
-                    OnImageRequest(url, alt);
+                    ImageRequest?.Invoke(url, alt);
                     return;
                 }
                 var local = LoadLocalImage(ResolveUrl(url));
@@ -386,7 +386,7 @@ namespace AntdUI
             catch { return value; }
         }
 
-        static bool StartsWithProtocol(string value)
+        internal static bool StartsWithProtocol(string value)
         {
             int p = value.IndexOf(':');
             if (p <= 0) return false;

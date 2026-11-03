@@ -10,43 +10,19 @@ using System.Drawing;
 
 namespace AntdUI
 {
-    partial class Markdown
+    partial class MarkdownRenderer
     {
         /// <summary>
         /// 当前悬停的链接
         /// </summary>
         string? hoverUrl;
 
-        protected override void OnDraw(DrawEventArgs e)
-        {
-            var rect = e.Rect.PaddingRect(Padding);
-            var g = e.Canvas;
-            int sy = ScrollBar.Value;
-            var brushes = new Dictionary<Color, SolidBrush>(8);
-            try
-            {
-                var state = g.Save();
-                g.TranslateTransform(rect.X, rect.Y - sy);
-                DrawPaints(g, brushes, sy, rect.Height);
-                DrawSelection(g, sy, rect.Height);
-                DrawLines(g, brushes, sy, rect.Height);
-                g.Restore(state);
-            }
-            finally
-            {
-                foreach (var brush in brushes.Values) brush.Dispose();
-            }
-            ScrollBar.Paint(g, ColorScheme);
-            base.OnDraw(e);
-        }
-
-        void DrawPaints(Canvas g, Dictionary<Color, SolidBrush> brushes, int sy, int viewH)
+        void DrawPaints(Canvas g, Dictionary<Color, SolidBrush> brushes, int sy, int viewH, MDPaint[] paints)
         {
             int bottom = sy + viewH;
-            int index = FirstVisiblePaint(sy);
-            for (int i = index; i < paints.Count; i++)
+            int index = FirstVisiblePaint(sy, paints);
+            foreach (var paint in paints)
             {
-                var paint = paints[i];
                 if (paint.Rect.Y > bottom) break;
                 if (paint.Rect.Bottom < sy) continue;
                 if (paint.Svg != null)
@@ -74,9 +50,9 @@ namespace AntdUI
         /// <summary>
         /// 二分查找首个可见装饰（paints 按 Y 单调不减添加）
         /// </summary>
-        int FirstVisiblePaint(int sy)
+        int FirstVisiblePaint(int sy, MDPaint[] paints)
         {
-            int lo = 0, hi = paints.Count - 1, result = paints.Count;
+            int lo = 0, hi = paints.Length - 1, result = paints.Length;
             while (lo <= hi)
             {
                 int mid = (lo + hi) / 2;
@@ -94,20 +70,20 @@ namespace AntdUI
         {
             int count = lines.Count;
             if (count == 0) return;
+            var tmp = lines.ToArray();
             int bottom = sy + viewH;
-            int index = FirstVisibleLine(sy);
-            for (int i = index; i < count; i++)
+            int index = FirstVisibleLine(sy, tmp);
+            foreach (var line in tmp)
             {
-                var line = lines[i];
                 if (line.Y > bottom) break;
                 if (line.Bottom < sy) continue;
                 foreach (var frag in line.Fragments) DrawFragment(g, brushes, frag, line);
             }
         }
 
-        int FirstVisibleLine(int sy)
+        int FirstVisibleLine(int sy, MDVisualLine[] lines)
         {
-            int lo = 0, hi = lines.Count - 1, result = lines.Count;
+            int lo = 0, hi = lines.Length - 1, result = lines.Length;
             while (lo <= hi)
             {
                 int mid = (lo + hi) / 2;
@@ -154,7 +130,7 @@ namespace AntdUI
             if (frag.Url != null && frag.Url.Length > 0)
             {
                 bool hover = frag.Url == hoverUrl;
-                if (hover || linkUnderline)
+                if (hover || LinkUnderline)
                 {
                     int y = frag.Y + frag.Height - (int)Math.Round(2 * Dpi);
                     g.DrawLine(frag.Fore, Math.Max(1, Dpi), frag.X, y, frag.X + frag.Width, y);
@@ -173,9 +149,9 @@ namespace AntdUI
                 return;
             }
             // 占位
-            var back = Colour.FillQuaternary.Get(ColorScheme, nameof(Markdown), Name);
-            var border = Colour.BorderSecondary.Get(ColorScheme, nameof(Markdown), Name);
-            var fore = Colour.TextTertiary.Get(ColorScheme, nameof(Markdown), Name);
+            var back = Colour.FillQuaternary.Get(ColorScheme, ColorKey, Name);
+            var border = Colour.BorderSecondary.Get(ColorScheme, ColorKey, Name);
+            var fore = Colour.TextTertiary.Get(ColorScheme, ColorKey, Name);
             using (var brush = new SolidBrush(back))
             {
                 using (var path = rect.RoundPath(radius * Dpi)) g.Fill(brush, path);
@@ -200,13 +176,16 @@ namespace AntdUI
 
         #region 命中测试
 
+        /// <summary>
+        /// 命中的片段（内容坐标：y 已包含滚动偏移）
+        /// </summary>
         MDFragment? HitTestFragment(int mx, int my)
         {
-            int sy = ScrollBar.Value;
-            int cy = my + sy;
+            int cy = my;
             int count = lines.Count;
             if (count == 0) return null;
-            int index = FirstVisibleLine(sy);
+            var tmp = lines.ToArray();
+            int index = FirstVisibleLine(my, tmp);
             for (int i = index; i < count; i++)
             {
                 var line = lines[i];
