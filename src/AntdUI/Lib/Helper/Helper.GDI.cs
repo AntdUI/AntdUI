@@ -334,6 +334,21 @@ namespace AntdUI
         /// <summary>
         /// 画刷（渐变色）
         /// </summary>
+        /// <param name="code">渐变代码H5</param>
+        /// <param name="rect">区域</param>
+        public static Brush? BrushEx(this string? code, Rectangle rect)
+        {
+            if (code != null)
+            {
+                var arr = BrushEx(code);
+                if (arr.Length > 1) return BrushEx(code, arr, rect);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 画刷（渐变色）
+        /// </summary>
         public static bool BrushEx(this string? code, Rectangle rect, Canvas g)
         {
             if (code != null)
@@ -392,9 +407,63 @@ namespace AntdUI
         /// <returns>线性渐变画刷</returns>
         static LinearGradientBrush BrushEx(string code, string[] cs, Rectangle rect, float defdeg = 0F)
         {
-            if (cs.Length > 2 && float.TryParse(cs[0], out float deg)) return BrushEx(rect, deg, cs, code.Contains("%"), 1);
-            else if (cs.Length > 2 && cs[0].EndsWith("deg") && float.TryParse(cs[0].Substring(0, cs[0].Length - 3), out float deg2)) return BrushEx(rect, deg2, cs, code.Contains("%"), 1);
+            if (cs.Length > 2 && BrushExAngle(cs[0], rect, out float deg)) return BrushEx(rect, deg, cs, code.Contains("%"), 1);
             else return BrushEx(rect, defdeg, cs, code.Contains("%"));
+        }
+
+        /// <summary>
+        /// 解析渐变方向，转换为 CSS 角度
+        /// 支持 to top / to right / to bottom / to left 及四角组合（如 to left top、to top right）
+        /// 支持 deg、grad、g、rad、turn 角度单位，以及纯数字（默认按 deg 处理）
+        /// </summary>
+        /// <param name="token">方向代码</param>
+        /// <param name="rect">绘制区域（四角方向按 CSS 规则结合实际宽高计算角度）</param>
+        /// <param name="deg">返回的 CSS 角度</param>
+        static bool BrushExAngle(string token, Rectangle rect, out float deg)
+        {
+            deg = 0F;
+            string val = token.Trim();
+            if (val.Length == 0) return false;
+            if (val.StartsWith("to"))
+            {
+                string? h = null, v = null;
+                foreach (var part in val.Substring(2).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string p = part.ToLowerInvariant();
+                    if (p == "left" || p == "right") h = p;
+                    else if (p == "top" || p == "bottom") v = p;
+                    else return false;
+                }
+                if (h == null)
+                {
+                    if (v == "top") { deg = 0F; return true; }
+                    else if (v == "bottom") { deg = 180F; return true; }
+                    return false;
+                }
+                else if (v == null)
+                {
+                    deg = h == "right" ? 90F : 270F;
+                    return true;
+                }
+                // 四角方向：按 CSS 规则，渐变线沿对角线，角度由区域宽高决定
+                float corner = (rect.Width > 0 && rect.Height > 0) ? (float)(Math.Atan((double)rect.Width / rect.Height) * 180D / Math.PI) : 45F;
+                if (h == "right") deg = v == "top" ? corner : 180F - corner;
+                else deg = v == "bottom" ? 180F + corner : 360F - corner;
+                return true;
+            }
+            float mul;
+            if (val.EndsWith("deg")) { val = val.Substring(0, val.Length - 3); mul = 1F; }
+            else if (val.EndsWith("grad")) { val = val.Substring(0, val.Length - 4); mul = 0.9F; }
+            else if (val.EndsWith("g")) { val = val.Substring(0, val.Length - 1); mul = 0.9F; }
+            else if (val.EndsWith("rad")) { val = val.Substring(0, val.Length - 3); mul = (float)(180D / Math.PI); }
+            else if (val.EndsWith("turn")) { val = val.Substring(0, val.Length - 4); mul = 360F; }
+            else mul = 1F;
+            if (float.TryParse(val, out float num))
+            {
+                deg = num * mul;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -1054,43 +1123,6 @@ namespace AntdUI
         #endregion
 
         #region 图标渲染
-
-        /// <summary>
-        /// 在基准区域内，根据图标原始宽高比和缩放系数，计算实际绘制区域
-        /// </summary>
-        /// <param name="baseRect">基准矩形（可用绘制区域）</param>
-        /// <param name="iconRatio">图标相对基准高度的缩放系数（null或≤0按1处理）</param>
-        /// <param name="originalWidth">图标原始宽度</param>
-        /// <param name="originalHeight">图标原始高度</param>
-        /// <returns>保持原始宽高比、居中并按比例缩放后的矩形</returns>
-        public static Rectangle GetScaledRect(Rectangle baseRect, int originalWidth, int originalHeight, float? iconRatio)
-        {
-            if (originalWidth <= 0 || originalHeight <= 0) return baseRect;
-
-            // 1. 根据 iconRatio 计算目标高度
-            float ratio = iconRatio ?? 1F;
-            if (ratio <= 0) ratio = 1F;
-            int targetHeight = (int)Math.Round(baseRect.Height * ratio);
-
-            // 2. 按图标原始宽高比推导目标宽度（容器自适应，不再强制正方形）
-            float aspectRatio = (float)originalWidth / originalHeight;
-            int targetWidth = (int)Math.Round(targetHeight * aspectRatio);
-
-            // 3. Fit：缩放不超出基准区域
-            float scaleToFit = Math.Min((float)baseRect.Width / targetWidth, (float)baseRect.Height / targetHeight);
-            if (scaleToFit > 1F) scaleToFit = 1F;
-
-            int finalW = (int)Math.Round(targetWidth * scaleToFit);
-            int finalH = (int)Math.Round(targetHeight * scaleToFit);
-
-            // 4. 居中返回
-            return new Rectangle(
-                baseRect.X + (baseRect.Width - finalW) / 2,
-                baseRect.Y + (baseRect.Height - finalH) / 2,
-                finalW,
-                finalH
-            );
-        }
 
         internal static void PaintIcons(this Canvas g, IconInfo icon, Rectangle rect)
         {

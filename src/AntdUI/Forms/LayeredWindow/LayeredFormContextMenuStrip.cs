@@ -441,13 +441,7 @@ namespace AntdUI
                 {
                     if (it.Tag is ContextMenuStripItem item)
                     {
-                        if (it.Hover)
-                        {
-                            using (var path = Helper.RoundPath(it.Rect, Radius))
-                            {
-                                g.Fill(Colour.PrimaryBg.Get(config.ColorScheme, name), path);
-                            }
-                        }
+                        PrintBg(g, it, item);
                         if (item.Enabled)
                         {
                             if (FontSub != null) g.DrawText(item.SubText, FontSub, brushSecondary, it.RectText, sfr);
@@ -502,18 +496,12 @@ namespace AntdUI
                             foreach (var btn in it.RectBtns!)
                             {
                                 var btn_info = (ContextMenuStripItemButton)btn.Tag;
-                                if (btn.Hover)
-                                {
-                                    using (var path = Helper.RoundPath(btn.Rect, Radius))
-                                    {
-                                        g.Fill(Colour.PrimaryBg.Get(config.ColorScheme, name), path);
-                                    }
-                                }
+                                PrintBg(g, btn, btn_info);
                                 if (btn_info.Enabled)
                                 {
                                     if (btn_info.IconSvg != null) g.Svg(btn_info.IconSvg, btn.RectIcon, btn_info.Fore ?? brush.Color);
                                     else if (btn_info.Icon != null) g.Image(btn_info.Icon, btn.RectIcon);
-                                    g.DrawText(btn_info.Text, font_mini, brush, btn.RectText);
+                                    g.DrawText(btn_info.Text, font_mini, btn_info.Fore, brush, btn.RectText);
                                 }
                                 else
                                 {
@@ -529,6 +517,58 @@ namespace AntdUI
                 g.Restore(state);
                 ScrollBar.Paint(g);
             }
+        }
+        void PrintBg(Canvas g, InRect it, ContextMenuStripItem item)
+        {
+            GraphicsPath? path = null;
+            using (var brush_bg = item.BackExtend.BrushEx(it.Rect))
+            {
+                if (brush_bg == null)
+                {
+                    if (item.Back.HasValue)
+                    {
+                        path = Helper.RoundPath(it.Rect, Radius);
+                        g.Fill(item.Back.Value, path);
+                    }
+                }
+                else
+                {
+                    path = Helper.RoundPath(it.Rect, Radius);
+                    g.Fill(brush_bg, path);
+                }
+            }
+            if (it.Hover)
+            {
+                path ??= Helper.RoundPath(it.Rect, Radius);
+                g.Fill(item.BackHover ?? Colour.PrimaryBg.Get(config.ColorScheme, name), path);
+            }
+            path?.Dispose();
+        }
+        void PrintBg(Canvas g, InRect it, ContextMenuStripItemButton item)
+        {
+            GraphicsPath? path = null;
+            using (var brush_bg = item.BackExtend.BrushEx(it.Rect))
+            {
+                if (brush_bg == null)
+                {
+                    if (item.Back.HasValue)
+                    {
+                        path = Helper.RoundPath(it.Rect, Radius);
+                        g.Fill(item.Back.Value, path);
+                    }
+                }
+                else
+                {
+                    path = Helper.RoundPath(it.Rect, Radius);
+                    g.Fill(brush_bg, path);
+                }
+            }
+            if (it.Hover)
+            {
+                path ??= Helper.RoundPath(it.Rect, Radius);
+                g.Fill(item.BackHover ?? Colour.PrimaryBg.Get(config.ColorScheme, name), path);
+            }
+            path?.Dispose();
         }
 
         PointF[] PaintArrow(Rectangle rect)

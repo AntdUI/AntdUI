@@ -341,6 +341,21 @@ namespace AntdUI
         public Color? Fore { get; set; }
 
         /// <summary>
+        /// 背景颜色
+        /// </summary>
+        public Color? Back { get; set; }
+
+        /// <summary>
+        /// 悬停背景颜色
+        /// </summary>
+        public Color? BackHover { get; set; }
+
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        public string? BackExtend { get; set; }
+
+        /// <summary>
         /// 图标
         /// </summary>
         public Image? Icon { get; set; }
@@ -377,6 +392,21 @@ namespace AntdUI
         public ContextMenuStripItem SetFore(Color? value)
         {
             Fore = value;
+            return this;
+        }
+        public ContextMenuStripItem SetBack(Color? value)
+        {
+            Back = value;
+            return this;
+        }
+        public ContextMenuStripItem SetBack(string? value)
+        {
+            BackExtend = value;
+            return this;
+        }
+        public ContextMenuStripItem SetBackHover(Color? value)
+        {
+            BackHover = value;
             return this;
         }
         public ContextMenuStripItem SetID(string? value)
@@ -531,6 +561,21 @@ namespace AntdUI
         public Color? Fore { get; set; }
 
         /// <summary>
+        /// 背景颜色
+        /// </summary>
+        public Color? Back { get; set; }
+
+        /// <summary>
+        /// 悬停背景颜色
+        /// </summary>
+        public Color? BackHover { get; set; }
+
+        /// <summary>
+        /// 背景渐变色
+        /// </summary>
+        public string? BackExtend { get; set; }
+
+        /// <summary>
         /// 图标
         /// </summary>
         public Image? Icon { get; set; }
@@ -562,6 +607,21 @@ namespace AntdUI
         public ContextMenuStripItemButton SetFore(Color? value)
         {
             Fore = value;
+            return this;
+        }
+        public ContextMenuStripItemButton SetBack(Color? value)
+        {
+            Back = value;
+            return this;
+        }
+        public ContextMenuStripItemButton SetBack(string? value)
+        {
+            BackExtend = value;
+            return this;
+        }
+        public ContextMenuStripItemButton SetBackHover(Color? value)
+        {
+            BackHover = value;
             return this;
         }
         public ContextMenuStripItemButton SetID(string? value)

@@ -39,15 +39,43 @@ namespace AntdUI
     }
 
     public delegate void MenuCustomButtonEventHandler(object sender, MenuCustomButtonEventArgs e);
+
     #region 绘制
+
+    public delegate void MenuItemPaintBeginEventHandler(object sender, MenuItemPaintBeginEventArgs e);
+
+    public class MenuItemPaintBeginEventArgs : MenuItemPaintEventArgs
+    {
+        public MenuItemPaintBeginEventArgs(Canvas canvas, MenuItem it, Rectangle rect, float radius, Color fore, Color fore_active, Color back_hover, Color back_active) : base(canvas, it, rect, radius, fore, fore_active, back_hover, back_active)
+        {
+        }
+
+        /// <summary>
+        /// 是否处理
+        /// </summary>
+        public bool Handled { get; set; }
+
+        #region 设置
+
+        public MenuItemPaintEventArgs SetHandled(bool value = true)
+        {
+            Handled = value;
+            return this;
+        }
+
+        #endregion
+    }
+
     public delegate void MenuItemPaintEventHandler(object sender, MenuItemPaintEventArgs e);
+
     public class MenuItemPaintEventArgs : EventArgs
     {
-        public MenuItemPaintEventArgs(Canvas canvas, MenuItem it, Rectangle rect, Color fore, Color fore_active,Color back_hover, Color back_active)
+        public MenuItemPaintEventArgs(Canvas canvas, MenuItem it, Rectangle rect, float radius, Color fore, Color fore_active, Color back_hover, Color back_active)
         {
             g = canvas;
             Item = it;
             Rect = rect;
+            Radius = radius;
             Fore = fore;
             ForeActive = fore_active;
             BackHover = back_hover;
@@ -68,23 +96,32 @@ namespace AntdUI
         /// 区域
         /// </summary>
         public Rectangle Rect { get; private set; }
+
+        /// <summary>
+        /// 圆角值
+        /// </summary>
+        public float Radius { get; private set; }
+
         /// <summary>
         /// 文本色
         /// </summary>
         public Color Fore { get; private set; }
+
         /// <summary>
         /// 焦点文本色
         /// </summary>
         public Color ForeActive { get; private set; }
+
         /// <summary>
         /// 悬停背景色
         /// </summary>
         public Color BackHover { get; private set; }
+
         /// <summary>
         /// 焦点背景色
         /// </summary>
         public Color BackActive { get; private set; }
-
     }
+
     #endregion
 }
