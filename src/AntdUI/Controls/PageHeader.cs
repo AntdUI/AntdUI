@@ -874,7 +874,7 @@ namespace AntdUI
                 {
                     if (icon != null)
                     {
-                        g.Image(icon, rect_icon);
+                        g.Image(icon, Helper.GetScaledRect(rect_icon, icon.Width, icon.Height, icon_ratio));
                         showLeft = true;
                     }
                     else
@@ -882,7 +882,8 @@ namespace AntdUI
                         var form = Parent.FindPARENT(MDI);
                         if (form != null && form.Icon != null)
                         {
-                            g.Icon(form.Icon, rect_icon);
+                            var formIcon = form.Icon;
+                            g.Icon(formIcon, Helper.GetScaledRect(rect_icon, formIcon.Width, formIcon.Height, icon_ratio));
                             showLeft = true;
                         }
                     }

@@ -1065,6 +1065,7 @@ namespace AntdUI
             if (collapsed) PaintItemMini(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius, enable);
             else PaintItem(g, it, fore, fore_active, fore_enabled, back_hover, back_active, radius, enable);
             it.PaintBadge(Font, it.rect, g, ColorScheme, Name);
+            ItemPaint?.Invoke(this, new MenuItemPaintEventArgs(g, it, it.rect, fore, fore_active, back_hover, back_active));
         }
 
         void PaintItemMini(Canvas g, MenuItem it, Color fore, Color fore_active, Color fore_enabled, Color back_hover, Color back_active, float radius, bool enable)
@@ -2173,6 +2174,11 @@ namespace AntdUI
 
         protected virtual void OnCustomButtonClick(MenuButton btn, MenuItem item) => CustomButtonClick?.Invoke(this, new MenuCustomButtonEventArgs(btn, item));
 
+        /// <summary>
+        /// 自定义按钮点击时发生
+        /// </summary>
+        [Description("自定义按钮点击时发生"), Category(nameof(CategoryAttribute.Behavior))]
+        public event MenuItemPaintEventHandler? ItemPaint;
         #endregion
 
         #region 子窗口

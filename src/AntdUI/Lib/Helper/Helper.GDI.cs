@@ -1055,6 +1055,43 @@ namespace AntdUI
 
         #region 图标渲染
 
+        /// <summary>
+        /// 在基准区域内，根据图标原始宽高比和缩放系数，计算实际绘制区域
+        /// </summary>
+        /// <param name="baseRect">基准矩形（可用绘制区域）</param>
+        /// <param name="iconRatio">图标相对基准高度的缩放系数（null或≤0按1处理）</param>
+        /// <param name="originalWidth">图标原始宽度</param>
+        /// <param name="originalHeight">图标原始高度</param>
+        /// <returns>保持原始宽高比、居中并按比例缩放后的矩形</returns>
+        public static Rectangle GetScaledRect(Rectangle baseRect, int originalWidth, int originalHeight, float? iconRatio)
+        {
+            if (originalWidth <= 0 || originalHeight <= 0) return baseRect;
+
+            // 1. 根据 iconRatio 计算目标高度
+            float ratio = iconRatio ?? 1F;
+            if (ratio <= 0) ratio = 1F;
+            int targetHeight = (int)Math.Round(baseRect.Height * ratio);
+
+            // 2. 按图标原始宽高比推导目标宽度（容器自适应，不再强制正方形）
+            float aspectRatio = (float)originalWidth / originalHeight;
+            int targetWidth = (int)Math.Round(targetHeight * aspectRatio);
+
+            // 3. Fit：缩放不超出基准区域
+            float scaleToFit = Math.Min((float)baseRect.Width / targetWidth, (float)baseRect.Height / targetHeight);
+            if (scaleToFit > 1F) scaleToFit = 1F;
+
+            int finalW = (int)Math.Round(targetWidth * scaleToFit);
+            int finalH = (int)Math.Round(targetHeight * scaleToFit);
+
+            // 4. 居中返回
+            return new Rectangle(
+                baseRect.X + (baseRect.Width - finalW) / 2,
+                baseRect.Y + (baseRect.Height - finalH) / 2,
+                finalW,
+                finalH
+            );
+        }
+
         internal static void PaintIcons(this Canvas g, IconInfo icon, Rectangle rect)
         {
             if (icon.Back.HasValue)

@@ -4,6 +4,8 @@
 // GitHub: https://github.com/AntdUI/AntdUI
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -37,4 +39,52 @@ namespace AntdUI
     }
 
     public delegate void MenuCustomButtonEventHandler(object sender, MenuCustomButtonEventArgs e);
+    #region 绘制
+    public delegate void MenuItemPaintEventHandler(object sender, MenuItemPaintEventArgs e);
+    public class MenuItemPaintEventArgs : EventArgs
+    {
+        public MenuItemPaintEventArgs(Canvas canvas, MenuItem it, Rectangle rect, Color fore, Color fore_active,Color back_hover, Color back_active)
+        {
+            g = canvas;
+            Item = it;
+            Rect = rect;
+            Fore = fore;
+            ForeActive = fore_active;
+            BackHover = back_hover;
+            BackActive = back_active;
+        }
+
+        /// <summary>
+        /// 画板
+        /// </summary>
+        public Canvas g { get; private set; }
+
+        /// <summary>
+        /// 菜单项
+        /// </summary>
+        public MenuItem Item { get; private set; }
+
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public Rectangle Rect { get; private set; }
+        /// <summary>
+        /// 文本色
+        /// </summary>
+        public Color Fore { get; private set; }
+        /// <summary>
+        /// 焦点文本色
+        /// </summary>
+        public Color ForeActive { get; private set; }
+        /// <summary>
+        /// 悬停背景色
+        /// </summary>
+        public Color BackHover { get; private set; }
+        /// <summary>
+        /// 焦点背景色
+        /// </summary>
+        public Color BackActive { get; private set; }
+
+    }
+    #endregion
 }
