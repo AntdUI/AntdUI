@@ -5,6 +5,7 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
+using System.Globalization;
 
 namespace AntdUI
 {
@@ -184,8 +185,8 @@ namespace AntdUI
                 Fri = Localization.Get("Fri", "Fri");
                 Sat = Localization.Get("Sat", "Sat");
                 Sun = Localization.Get("Sun", "Sun");
-                s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter;
-                s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter;
+                s_f_L = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
+                s_f_R = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
             }
             else
             {
@@ -198,9 +199,31 @@ namespace AntdUI
                 Fri = Localization.Get("Fri", "五");
                 Sat = Localization.Get("Sat", "六");
                 Sun = Localization.Get("Sun", "日");
-                s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter;
-                s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter;
+                s_f_L = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
+                s_f_R = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrap;
             }
+        }
+
+        /// <summary>
+        /// 判断日历标题是否需要“反向”（月在前，年在后，如 Nov 2026）
+        /// </summary>
+        /// <param name="cultureId">语言文化ID，如 "en-US", "zh-CN", "de-DE"</param>
+        /// <returns>true 需要反向（月在前面）；false 和中国一样（年在前面）</returns>
+        public static bool CalendarTitleReversed(this string cultureId)
+        {
+            var culture = cultureId.ToLowerInvariant();
+            // 采用“正向”（年-月-日，如 2026年10月）的语言白名单
+            // zh- 包含所有中文变体 (zh-CN, zh-TW, zh-HK, zh-SG...)
+            // ja- 包含所有日语变体 (ja-JP)
+            // ko- 包含所有韩语变体 (ko-KR)
+            if (culture.StartsWith("zh") //中文
+                || culture.StartsWith("ja") //日语
+                || culture.StartsWith("ko") //韩语
+                || culture.StartsWith("hu") //匈牙利语
+                || culture.StartsWith("lt") //立陶宛语
+                ) return false;
+            // 其他所有语言（en, de, fr, es, it, pt, ru, ar, tr...）一律需要反向
+            return true;
         }
 
         public static int IfDSType(DateTime date, DateTime? start, DateTime? end, string date_str, string f)
@@ -234,6 +257,20 @@ namespace AntdUI
                 else if ((end.HasValue && date_str == end.Value.ToString(f)) || (start.HasValue && date_str == start.Value.ToString(f))) return 1;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 返回指定文化下 1–12 月中名称最长的那个月（对应 ToString("MMMM")）
+        /// </summary>
+        public static string GetLongestDateName(this CultureInfo culture, string format)
+        {
+            string longest = string.Empty;
+            for (int m = 1; m <= 12; m++)
+            {
+                var name = new DateTime(2000, m, 1).ToString(format, culture);
+                if (name.Length > longest.Length) longest = name;
+            }
+            return longest;
         }
     }
 }

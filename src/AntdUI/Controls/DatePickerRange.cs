@@ -446,8 +446,8 @@ namespace AntdUI
         {
             get
             {
-                if (OS.Win7OrLower && (subForm?.Focused ?? false)) return true;
-                return false;
+                if (OS.Win7OrLower && (subForm?.Focused ?? false)) return false;
+                return true;
             }
         }
 

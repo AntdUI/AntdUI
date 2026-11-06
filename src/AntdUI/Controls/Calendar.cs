@@ -37,7 +37,7 @@ namespace AntdUI
             hover_button = new ITaskOpacity(key, this);
 
             Culture = new CultureInfo(CultureID);
-            YDR = CultureID.StartsWith("en");
+            YDR = CultureID.CalendarTitleReversed();
             Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
 
             Date = DateTime.Now;
@@ -1304,27 +1304,21 @@ namespace AntdUI
 
         void LoadLayout()
         {
-            float dpi = Dpi;
-
             var rect = ReadRectangle;
 
-            int t_top = 34, t_button = showButtonToDay ? 38 : 0;
-            int year_width = 60, year2_width = 88, month_width = 40;
+            int t_top = 34, t_button = 0;
+            int year_month_width = 60, year_full_width = 88, sp = 8;
             this.GDI(g =>
             {
-                var size = g.MeasureString(Config.NullText, Font);
+                var lname = Culture.GetLongestDateName(showType == 2 ? YearFormat : MonthFormat);
+                var size = g.MeasureString(lname, Font);
+                sp = (int)(size.Height * 0.2F);
                 t_top = (int)(size.Height * 1.76F);
-                year_width = (int)(size.Height * 3.12F);
-                year2_width = (int)(size.Height * 4.66F);
-                month_width = year_width;
+                t_button = showButtonToDay ? (int)(size.Height * 1.96F) : 0;
+                year_month_width = (int)(size.Width * 1.12F);
+                year_full_width = (int)(size.Height * 4.66F);
             });
-            if (dpi != 1F)
-            {
-                if (showButtonToDay) t_button = (int)(t_button * dpi);
-                year_width = (int)(year_width * dpi);
-                year2_width = (int)(year2_width * dpi);
-                month_width = (int)(month_width * dpi);
-            }
+            int sp2 = sp * 2;
 
             rect_lefts = new Rectangle(rect.X, rect.Y, t_top, t_top);
             rect_left = new Rectangle(rect.X + t_top, rect.Y, t_top, t_top);
@@ -1332,31 +1326,30 @@ namespace AntdUI
             rect_right = new Rectangle(rect.X + rect.Width - t_top * 2, rect.Y, t_top, t_top);
 
             int gap = (int)(4 * Dpi), xm = rect.Width / 2;
-            rect_year2 = new Rectangle(rect.X + (rect.Width - year2_width) / 2, rect.Y, year2_width, t_top);
+            rect_year2 = new Rectangle(rect.X + (rect.Width - year_full_width) / 2, rect.Y, year_full_width, t_top);
             rect_button = new Rectangle(rect.X, rect.Bottom - t_button, rect.Width, t_button);
             if (YDR)
             {
-                rect_month = new Rectangle(rect.X + xm - year_width - gap, rect.Y, year_width, t_top);
-                rect_year = new Rectangle(rect.X + xm + gap, rect.Y, month_width, t_top);
+                rect_month = new Rectangle(rect.X + xm - year_month_width - gap, rect.Y, year_month_width, t_top);
+                rect_year = new Rectangle(rect.X + xm + gap, rect.Y, year_month_width, t_top);
             }
             else
             {
-                rect_year = new Rectangle(rect.X + xm - year_width - gap, rect.Y, year_width, t_top);
-                rect_month = new Rectangle(rect.X + xm + gap, rect.Y, month_width, t_top);
+                rect_year = new Rectangle(rect.X + xm - year_month_width - gap, rect.Y, year_month_width, t_top);
+                rect_month = new Rectangle(rect.X + xm + gap, rect.Y, year_month_width, t_top);
             }
 
             #region 计算坐标
 
-            int gap_day = (int)(8 * dpi), gap_day2 = gap_day * 2;
             if (showType == 1)
             {
                 //月
                 rect_month_l = new Rectangle(rect.X, rect.Y, rect.Width, t_top);
                 int y = rect.Y + t_top;
-                int size_w = (rect.Width - gap_day2) / 3, size_h = (rect.Height - t_top - gap_day2) / 4;
+                int size_w = (rect.Width - sp2) / 3, size_h = (rect.Height - t_top - sp2) / 4;
                 if (calendar_month != null)
                 {
-                    foreach (var it in calendar_month) it.rect = new Rectangle(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
+                    foreach (var it in calendar_month) it.rect = new Rectangle(rect.X + sp + (size_w * it.x), y + sp + (size_h * it.y), size_w, size_h);
                 }
             }
             else if (showType == 2)
@@ -1364,37 +1357,37 @@ namespace AntdUI
                 //年
                 rect_year_l = new Rectangle(rect.X, rect.Y, rect.Width, t_top);
                 int y = rect.Y + t_top;
-                int size_w = (rect.Width - gap_day2) / 3, size_h = (rect.Height - t_top - gap_day2) / 4;
+                int size_w = (rect.Width - sp2) / 3, size_h = (rect.Height - t_top - sp2) / 4;
                 if (calendar_year != null)
                 {
-                    foreach (var it in calendar_year) it.rect = new Rectangle(rect.X + gap_day + (size_w * it.x), y + gap_day + (size_h * it.y), size_w, size_h);
+                    foreach (var it in calendar_year) it.rect = new Rectangle(rect.X + sp + (size_w * it.x), y + sp + (size_h * it.y), size_w, size_h);
                 }
             }
             else
             {
                 if (chinese)
                 {
-                    int y = rect.Y + t_top + 12;
-                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
+                    int y = rect.Y + t_top + sp2;
+                    int size_w = (rect.Width - sp2) / 7, size_h = (rect.Height - t_top - t_button - sp2) / 7;
 
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
-                        new Rectangle(rect.X + gap_day, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 2, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 3, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 4, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 5, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 6, y, size_w, size_h)
+                        new Rectangle(rect.X + sp, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 2, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 3, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 4, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 5, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 6, y, size_w, size_h)
                     };
                     y += size_h;
                     if (calendar_day != null)
                     {
                         foreach (var it in calendar_day)
                         {
-                            it.SetRectG(new Rectangle(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
+                            it.SetRectG(new Rectangle(rect.X + sp + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
                             it.rect_f = new Rectangle(it.rect_read.X, it.rect_read.Y, it.rect_read.Width, it.rect_read.Height - it.rect_read.Height / 4);
                             it.rect_l = new Rectangle(it.rect_read.X, it.rect_read.Y + it.rect_read.Height / 2, it.rect_read.Width, it.rect_read.Height / 2);
                         }
@@ -1402,55 +1395,55 @@ namespace AntdUI
                 }
                 else if (full)
                 {
-                    int y = rect.Y + t_top + 12;
-                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7;
+                    int y = rect.Y + t_top + sp2;
+                    int size_w = (rect.Width - sp2) / 7, size_h = (rect.Height - t_top - t_button - sp2) / 7;
 
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
-                        new Rectangle(rect.X + gap_day, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 2, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 3, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 4, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 5, y, size_w, size_h),
-                        new Rectangle(rect.X + gap_day + size_w * 6, y, size_w, size_h)
+                        new Rectangle(rect.X + sp, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 2, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 3, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 4, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 5, y, size_w, size_h),
+                        new Rectangle(rect.X + sp + size_w * 6, y, size_w, size_h)
                     };
                     y += size_h;
                     if (calendar_day != null)
                     {
-                        foreach (var it in calendar_day) it.SetRectG(new Rectangle(rect.X + gap_day + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
+                        foreach (var it in calendar_day) it.SetRectG(new Rectangle(rect.X + sp + (size_w * it.x), y + (size_h * it.y), size_w, size_h), .92F);
                     }
                 }
                 else
                 {
-                    int y = rect.Y + t_top + 12;
-                    int size_w = (rect.Width - gap_day2) / 7, size_h = (rect.Height - t_top - t_button - gap_day2) / 7, size = size_w;
+                    int y = rect.Y + t_top + sp2;
+                    int size_w = (rect.Width - sp2) / 7, size_h = (rect.Height - t_top - t_button - sp2) / 7, size = size_w;
                     if (size_w > size_h)
                     {
                         size = size_h;
-                        gap_day2 = rect.Width - size * 7;
-                        gap_day = gap_day2 / 2;
+                        sp2 = rect.Width - size * 7;
+                        sp = sp2 / 2;
                     }
 
                     rect_day_split1 = new RectangleF(rect.X, rect.Y + t_top, rect.Width, Dpi);
                     if (showButtonToDay) rect_day_split2 = new RectangleF(rect.X, rect_button.Y - .5F, rect.Width, Dpi);
 
                     rect_day_s = new Rectangle[]{
-                        new Rectangle(rect.X + gap_day, y, size, size),
-                        new Rectangle(rect.X + gap_day + size, y, size, size),
-                        new Rectangle(rect.X + gap_day + size * 2, y, size, size),
-                        new Rectangle(rect.X + gap_day + size * 3, y, size, size),
-                        new Rectangle(rect.X + gap_day + size * 4, y, size, size),
-                        new Rectangle(rect.X + gap_day + size * 5, y, size, size),
-                        new Rectangle(rect.X + gap_day + size * 6, y, size, size)
+                        new Rectangle(rect.X + sp, y, size, size),
+                        new Rectangle(rect.X + sp + size, y, size, size),
+                        new Rectangle(rect.X + sp + size * 2, y, size, size),
+                        new Rectangle(rect.X + sp + size * 3, y, size, size),
+                        new Rectangle(rect.X + sp + size * 4, y, size, size),
+                        new Rectangle(rect.X + sp + size * 5, y, size, size),
+                        new Rectangle(rect.X + sp + size * 6, y, size, size)
                     };
                     y += size;
                     if (calendar_day != null)
                     {
                         int size_one = (int)(size * .666F);
-                        foreach (var it in calendar_day) it.SetRect(new Rectangle(rect.X + gap_day + (size * it.x), y + (size * it.y), size, size), size_one);
+                        foreach (var it in calendar_day) it.SetRect(new Rectangle(rect.X + sp + (size * it.x), y + (size * it.y), size, size), size_one);
                     }
                 }
             }
@@ -1510,7 +1503,7 @@ namespace AntdUI
                     CultureID = Localization.CurrentLanguage;
                     Culture = new CultureInfo(CultureID);
                     button_text = Localization.Get("ToDay", "今天");
-                    YDR = CultureID.StartsWith("en");
+                    YDR = CultureID.CalendarTitleReversed();
                     Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
                     LoadLayout();
                     break;

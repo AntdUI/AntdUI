@@ -53,7 +53,7 @@ namespace AntdUI
             #region 国际化
 
             Culture = new CultureInfo(CultureID);
-            YDR = CultureID.StartsWith("en");
+            YDR = CultureID.CalendarTitleReversed();
             Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
 
             #endregion
@@ -777,11 +777,12 @@ namespace AntdUI
         void LoadLayout(Canvas g)
         {
             ClearShadow();
-            var size = g.MeasureString(Config.NullText, FontMe);
+            var lname = Culture.GetLongestDateName(showType == TDatePicker.Year ? YearFormat : MonthFormat);
+            var size = g.MeasureString(lname, FontMe);
             bor = (int)(size.Height * 0.1F);
             int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;
             int t_time_height = (int)(size.Height * 1.56F), t_time = (int)(size.Height * 2.9F), t_button = (int)(size.Height * 1.96F), t_top = (int)(size.Height * 1.76F);
-            int year_width = (int)(size.Height * 3.12F), yearR_width = (int)(size.Height * 4.66F);
+            int year_month_width = (int)(size.Width * 1.12F), year_full_width = (int)(size.Height * 4.66F);
             int t_width = t_time * 5 + sp2, t_x = 0;
 
             if (showType == PickerType && left_buttons != null) t_x = (int)(size.Height * 6.22F);
@@ -797,22 +798,22 @@ namespace AntdUI
                     rect_rights.SetRect(rw2 - t_top, 0, t_top, t_top).SetRectArrows(sp);
                     rect_right.SetRect(rw2 - t_top * 2, 0, t_top, t_top);
 
-                    rect_year2.SetRect(t_x + (t_width - yearR_width) / 2, 0, yearR_width, t_top);
+                    rect_year2.SetRect(t_x + (t_width - year_full_width) / 2, 0, year_full_width, t_top);
                     if (YDR)
                     {
-                        rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                     else
                     {
-                        rect_year.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                 }
                 else
@@ -821,22 +822,22 @@ namespace AntdUI
                     rect_rights.SetRect(rw2 - t_top, 0, t_top, t_top).SetRectArrows(sp);
                     rect_right.SetRect(rw2 - t_top * 2, 0, t_top, t_top);
 
-                    rect_year2.SetRect(t_x + (t_width - yearR_width) / 2, 0, yearR_width, t_top);
+                    rect_year2.SetRect(t_x + (t_width - year_full_width) / 2, 0, year_full_width, t_top);
                     if (YDR)
                     {
-                        rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                     else
                     {
-                        rect_year.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                 }
             }
@@ -848,16 +849,16 @@ namespace AntdUI
                     rect_rights.SetRect(rw2 - t_top, 0, t_top, t_top).SetRectArrows(sp);
                     rect_right.SetRect(rw2 - t_top * 2, 0, t_top, t_top);
 
-                    rect_year2.SetRect(t_x + (t_width - yearR_width) / 2, 0, yearR_width, t_top);
+                    rect_year2.SetRect(t_x + (t_width - year_full_width) / 2, 0, year_full_width, t_top);
                     if (YDR)
                     {
-                        rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
                     }
                     else
                     {
-                        rect_year.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
                     }
                 }
                 else
@@ -865,25 +866,25 @@ namespace AntdUI
                     int rw2 = t_x + t_width * 2 + sp2, t_width2 = t_width / 2;
                     rect_rights.SetRect(rw2 - t_top, 0, t_top, t_top).SetRectArrows(sp);
 
-                    int tmp = (t_width - yearR_width) / 2;
-                    rect_year2.SetRect(t_x + tmp, 0, yearR_width, t_top);
-                    rect_year2_r.SetRect(t_x + t_width + tmp, 0, yearR_width, t_top);
+                    int tmp = (t_width - year_full_width) / 2;
+                    rect_year2.SetRect(t_x + tmp, 0, year_full_width, t_top);
+                    rect_year2_r.SetRect(t_x + t_width + tmp, 0, year_full_width, t_top);
 
                     if (YDR)
                     {
-                        rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                     else
                     {
-                        rect_year.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                        rect_year.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
 
-                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_width - sp, 0, year_width, t_top);
-                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_width, t_top);
+                        rect_year_r.SetRect(t_x + t_width + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                        rect_month_r.SetRect(t_x + t_width + t_width2 + sp, 0, year_month_width, t_top);
                     }
                 }
             }
@@ -914,6 +915,7 @@ namespace AntdUI
                 int item_w = (t_width - sp2) / 3, item_h = (int)(item_w * .74F), y = t_top + sp2;
                 r_h = t_top + sp2 * 2 + item_h * 4;
                 int item_size_w = (int)(item_w * .666F), item_size_h = (int)(item_w * .364F);
+                if (showType == TDatePicker.Month && item_size_w < year_month_width) item_size_w = year_month_width;
                 int item_x = (item_w - item_size_w) / 2, item_y = (item_h - item_size_h) / 2;
                 int cx = t_x + sp2, cy = t_top + sp2;
                 if (showType == PickerType)

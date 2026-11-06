@@ -61,7 +61,7 @@ namespace AntdUI
             #region 国际化
 
             Culture = new CultureInfo(CultureID);
-            YDR = CultureID.StartsWith("en");
+            YDR = CultureID.CalendarTitleReversed();
             Helper.InitLanguage(YDR, out YearFormat, out MonthFormat, out MondayButton, out TuesdayButton, out WednesdayButton, out ThursdayButton, out FridayButton, out SaturdayButton, out SundayButton, out s_f_L, out s_f_R);
 
             #endregion
@@ -517,11 +517,13 @@ namespace AntdUI
         void LoadLayout() => this.GDI(g => LoadLayout(g));
         void LoadLayout(Canvas g)
         {
-            var size = g.MeasureString(Config.NullText, FontMe);
+            var lname = Culture.GetLongestDateName(showType == TDatePicker.Year ? YearFormat : MonthFormat);
+            var size = g.MeasureString(lname, FontMe);
             bor = (int)(size.Height * 0.1F);
             int sp = (int)(size.Height * 0.2F), sp2 = sp * 2;
             int t_time_height = (int)(size.Height * 1.56F), t_time = (int)(size.Height * 2.9F), t_button = (int)(size.Height * 1.96F), t_top = (int)(size.Height * 1.76F);
-            int year_width = (int)(size.Height * 3.12F), year2_width = (int)(size.Height * 4.66F);
+            int year_month_width = (int)(size.Width * 1.12F), year_full_width = (int)(size.Height * 4.66F);
+
             int t_width = t_time * 5 + sp2, t_width2 = t_width / 2, t_x = 0;
 
             if (showType == TDatePicker.Date && left_buttons != null) t_x = (int)(size.Height * 6.22F);
@@ -531,16 +533,16 @@ namespace AntdUI
             rect_rights.SetRect(t_x + t_width - t_top, 0, t_top, t_top).SetRectArrows(sp);
             rect_right.SetRect(t_x + t_width - t_top * 2, 0, t_top, t_top);
 
-            rect_year2.SetRect(t_x + (t_width - year2_width) / 2, 0, year2_width, t_top);
+            rect_year2.SetRect(t_x + (t_width - year_full_width) / 2, 0, year_full_width, t_top);
             if (YDR)
             {
-                rect_month.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                rect_year.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                rect_month.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                rect_year.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
             }
             else
             {
-                rect_year.SetRect(t_x + t_width2 - year_width - sp, 0, year_width, t_top);
-                rect_month.SetRect(t_x + t_width2 + sp, 0, year_width, t_top);
+                rect_year.SetRect(t_x + t_width2 - year_month_width - sp, 0, year_month_width, t_top);
+                rect_month.SetRect(t_x + t_width2 + sp, 0, year_month_width, t_top);
             }
 
             int rw = t_width + t_x, r_h = 0;
@@ -579,7 +581,7 @@ namespace AntdUI
 
                 r_h = t_top + (ShowButtonToDay ? t_button : 0) + sp2 * 2 + item_size * 7;
 
-                rect_button.SetRect(t_x + (t_width - year_width) / 2, r_h - t_button, year_width, t_button);
+                rect_button.SetRect(t_x + (t_width - year_month_width) / 2, r_h - t_button, year_month_width, t_button);
 
                 #region 自定义按钮
 
@@ -684,6 +686,7 @@ namespace AntdUI
                 int cx = t_x + sp2, cy = t_top + sp2;
 
                 int item_size_w = (int)(item_w * .666F), item_size_h = (int)(item_w * .364F);
+                if (item_size_w < year_month_width) item_size_w = year_month_width;
                 int item_x = (item_w - item_size_w) / 2, item_y = (item_h - item_size_h) / 2;
 
                 var rect_month = new List<RectCalendari>(12);
