@@ -484,14 +484,14 @@ namespace AntdUI
             switch (joinMode)
             {
                 case TJoinMode.Left:
-                    return new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                    return new Rectangle(rect.X + rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
                 case TJoinMode.Right:
                     return new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
                 case TJoinMode.LR:
                     return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
 
                 case TJoinMode.Top:
-                    return new Rectangle(rect.X + pr, rect.Height - (rect.Height - pr), rect.Width - pr2, rect.Height - pr);
+                    return new Rectangle(rect.X + pr, rect.Y + rect.Height - (rect.Height - pr), rect.Width - pr2, rect.Height - pr);
                 case TJoinMode.Bottom:
                     return new Rectangle(rect.X + pr, rect.Y, rect.Width - pr2, rect.Height - pr);
                 case TJoinMode.TB:
@@ -500,7 +500,7 @@ namespace AntdUI
                 default:
                     if (joinLeft && joinRight) return new Rectangle(rect.X, rect.Y + pr, rect.Width, rect.Height - pr2);
                     else if (joinLeft) return new Rectangle(rect.X, rect.Y + pr, rect.Width - pr, rect.Height - pr2);
-                    else if (joinRight) return new Rectangle(rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
+                    else if (joinRight) return new Rectangle(rect.X + rect.Width - (rect.Width - pr), rect.Y + pr, rect.Width - pr, rect.Height - pr2);
                     return new Rectangle(rect.X + pr, rect.Y + pr, rect.Width - pr2, rect.Height - pr2);
             }
         }

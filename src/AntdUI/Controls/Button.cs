@@ -1230,7 +1230,7 @@ namespace AntdUI
         {
             init = true;
             var g = e.Canvas;
-            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = ReadRectangle;
+            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
             if (rect_read.Width == 0 || rect_read.Height == 0) return;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
