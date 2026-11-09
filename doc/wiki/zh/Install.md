@@ -16,7 +16,7 @@ PM> `Install-Package AntdUI`
 
 ### 下载源码
 
-> 打开AntdUI的码云地址：[https://gitee.com/antdui/AntdUI](https://gitee.com/antdui/AntdUI)
+> 打开AntdUI的码云地址：[https://gitee.com/AntdUI/AntdUI](https://gitee.com/AntdUI/AntdUI)
 ![downcode](Img/DownCode.png)
 
 解压后双击打开 `AntdUI.sln` 解决方案，将 `examples/Demo` 项目设为启动项目，`F5` 启动

@@ -6,6 +6,13 @@ This guide explains the standards and workflows to help you collaborate smoothly
 
 1. [Directory Structure](#1-directory-structure)
 2. [Code Standards](#2-code-standards)
+   - 2.1 [General rules](#21-general-rules)
+   - 2.2 [Custom controls: IControl](#22-custom-controls-icontrol)
+   - 2.3 [Windows: BaseForm / Window](#23-windows-baseform--window)
+   - 2.4 [Layered windows: the ILayeredForm family](#24-layered-windows-the-ilayeredform-family)
+   - 2.5 [Global events: IEventListener / EventHub](#25-global-events-ieventlistener--eventhub)
+   - 2.6 [Animation: AnimationTask](#26-animation-animationtask)
+   - 2.7 [Helpers](#27-helpers)
 3. [Contribution Workflow](#3-contribution-workflow)
 4. [Sync Your Fork After the PR Is Merged](#4-sync-your-fork-after-the-pr-is-merged)
 5. [Troubleshooting](#5-troubleshooting)
@@ -45,92 +52,381 @@ AntdUI/
 - **Demo Code**: Update `example/Demo/` to include test cases for new features (helps verify functionality and assist other contributors).
 
 ## 2. Code Standards
-To maintain consistency and avoid common issues (e.g., memory leaks, UI glitches), follow these core rules:
 
-### 2.1 Drawing Logic Requirements
-AntdUI relies on a custom drawing system for high-quality UI rendering. All visual controls must follow:
+> This chapter gives APIs, call sites and return-value meanings you can copy directly. Wherever it says "must", it is the convention used by every built-in control; deviating makes your control behave differently from the rest of the library.
 
-- **Must Implement `AntdUI.IControl`**:
-  All drawable controls **must inherit from `AntdUI.IControl`** (the base interface for custom rendering). Override the `OnDraw` method to implement control-specific drawing:
-  ```csharp
-  public class MyCustomControl : IControl
-  {
-	  // Override OnDraw to handle rendering logic
-	  protected override void OnDraw(DrawEventArgs e)
-	  {
-		  base.OnDraw(e);
-		  // Use e.Canvas for drawing (see explanation below)
-		  e.Canvas.DrawText("Hello AntdUI", _textFont, _textColor, ClientRectangle);
-	  }
-  }
-  ```
+### 2.1 General rules
 
-- **Use `Canvas` for Rendering**:
-  Direct use of `Graphics` is not recommended. Instead, use `Canvas` for rendering to achieve better performance and consistency.
-  - Implement complete rendering through `OnDraw` + `OnDrawBg` methods
-  - If you cannot inherit `IControl` (e.g., for system control wrappers), obtain `Canvas` instance via `Graphics.High()`
-  - For `Bitmap` drawing, use `HighLay` method
-  ```csharp
-  // Get Canvas in Winform OnPaint
-  var canvas = e.Graphics.High(); // Get Canvas instance
-  
-  // Bitmap drawing
-  using (var bitmap = new Bitmap(width, height))
-  using (var graphics = Graphics.FromImage(bitmap))
-  using (var canvas = graphics.HighLay()) // Use HighLay for bitmap drawing
-  {
-	  // Drawing logic
-  }
-  ```
+1. **UI only**: AntdUI is a pure UI library on WinForms. It owns appearance, layout, interaction and theme adaptation and nothing else. **Never** implement HTTP requests, file transfer, database access, business calculation or account systems inside the library. When such a capability is needed, only expose an API hook that the consumer implements.
+2. **No heavy dependencies**: browser engines (CefSharp / WebView2), ORM, logging/serialization frameworks, audio/video codecs are not accepted. Where the .NET ecosystem already has a better solution, do not add a beautified wrapper here.
+3. **Multi-target compatibility**: the library targets several .NET frameworks (see `TargetFrameworks` in [AntdUI.csproj](src/AntdUI/AntdUI.csproj)). Do not use APIs that only exist on some targets; branch with `#if` when necessary.
+4. **No new dependencies**: adding a `PackageReference` requires maintainer approval first.
+5. **Consistent style**: naming, comments, `[Description]`/`[Category]`/`[DefaultValue]` attributes, and `Invalidate()` + `OnPropertyChanged()` on property changes must match existing controls.
 
-- **Text Rendering Specification**:
-  - Do not use `StringFormat` for layout; instead, use `AntdUI.FormatFlags`
-  - For text containing Emoji, use `MeasureText` + `DrawText` (Emoji-adapted internally) instead of `MeasureString` + `String`
-  ```csharp
-  // Recommended: Use FormatFlags and DrawText
-  var flags = FormatFlags.Left | FormatFlags.VerticalCenter;
-  var size = canvas.MeasureText("Hello 👍", Font, flags);
-  canvas.DrawText("Hello 👍", Font, Style.Db.Text, ClientRectangle, flags);
-  ```
 
-- **Resource Disposal**:
-  Always release GDI resources (e.g., `Bitmap`, `Brush`, `Pen`) immediately after use to avoid memory leaks. Use `using` statements for automatic disposal:
-  ```csharp
-  // Recommended: Auto-dispose Brush with 'using'
-  using (var fillBrush = new SolidBrush(_backgroundColor))
-  {
-	  e.Canvas.Fill(fillBrush, ClientRectangle);
-  }
+### 2.2 Custom controls: IControl
 
-  // Avoid: Unmanaged resource leaks
-  var badBrush = new SolidBrush(_backgroundColor); 
-  e.Canvas.Fill(badBrush, ClientRectangle); // ❌ Causes memory leak
-  ```
+Source: [IControl.cs](src/AntdUI/Controls/IControl.cs)
 
-### 2.2 List Control Standards
-For controls with scrollable content (e.g., list boxes, data grids), follow these rules:
+**Inheritance and constructor**
 
-- **Use `AntdUI.ScrollBar`**:
-  Do not use system scrollbars. You must integrate the library's built-in `AntdUI.ScrollBar` component to ensure consistent styling and behavior.
+```csharp
+public class MyControl : IControl
+{
+    public MyControl() : base(ControlType.Select) { }
+}
+```
 
-- **Public Properties**:
-  Expose scrollbar-related properties to external code (for user customization).
+`ControlType` decides focus and click behavior:
 
-### 2.3 `IControl.RenderRegion` Usage
-The `GraphicsPath RenderRegion` property in `AntdUI.IControl` is crucial for **correct mask rendering** (e.g., Spin controls on rounded-corner components).
+| Value | Fits | Behavior |
+| --- | --- | --- |
+| `ControlType.Default` | Display-only controls (Label, Tag, image) | Not in the Tab order, never takes focus |
+| `ControlType.Select` | Input / selection controls (Input, Select, Tree) | Can take focus and keyboard input |
+| `ControlType.Button` | Click controls (Button, segmented item) | Adds to `Select` by disabling system double-click dispatch, so a double click does not raise `Click` twice |
 
-- **Set `RenderRegion` for Rounded Controls**:
-  If your control has rounded corners (or non-rectangular shapes), define `RenderRegion` to ensure Spin controls (or other overlay elements) adapt to the control's shape:
-  ```csharp
-  protected override GraphicsPath RenderRegion
-  {
-	  get
-	  {
-		  return ClientRectangle.RoundPath(8 * Config.Dpi);
-	  }
-  }
-  ```  
-  - Without `RenderRegion`, overlay elements like Spin may display as rectangular, breaking UI consistency.
+**Drawing entry points**
+
+```csharp
+protected override void OnDraw(DrawEventArgs e)
+{
+    base.OnDraw(e);
+    e.Canvas.DrawText("Hello 👍", Font, ForeColor, e.Rect, FormatFlags.Left | FormatFlags.VerticalCenter);
+}
+```
+
+- Background goes in `OnDrawBg`, content in `OnDraw`; the base `OnPaint` calls them in that order.
+- `e.Canvas` is the drawing surface, `e.Rect` is the available area.
+- **Do not** draw content in `OnPaint`: its output is overwritten by `OnDraw`. Use `OnPaint` only when wrapping a system control and you need a temporary Canvas (`e.Graphics.High(Dpi)`).
+- Use `DrawBitmap()` to render the control into a bitmap (export, caching).
+
+**Color scheme and color lookup**
+
+```csharp
+// Every control can pick its own mode: TAMode.Auto (follows Config.Mode) / Light / Dark
+public TAMode ColorScheme { get; set; } = TAMode.Auto;
+
+// Lookup: palette id + color mode + control type name + control instance Name
+Color fore = Colour.Text.Get(ColorScheme, nameof(MyControl), Name);
+Color back = Colour.Primary.Get(ColorScheme, nameof(MyControl), Name);
+```
+
+Lookup order is `palette id + instance Name` → `palette id + type name` → `palette id` → system color ([Style.cs](src/AntdUI/Style/Style.cs#L116)). For symbol-based palettes use `Colour.Text.GetSymbol(ColorScheme, symbol, nameof(MyControl), Name)`.
+
+> Never hard-code colors. If your control genuinely needs a fixed color (brand or semantic), expose it as a public property (e.g. `public Color BadgeColor { get; set; } = ...`) so users can change it, and take the default from the palette.
+
+**DPI**
+
+```csharp
+int height = (int)(32 * Dpi);   // Dpi: 1f = 100%, 1.5f = 150%
+```
+
+- Multiply every pixel dimension by `Dpi`; never hard-code pixels.
+- To react to DPI changes globally, use the `DPI` event of `IEventListener` (see 2.5) instead of listening to monitors yourself.
+
+**RenderRegion (rounded corners / padding)**
+
+```csharp
+public override GraphicsPath RenderRegion => ClientRectangle.RoundPath(Radius * Dpi);
+```
+
+The base implementation returns the whole `ClientRectangle`. When the control is rounded or has padding, override it to return the real visible area, and expose the content area with `ReadRectangle => ClientRectangle.PaddingRect(Padding)`. The Spin loading mask, overlay elements and clipping all follow this region. A rounded control without it renders overlays as rectangles.
+
+**Mouse + scrollbar cooperation (important)**
+
+List controls must hand mouse events to the scrollbar **first**, then process business logic, chaining with `&&`. Any `false` means "the scrollbar already handled it, skip business logic":
+
+```csharp
+protected override void OnMouseDown(MouseEventArgs e)
+{
+    base.OnMouseDown(e);
+    if (ScrollBar.MouseDownY(e.X, e.Y) && ScrollBar.MouseDownX(e.X, e.Y))
+    {
+        if (items == null || items.Count == 0) return;
+        OnTouchDown(e.X, e.Y);   // record the touch origin, see below
+        // business: hit-test the item, remember the pressed item
+    }
+}
+
+protected override void OnMouseMove(MouseEventArgs e)
+{
+    base.OnMouseMove(e);
+    if (ScrollBar.MouseMoveY(e.X, e.Y) && ScrollBar.MouseMoveX(e.X, e.Y))
+    {
+        if (items == null || items.Count == 0) return;
+        if (OnTouchMove(e.X, e.Y))
+        {
+            // business: hover highlight, dragging
+        }
+    }
+}
+
+protected override void OnMouseUp(MouseEventArgs e)
+{
+    base.OnMouseUp(e);
+    if (ScrollBar.MouseUpY() && ScrollBar.MouseUpX() && OnTouchUp())
+    {
+        // business: raise Click, finish dragging
+    }
+}
+```
+
+Return values:
+
+| Call | Returns `true` | Returns `false` |
+| --- | --- | --- |
+| `ScrollBar.MouseDownX/Y(x, y)` | Point is not on the scrollbar → continue | Pressed on the scrollbar, slider drag started → skip |
+| `ScrollBar.MouseMoveX/Y(x, y)` | Not on the scrollbar and not dragging the slider → continue | On the scrollbar or dragging the slider (`ValueX/ValueY` already updated) → skip |
+| `ScrollBar.MouseUpX/Y()` | No slider drag in progress → continue | The slider was just dragged, the release was consumed → skip, so a drag does not fire Click |
+| `OnTouchDown(x, y)` | No return value, records the touch origin | — |
+| `OnTouchMove(x, y)` | This movement is not a scroll → continue | Already consumed as scrolling (including inertia) → skip |
+| `OnTouchUp()` | Gesture was not a scroll, treat it as a click → continue | It was a scroll gesture → skip, do not raise Click |
+| `OnTouchScrollX/Y(x, y, value)` | This delta was consumed | Direction unsupported or already at the edge, event falls back to the mouse |
+
+Full reference implementation: [Tree.cs](src/AntdUI/Controls/Tree.cs#L998).
+
+**Touch support**
+
+The base class already implements down → move → up detection, thresholds and inertia. You only implement two scroll callbacks and three business hooks:
+
+```csharp
+// 1) Delta scrolling: forward to the scrollbar, return true when consumed
+protected override bool OnTouchScrollY(int x, int y, int value) => ScrollBar.MouseWheelYCore(value);
+protected override bool OnTouchScrollX(int x, int y, int value) => ScrollBar.MouseWheelXCore(value);
+
+// 2) Business hooks: call them in mouse events in this order (see the previous section)
+//    OnTouchDown → OnTouchMove (run business only when true) → OnTouchUp (run business only when true)
+```
+
+- Call `OnTouchDown` on press, `OnTouchMove` on move, `OnTouchUp` on release, chained with `ScrollBar.MouseXxxX/Y` using `&&`.
+- Movement must exceed the threshold (`Config.TouchThreshold * Dpi`) before it counts as scrolling; during scrolling `OnTouchMove` returns `false` so business logic is not triggered accidentally.
+- Set `Config.TouchEnabled = false` to disable touch scrolling temporarily.
+- Reference: [Tree.cs](src/AntdUI/Controls/Tree.cs#L1360).
+
+**Mouse hover**
+
+```csharp
+protected override bool CanMouseMove { get; set; } = true;   // default false; enable only when hover feedback is needed
+
+protected override bool OnMouseHover(int x, int y)
+{
+    var item = HitTest(x, y);       // your own implementation
+    if (item == hovering) return false;
+    hovering = item;
+    if (item == null) { CloseTip(); return false; }
+    OpenTip(item.Tip);              // show the tooltip
+    return true;
+}
+```
+
+- Returning `true` means the pointer is over an element that needs hover feedback (keep showing the tooltip / highlight).
+- Returning `false` means empty space or no state change; the base class ends the hover session.
+- The base class coalesces high-frequency `MouseMove` and invokes the callback once the pointer rests for `Config.MouseHoverDelay` ms. Do not do your own hover detection with `Invalidate()` inside `OnMouseMove`, or you will get repeated painting and flicker.
+
+**Text rendering**
+
+| Case | Measure | Draw |
+| --- | --- | --- |
+| Definitely no Emoji | `MeasureString` | `String` |
+| May contain Emoji | `MeasureText` | `DrawText` |
+
+```csharp
+var flags = FormatFlags.Left | FormatFlags.VerticalCenter;
+int h = e.Canvas.MeasureText("Hello 👍", Font, e.Rect.Width, flags);
+e.Canvas.DrawText("Hello 👍", Font, fore, e.Rect, flags);
+```
+
+Both accept `FormatFlags` only (the `StringFormat` overloads are `[Obsolete]`). `String` / `DrawText` already do high-quality rendering and correct vertical centering; `MeasureText` / `DrawText` additionally handle Emoji glyphs — measuring Emoji text with `MeasureString` gives a too-small size and misaligned drawing.
+
+**Images / SVG / getting a Canvas**
+
+```csharp
+e.Canvas.Image(bmp, rect, 0.5F);                        // with opacity
+e.Canvas.Image(rectF, bmp, TFit.Contain);               // layout-aware fit
+e.Canvas.Svg(svg, rect, colour);                        // SVG tinting + DPI aware
+
+e.Graphics.High(Dpi);      // wrapping a system control, inside OnPaint
+e.Graphics.HighLay();      // off-screen bitmap drawing (Bitmap + Graphics.FromImage)
+```
+
+**Resource disposal**
+
+Always `using` or explicitly dispose `Bitmap` / `Brush` / `Pen` / `GraphicsPath` / `Font`; release cached resources (shadow bitmaps, gradient brushes) in `Dispose(bool)`. Leaks show up in long-running desktop apps as ever-growing GDI counts, and eventually drawing failures.
+
+**Scrollbars**
+
+- System scrollbars are forbidden; always use `AntdUI.ScrollBar` and expose properties such as `ShowScrollBar` and `ScrollBarSize` publicly.
+- The scrollbar size depends on the control area: update `ScrollBar.Size` in `OnSizeChanged` / `OnResize`, and update `ScrollBar.SetValue` when data or row height changes.
+
+
+### 2.3 Windows: BaseForm / Window
+
+Source: [BaseForm.cs](src/AntdUI/Forms/BaseForm.cs)
+
+```csharp
+public class MyForm : BaseForm { }
+```
+
+- Double buffering and custom painting are already enabled; no extra `SetStyle` call is needed.
+- Theme: `Dark`, `Mode` (`TAMode`), `DisableTheme`, `Theme()` / `ThemeClear()`. To repaint your own colors on a light/dark switch, override `OnThemeChanged` or listen to the `THEME` event of `IEventListener`.
+- DPI: `AutoHandDpi` is `true` by default and re-layouts automatically on DPI changes; put first-time custom layout in `OnCreated()`.
+- Dragging and resizing are built in:
+  - `DraggableMouseDown()`: call it from `MouseDown` on the title area to drag the window
+  - `ResizableMouseMove()` / `ResizableMouseMove(Point)`: switches the cursor when over a border
+  - `ResizableMouseDown()`: starts native resizing when over a border
+  - `HitTest(Point)`: returns the hit area; `EnableHitTest = false` disables it entirely
+- For borderless windows use `Window` ([Window.cs](src/AntdUI/Forms/Window.cs#L15)), which filters global mouse messages and removes its message filter automatically on `Dispose`.
+
+> Closing a window does **not** release GDI resources you created. For reused windows (Show/Hide), brushes, fonts and cached bitmaps must be released in `Dispose(bool)`.
+
+
+### 2.4 Layered windows: the ILayeredForm family
+
+Source: [ILayeredForm.cs](src/AntdUI/Forms/LayeredWindow/ILayeredForm.cs)
+
+Dropdowns, menus and popups all build on this family. Choosing a base:
+
+| Need | Choose |
+| --- | --- |
+| Fade in / fade out only | `ILayeredFormOpacity` |
+| Dropdown / popup (move + scale + fade) | `ILayeredFormOpacityDown` |
+| Dropdown + shadow | `ILayeredShadowForm` (derives from `ILayeredFormOpacityDown`) |
+| Shadow + fade only | `ILayeredShadowFormOpacity` (derives from `ILayeredFormOpacity`) |
+| Nested submenus | Also implement `SubLayeredForm` |
+
+**What you must do**
+
+1. Compute position and size in the constructor: `TargetRect` is the target area in screen coordinates, `TargetRectXY` is the local drawing area; write them with `SetRect` / `SetSize` / `SetLocation`.
+2. Implement `PrintBit()` to return the whole-window bitmap:
+
+```csharp
+public override Bitmap? PrintBit()
+{
+    var bmp = new Bitmap(Width, Height);
+    using (var g = Graphics.FromImage(bmp))
+    using (var canvas = g.HighLay(Dpi))
+    {
+        // draw using TargetRectXY as the drawing area
+    }
+    return bmp;
+}
+```
+
+3. Call `Print()` when content or size changes. When **only moving the window** or **caching frames for animation**, call `PrintCache()`, which reuses the uploaded DIB instead of redrawing — noticeably lower CPU usage.
+4. Always close through `IClose()` (it handles thread safety and delegates internally); override `IClosing()` for extra cleanup.
+
+**Closing behavior `CloseMode`**: `None` (never auto-close), `Click` (close on click outside), `Leave` (close when leaving the window/control), `NoControl` (do not treat the owner control as inside). Combine with `AreaJudge` to decide "is the pointer still in the valid area".
+
+**No focus**: `UFocus` defaults to `true`, meaning the window does not steal focus; override it to `false` when it must be activated.
+
+**Nested child windows and the safety triangle**
+
+The owner window implements `SubLayeredForm` and returns the child:
+
+```csharp
+public class MyMenu : ILayeredShadowForm, SubLayeredForm
+{
+    MyMenu? subForm;
+
+    public ILayeredForm? SubForm() => subForm;
+
+    // Enable the safety triangle so diagonal movement toward the submenu does not count as "leave"
+    public override bool EnableSafetyTriangleZone => true;
+    public override Rectangle? OnSafetyTriangleZone(int x, int y) => subForm?.TargetRect;
+}
+```
+
+- Open the child with `Show(this)` to support unlimited nesting.
+- Why it is needed: moving diagonally from a parent menu to a child menu briefly leaves both rectangular windows, so `CloseMode.Leave` closes the child and it becomes unclickable. The base class builds a triangle from the pointer position and the child rectangle; points inside it count as still inside the window.
+- Reference: [LayeredFormContextMenuStrip.cs](src/AntdUI/Forms/LayeredWindow/LayeredFormContextMenuStrip.cs#L836).
+
+> Shadow-based windows add `shadow2` to size and coordinates; `x/y` passed to mouse callbacks already have `shadow` subtracted, so draw using content-area coordinates.
+
+
+### 2.5 Global events: IEventListener / EventHub
+
+Source: [EventHub.cs](src/AntdUI/Lib/EventHub.cs)
+
+```csharp
+public class MyControl : IControl, IEventListener
+{
+    protected override void OnHandleCreated(EventArgs e)
+    {
+        base.OnHandleCreated(e);
+        this.AddListener();          // register once, after the handle exists
+    }
+
+    public void HandleEvent(EventType id, object? tag)
+    {
+        if (id == EventType.LANG) ChangeLanguage();      // language changed, refresh texts
+        if (id == EventType.DPI) Invalidate();           // DPI changed, repaint
+    }
+}
+```
+
+No manual unregistration: listeners are held weakly and cleaned up automatically when the control is `Disposed`. `Dispatch` is triggered by the library; application code normally does not call it.
+
+| `EventType` | `tag` type | When it fires |
+| --- | --- | --- |
+| `DPI` | `float`, 1f = 100%, 1.2f = 120% | System DPI / scaling change, or `Config.SetDpi` |
+| `THEME` | `TMode` or `null` | `null` means `Style.LoadCustom` / `Style.Clear`; non-null is the system light/dark switch |
+| `LANG` | `CultureInfo` | Language switch |
+| `THEME_PRIMARY` | none | Primary color changed |
+| `WINDOW_STATE` | none | Window maximized / minimized / restored |
+| `WINDOW_ACTIVATE` | `object[]`: `[0]` window, `[1]` active | Window activation changed |
+| `DIV` | custom | Extension point |
+
+
+### 2.6 Animation: AnimationTask
+
+Source: [AnimationTask.cs](src/AntdUI/Lib/AnimationTask.cs)
+
+```csharp
+AnimationTask? task;
+
+void StartScroll()
+{
+    task?.Dispose();                    // interrupt the previous one first, avoid stacking
+    task = new AnimationTask(new AnimationLinearConfig(this, v =>
+    {
+        ScrollBar.ValueY = v;
+        return true;                    // return false to stop early
+    }, 16, target, step).SetEnd(() => task = null).SetPriority());
+}
+```
+
+| Config | Constructor | Purpose |
+| --- | --- | --- |
+| `AnimationLinearConfig` | `(Control control, Func<int, bool> call, int interval, int max, int add)` | Integer linear progression (scroll, offset) |
+| `AnimationLinearFConfig` | `(Control control, Func<float, bool> call, int interval, float max, float add)` | Float linear (opacity, scale) |
+| `AnimationLoopConfig` | `(Control control, Func<bool> call, int interval)` | Looping animation, return `false` to stop |
+| `AnimationFixedConfig` | `(Action<float> call, int interval, int totalFrames, bool sw, AnimationType value = Ball)` | Fixed-frame interpolation |
+| `AnimationFixed2Config` | `(Action<int, float> call, int interval, int totalFrames, object? value, bool sw, AnimationType type = Ball)` | Fixed frames + previous value, resumes from where it was interrupted |
+
+- Interrupt with `task.Dispose()`, which cancels the internal `CancellationTokenSource`; all five configs support it.
+- Shared chained settings: `SetEnd(...)` (completion callback), `SetSleep(...)` (per-frame sleep), `SetPriority()` (low priority, does not block the UI).
+- Dispose the task when the control is destroyed, otherwise it keeps holding and running against the control.
+
+
+### 2.7 Helpers
+
+Source: [Helper.cs](src/AntdUI/Lib/Helper/Helper.cs), [Helper.GDI.cs](src/AntdUI/Lib/Helper/Helper.GDI.cs), [Helper.RECT.cs](src/AntdUI/Lib/Helper/Helper.RECT.cs), [Helper.DPI.cs](src/AntdUI/Lib/Helper/Helper.DPI.cs)
+
+| Scenario | Usage |
+| --- | --- |
+| Copy / paste text | `this.ClipboardGetText()` / `this.ClipboardSetText(text)`; it marshals with `Invoke` internally, so it is safe from background threads |
+| List search (pinyin, multiple keywords) | `Helper.SearchContains(search, text, py, out bool select)` returns a weight (0 = no match); sort results with `SearchWeightSort()` / `SearchWeightSortArray()` |
+| Draw visible rows only | `if (e.Rect.IsItemVisible(ScrollBar.ValueY, itemRect)) { ... }`; use `IsItemVisibleExpand(...)` for expanded items |
+| H5 gradients | Pass strings like `"#1890ff,#52c41a"` or `"0:#1890ff,1:#52c41a"` to `code.BrushEx(rect, defColor)`; a solid color or empty value falls back to the default |
+| Rounded path | `ClientRectangle.RoundPath(radius)` with per-corner radii, `TShape.Round`, `TAlignRound` |
+| Shadow | `e.Canvas.PaintShadow(config, rect, rectRead, radius, round)`; off-screen: `path.PaintShadow(w, h, color, range)` |
+| Badge | Controls implementing `BadgeConfig` are painted automatically in `OnPaint`; for custom drawing use `this.PaintBadge(e.Canvas)` |
+| Empty state | `e.Canvas.PaintEmpty(rect, Font, fore, "No data", image)`, unified layout of text and image |
+| Frosted glass | `Helper.Blur(bitmap, range)` applies a Gaussian blur to the target bitmap |
+| GIF | `Helper.IsGIF(img)` / `GIFDelays` / `GIFPlay(img, isRun, action)` for frame-by-frame playback; image controls must not assign `Image` directly |
+| Mask layer | `this.FormMask(form)` returns the mask window; `owner.ShowDialogMask(form, out var mask)` shows a modal version |
+| DPI helpers | `Helper.GetScreenDpi(this)`, `Helper.GetDpi(96, 96)`, `Helper.DpiAuto(dpi, control)` for automatic child re-layout |
+
 
 ## 3. Contribution Workflow
 

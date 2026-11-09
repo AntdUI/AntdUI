@@ -1,5 +1,19 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.19` 2026-11-09
+
+- ➕ ContextMenuStrip 项背景、渐变色样式适配更多
+- ➕ Menu 菜单项外部绘制事件 ItemPaint / ItemPaintBegin
+- ➕ Label 边框属性
+- ➕ ChatList 聊天气泡 MdChatItem
+- ➕ EditableTable 可编辑表格（行级编辑）
+- ✍️ JoinMode + Padding Left 下X值不正确
+- ✍️ DatePicker 无法关闭
+- ✍️ Calendar 过长月MMMM显示问题
+- ✍️ 增强日历标题习惯国家
+- ✍️ PageHeader Icon 支持比例显示
+- ✍️ Input 多行阿拉伯语空格失效
+
 ### `2.4.18` 2026-10-30
 
 - ➕ Table SelectedsTree 获取树表格选中行真实数据

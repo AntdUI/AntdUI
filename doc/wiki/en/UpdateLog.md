@@ -1,5 +1,19 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.19` 2026-11-09
+
+- ➕ ContextMenuStrip item background, gradient style adaptation for more
+- ➕ Menu menu item External painting event ItemPaint/ItemPaintBegin
+- ➕ Label border properties
+- ➕ ChatList Chat Bubble MdChatItem
+- ➕ EditableTable editable table (row level editing)
+- ✍️ The X value under JoinMode+Padding Left is incorrect
+- ✍️ DatePicker cannot be closed
+- ✍️ Calendar too long month MMMM display issue
+- ✍️ Enhance calendar title habits for countries
+- ✍️ PageHeader Icon supports proportional display
+- ✍️ Multiple lines of Arabic spaces in Input are invalid
+
 ### `2.4.18` 2026-10-30
 
 - ➕ Table SelectesTree retrieves the real data of the selected row in the tree table
