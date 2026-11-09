@@ -1,24 +1,44 @@
 name: Enhancement
 description: Propose a functional suggestion for this project
 labels: ["enhancement"]
-assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for providing the feature suggestion, I will carefully consider it!
+        :warning: **An issue is not a wish list.** Before submitting, make sure your request belongs to the scope of a **pure UI library**.
+
+        ### ✅ In scope (will be evaluated seriously)
+        - Enhancing existing controls: **new properties / events / methods**, better interaction, styling and theme adaptation
+        - **New pure-UI controls** (buttons, inputs, tables, popups, loading, layout, etc.)
+        - Improvements to **DPI, RTL, touch, accessibility, light/dark theme** adaptation of existing controls
+        - Pure visual / layout drawing capabilities (**Canvas, SVG, Emoji text rendering, rounded corners, shadows**)
+        - Usability improvements to existing APIs (naming, defaults, overloads) **as long as no extra dependency is introduced**
+
+        ### ❌ Out of scope (will be closed directly)
+        - **Requests that require large or UI-unrelated dependencies**: browser engines (**CefSharp / WebView2 wrappers**), ORM / database drivers, message queues, logging frameworks, serialization, audio/video codecs, cryptography, network stacks, AI inference
+        - **Logic beyond the UI layer**: **HTTP requests**, file transfer, data access, business calculation, account systems. **AntdUI implements no HTTP request at all** — it only exposes API hooks that the consumer implements
+        - **Domains where the .NET ecosystem already has a better solution**: e.g. a browser — existing libraries already do it far better, and AntdUI does not need to add a beautified wrapper around them
+
+        ### Why this line is drawn
+        AntdUI is positioned as a **pure UI library**: it only owns appearance, layout, interaction and theme adaptation. It **does not mix in logic beyond the UI**, and it **accepts no feature that requires a large dependency footprint**. This keeps the library small, maintainable and stable across upgrades.
+
+        > Please search [existing issues](https://github.com/AntdUI/AntdUI/issues) first; duplicate suggestions will be closed.
   - type: textarea
     id: background
     attributes:
       label: Background and motivation
-      description: Please describe the purpose and value of the new API here.
-      placeholder: Purpose
+      description: |
+        Explain what problem this capability solves, in which scenario it is used, and how you work around it today (custom drawing / third-party library / not supported).
+        If the capability requires a third-party library, state its name, size and license so we can judge whether it fits this project.
+      placeholder: Purpose + usage scenario + current workaround
     validations:
       required: true
   - type: textarea
     attributes:
       label: Requirement
-      description: What you hope to happen.
+      description: |
+        Describe the expected API shape and behavior (properties / events / methods, parameters and defaults, difference from existing controls), and whether it must work across themes, DPIs and languages.
+        Screenshots or pseudo-code of reference implementations (other UI libraries) are welcome.
     validations:
       required: true
   - type: markdown

@@ -2,6 +2,7 @@ name: BUG
 description: Report an issue that affects running application
 labels: ["bug"]
 assignees: []
+type: bug
 body:
   - type: markdown
     attributes:
