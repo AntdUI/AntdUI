@@ -9,6 +9,8 @@ jobs:
   nuget:
     name: nuget
     runs-on: windows-latest
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
 
     steps:
       - name: Clone
@@ -27,7 +29,7 @@ jobs:
       # ========== 🔐 还原签名密钥 ==========
       - name: Signing Key
         run: |
-          $base64 = "${{ secrets.SIGNING_KEY_BASE64 }}"
+          $base64 = "${{secrets.SIGNING_KEY_BASE64}}"
           $bytes = [Convert]::FromBase64String($base64)
           [IO.File]::WriteAllBytes("key.snk", $bytes)
         shell: pwsh
@@ -45,8 +47,15 @@ jobs:
       - name: Pack
         run: |
           dotnet pack src/AntdUI/AntdUI.csproj --configuration Release --no-restore --no-build /p:Pack=true --output \tom
+          
+      # ========== 🔒 获取短期有效的 NuGet API密钥 ==========
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{secrets.NUGET_USER}}
 
       # ========== 🚀 发布到 NuGet ==========
       - name: Push
         run: |
-          dotnet nuget push \tom\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push \tom\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}} --skip-duplicate
