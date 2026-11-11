@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace AntdUI
 {
@@ -115,6 +116,40 @@ namespace AntdUI
         [Description("速度"), Category("动画"), DefaultValue(400)]
         public int Duration { get; set; } = 400;
 
+        TAlignMini textalign = TAlignMini.Bottom;
+        /// <summary>
+        /// 文本对齐方向
+        /// </summary>
+        [Description("文本对齐方向"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAlignMini.Bottom)]
+        public TAlignMini TextAlign
+        {
+            get => textalign;
+            set
+            {
+                if (textalign == value) return;
+                textalign = value;
+
+                Invalidate();
+                OnPropertyChanged(nameof(TextAlign));
+            }
+        }
+        bool? showText;
+        /// <summary>
+        /// 显示文本
+        /// </summary>
+        [Description("显示文本"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public bool? ShowText
+        {
+            get => showText;
+            set
+            {
+                if (showText == value) return;
+                showText = value;
+
+                Invalidate();
+                OnPropertyChanged(nameof(ShowText));
+            }
+        }
         #region 阴影
 
         int shadow = 0;
@@ -250,6 +285,11 @@ namespace AntdUI
             {
                 var t = Animation.TotalFrames(Speed, Duration);
                 float _radius = radius * Dpi;
+                bool show_text = CanShowText;
+                string? text = Text;
+                Font font = Font;
+                Color fore = ForeColor;
+                FormatFlags text_format = TextFormat;
                 ITask.Run(() =>
                 {
                     var _rect = ClientRectangle;
@@ -260,12 +300,16 @@ namespace AntdUI
                         using (var g = Graphics.FromImage(bmpo).High(Dpi))
                         {
                             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+                            FillRect(g, rect, back, _radius, round);
                             g.Image(rect, image, imageFit, _radius, round);
+                            if (show_text) g.String(text, font, fore, rect, text_format);
                         }
                         using (var g = Graphics.FromImage(bmpo2).High(Dpi))
                         {
                             if (shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, _rect, rect, _radius, round);
+                            FillRect(g, rect, back, _radius, round);
                             g.Image(rect, value, imageFit, _radius, round);
+                            if (show_text) g.String(text, font, fore, rect, text_format);
                         }
                         var images = new List<Bitmap>(t);
                         if (Vertical)
@@ -356,7 +400,11 @@ namespace AntdUI
             if (run == null && shadow > 0 && shadowOpacity > 0) g.PaintShadow(this, e.Rect, rect, _radius, round);//应在绘制背景前绘制阴影，否则会影响背景色
             FillRect(g, rect, back, _radius, round);
             if (run != null && run.Tag is PointF point) g.Image(run, point.X, point.Y, run.Width, run.Height);
-            else g.Image(rect, image, imageFit, _radius, round);
+            else
+            {
+                if (image != null) g.Image(rect, image, imageFit, _radius, round);
+                if (CanShowText) g.String(Text, Font, ForeColor, rect, TextFormat);
+            }
             if (Hover)
             {
                 int size = (int)((rect.Width > rect.Height ? rect.Height : rect.Width) * HoverImageRatio);
@@ -369,6 +417,23 @@ namespace AntdUI
         }
 
         #region 渲染帮助
+
+        bool CanShowText => ShowText == true && !string.IsNullOrEmpty(Text);
+
+        FormatFlags TextFormat
+        {
+            get
+            {
+                switch (textalign)
+                {
+                    case TAlignMini.Top: return FormatFlags.Top | FormatFlags.HorizontalCenter;
+                    case TAlignMini.Bottom: return FormatFlags.Bottom | FormatFlags.HorizontalCenter;
+                    case TAlignMini.Left: return FormatFlags.Left | FormatFlags.VerticalCenter;
+                    case TAlignMini.Right: return FormatFlags.Right | FormatFlags.VerticalCenter;
+                    default: return FormatFlags.Center;
+                }
+            }
+        }
 
         void FillRect(Canvas g, RectangleF rect, Color color, float radius, bool round)
         {
