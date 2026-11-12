@@ -416,6 +416,14 @@ namespace AntdUI
 
         #endregion
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
+
         #endregion
 
         public override Rectangle DisplayRectangle => ClientRectangle.DeflateRect(Padding, this, shadowAlign, borderWidth);

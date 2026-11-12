@@ -124,22 +124,6 @@ namespace AntdUI
             }
         }
 
-        int NextIncrementValue(bool increase)
-        {
-            long offset = Math.Max(0L, (long)Value - _minValue);
-            long index = increase ? offset / increment + 1 : (offset == 0 ? 0 : (offset - 1) / increment);
-            return (int)Math.Max(_minValue, Math.Min((long)_maxValue, _minValue + index * increment));
-        }
-
-        int SnapIncrementValue(int value)
-        {
-            if (increment == 1 || value <= _minValue) return Math.Max(_minValue, value);
-            if (value >= _maxValue) return _maxValue;
-            long offset = (long)value - _minValue;
-            long index = (offset + increment / 2L) / increment;
-            return (int)Math.Min((long)_maxValue, _minValue + index * increment);
-        }
-
         int _value = 0;
         /// <summary>
         /// 当前值
@@ -574,13 +558,6 @@ namespace AntdUI
 
         internal int FindIndex(int x, int y, bool mark)
         {
-            int value = FindRawIndex(x, y, mark);
-            if (Dots && marks != null && marks.Count > 0) return value;
-            return SnapIncrementValue(value);
-        }
-
-        int FindRawIndex(int x, int y, bool mark)
-        {
             int max = _maxValue - _minValue;
             if (marks != null && marks.Count > 0)
             {
@@ -813,6 +790,13 @@ namespace AntdUI
                 }
             }
             return false;
+        }
+
+        int NextIncrementValue(bool increase)
+        {
+            int offset = Math.Max(0, Value - _minValue);
+            int index = increase ? offset / increment + 1 : (offset == 0 ? 0 : (offset - 1) / increment);
+            return Math.Max(_minValue, Math.Min(_maxValue, _minValue + index * increment));
         }
 
         #endregion
