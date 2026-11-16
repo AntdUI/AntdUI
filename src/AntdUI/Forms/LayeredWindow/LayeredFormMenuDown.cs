@@ -17,10 +17,16 @@ namespace AntdUI
 
         TAMode ColorScheme;
         bool isdark = false;
+        bool useMnemonic = true;
         List<IMenuItem> Items;
         Size DPadding;
         Color? backColor, BackHover, BackActive, foreColor, ForeActive;
         float IconRatio = 0.7F, IconGap = 0.25F;
+
+        /// <summary>
+        /// 是否已向左换向展开（子级跟随父级方向级联，箭头随之翻转）
+        /// </summary>
+        bool leftAlign = false;
 
         ScrollBar ScrollBar;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
@@ -29,6 +35,7 @@ namespace AntdUI
             ColorScheme = control.ColorScheme;
             cname = control.Name;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;
+            useMnemonic = control.UseMnemonic;
             SetTopMost(control.Parent, Handle);
             SetDpi(control);
             PARENT = control;
@@ -95,7 +102,7 @@ namespace AntdUI
             SetDpi(control);
             select_x = sx;
             PARENT = control;
-            SetFont(parent.Font);
+            SetFont(parent.FontMe);
             lay = parent;
             backColor = parent.backColor;
             foreColor = parent.foreColor;
@@ -103,6 +110,7 @@ namespace AntdUI
             BackHover = parent.BackHover;
             BackActive = parent.BackActive;
             DPadding = parent.DPadding;
+            useMnemonic = parent.useMnemonic;
             IconRatio = parent.IconRatio;
             IconGap = parent.IconGap;
             Radius = radius;
@@ -110,8 +118,42 @@ namespace AntdUI
             ScrollBar = new ScrollBar(this, ColorScheme);
             Items = LoadLayout(items, control.PointToScreen(Point.Empty));
 
-            CLocation(parent, rect, false, 0);
+            CLocationSub(parent, rect);
             Init();
+        }
+
+        /// <summary>
+        /// 子菜单坐标：默认贴着父级弹层右侧级联，右侧空间不足时直接换向到左侧，避免压住父级菜单内容
+        /// </summary>
+        void CLocationSub(LayeredFormMenuDown parent, Rectangle rect)
+        {
+            var trect = parent.TargetRect;
+            var screen = Screen.FromPoint(new Point(trect.X + parent.shadow, trect.Y + parent.shadow)).WorkingArea;
+            int contentW = TargetRect.Width - shadow2, y = trect.Y + rect.Y + parent.shadow, x;
+            if (parent.leftAlign)
+            {
+                // 父级已向左展开：子级继续向左级联，方向保持一致
+                x = trect.X + parent.shadow + rect.X - contentW;
+                if (x < screen.Left) x = screen.Left;
+                leftAlign = true;
+            }
+            else
+            {
+                x = trect.X + trect.Width - rect.X - parent.shadow;
+                // 右侧方向判断：放不下直接换向到父级弹层左侧
+                if (x + contentW > screen.Right)
+                {
+                    int x_flip = trect.X + parent.shadow + rect.X - contentW;
+                    if (x_flip >= screen.Left)
+                    {
+                        x = x_flip;
+                        leftAlign = true;
+                    }
+                    else x = screen.Right - contentW;
+                }
+            }
+            if (screen.Bottom < y + TargetRect.Height) y = y - ((y + TargetRect.Height) - screen.Bottom) + shadow;
+            SetLocation(x - shadow, y - shadow);
         }
 
         public override string name => nameof(AntdUI.Menu);
@@ -124,6 +166,8 @@ namespace AntdUI
 
         void Init()
         {
+            if (useMnemonic) sf |= FormatFlags.HotkeyPrefixShow;
+            else sf &= ~FormatFlags.HotkeyPrefixShow;
             if (OS.Win7OrLower) Select();
             KeyCall = keys =>
             {
@@ -189,6 +233,25 @@ namespace AntdUI
             };
         }
 
+        /// <summary>
+        /// 执行助记键：优先匹配已展开的子菜单，其次当前层级
+        /// </summary>
+        /// <remarks>弹层不获取焦点（ShowWithoutActivation），Alt+字母 由 <see cref="Menu"/> 的助记键分发链转入</remarks>
+        internal bool PerformMnemonic(char charCode)
+        {
+            if (!useMnemonic) return false;
+            if (subForm != null && subForm.PerformMnemonic(charCode)) return true;
+            foreach (var item in Items)
+            {
+                if (item is OMenuItem mi && mi.Val.Enabled && !string.IsNullOrEmpty(mi.Val.Text) && IsMnemonic(charCode, mi.Val.Text))
+                {
+                    OnClick(mi);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         int IMouseWheel(int delta)
         {
             int count = Items.Count, errcount = 0, newIndex;
@@ -226,7 +289,7 @@ namespace AntdUI
 
         #region 渲染
 
-        readonly FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter;
+        FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(ColorScheme, name, cname)))
@@ -369,7 +432,8 @@ namespace AntdUI
             using (var pen = new Pen(color, Dpi * 1.4F))
             {
                 pen.StartCap = pen.EndCap = LineCap.Round;
-                g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(-1, .7F));
+                // 向左展开时箭头同步翻转，提示子菜单方向
+                g.DrawLines(pen, it.RectArrow.TriangleLinesHorizontal(leftAlign ? 1F : -1F, .7F));
             }
         }
 
@@ -454,7 +518,7 @@ namespace AntdUI
             int tmp = 0;
             foreach (var it in items)
             {
-                int tmp2 = g.MeasureText(it.Text, FontMe).Width;
+                int tmp2 = useMnemonic ? g.MeasureText(it.Text, FontMe, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width : g.MeasureText(it.Text, FontMe).Width;
                 if (it.HasIcon) tmp2 += icon_size + icon_gap;
                 if (it.items != null && it.items.Count > 0) tmp2 += icon_size + icon_gap;
 

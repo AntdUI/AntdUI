@@ -273,6 +273,80 @@ namespace AntdUI
         [Description("触发下拉的行为"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(Trigger.Hover)]
         public Trigger Trigger { get; set; } = Trigger.Hover;
 
+        #region 助记键
+
+        bool useMnemonic = true;
+        /// <summary>
+        /// 助记键
+        /// </summary>
+        [Description("如果为 true，则文本中前面有(&)号的第一个字符将用作菜单项的助记键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(true)]
+        public bool UseMnemonic
+        {
+            get => useMnemonic;
+            set
+            {
+                if (useMnemonic == value) return;
+                useMnemonic = value;
+                if (value) SL |= FormatFlags.HotkeyPrefixShow;
+                else SL &= ~FormatFlags.HotkeyPrefixShow;
+                ChangeList(true);
+                OnPropertyChanged(nameof(UseMnemonic));
+            }
+        }
+
+        protected override bool ProcessMnemonic(char charCode)
+        {
+            if (useMnemonic && Enabled && Visible && CanProcessMnemonicAfter())
+            {
+                // 已展开的下拉优先（与 Windows 菜单一致：由最深层级向上匹配）
+                if (subForm is LayeredFormMenuDown down && !down.IsDisposed && down.PerformMnemonic(charCode)) return true;
+                var it = FindMnemonic(items, charCode);
+                if (it != null && PerformMnemonic(it)) return true;
+            }
+            return base.ProcessMnemonic(charCode);
+        }
+
+        MenuItem? FindMnemonic(MenuItemCollection? items, char charCode)
+        {
+            if (items == null) return null;
+            foreach (var it in items)
+            {
+                if (!it.Visible || it is MenuDividerItem) continue;
+                if (it.Enabled && !string.IsNullOrEmpty(it.Text) && IsMnemonic(charCode, it.Text)) return it;
+                // 只有内联展开的子项才参与匹配（下拉模式下的子项属于弹层）
+                if (!IsModeNeedDropDown && !collapsed && it.Expand && it.items != null && it.items.Count > 0)
+                {
+                    var sub = FindMnemonic(it.items, charCode);
+                    if (sub != null) return sub;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 执行助记键：可展开项直接打开（下拉/展开），叶子项执行选中
+        /// </summary>
+        internal bool PerformMnemonic(MenuItem it)
+        {
+            if (!it.Enabled || !it.Visible) return false;
+            if (it.CanExpand)
+            {
+                if ((IsModeNeedDropDown || collapsed) && it.items != null && it.items.Count > 0) OpenDropDown(it);
+                else
+                {
+                    it.Expand = true;
+                    ChangeList(true);
+                    Focus(it, true);
+                }
+                Invalidate();
+                return true;
+            }
+            Select(it);
+            return true;
+        }
+
+        #endregion
+
         bool indent = false;
         /// <summary>
         /// 常规缩进
@@ -754,7 +828,7 @@ namespace AntdUI
                     int uw = it.SetRect(this, depth, Indent, new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, inlineIndent, iconsp, scx, out int exr);
                     if (it.Visible)
                     {
-                        int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2 + scx + exr;
+                        int size = MeasureTextWidth(g, it) + uw + gap2 + scx + exr;
                         if (size > collapsedWidth) collapsedWidth = size;
                         y += height + sp;
                         if (mode == TMenuMode.Inline && it.CanExpand)
@@ -808,7 +882,7 @@ namespace AntdUI
                     int uw = it.SetRectInlineNoText(new Rectangle(rect.X, rect.Y + y, rect.Width, height), icon_size, arrow_size, gap, gap2, sp, sp2, iconsp);
                     if (it.Visible)
                     {
-                        int size = g.MeasureText(it.Text, it.Font ?? Font).Width + uw + gap2;
+                        int size = MeasureTextWidth(g, it) + uw + gap2;
                         if (size > collapsedWidth) collapsedWidth = size;
                         y += height + sp;
                         if (it.CanExpand)
@@ -859,7 +933,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    int width = g.MeasureText(it.Text, it.Font ?? Font).Width;
+                    int width = MeasureTextWidth(g, it);
                     if (it.HasIcon)
                     {
                         int tmp = icon_size + iconsp;
@@ -896,7 +970,7 @@ namespace AntdUI
                 }
                 else
                 {
-                    int width = g.MeasureText(it.Text, it.Font ?? Font).Width;
+                    int width = MeasureTextWidth(g, it);
                     if (it.HasIcon)
                     {
                         int tmp = icon_size + iconsp;
@@ -1189,7 +1263,17 @@ namespace AntdUI
             }
         }
 
-        readonly FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+        FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis | FormatFlags.HotkeyPrefixShow;
+
+        /// <summary>
+        /// 测量文本（助记键不占宽度）
+        /// </summary>
+        int MeasureTextWidth(Canvas g, MenuItem it)
+        {
+            var font = it.Font ?? Font;
+            if (useMnemonic) return g.MeasureText(it.Text, font, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width;
+            return g.MeasureText(it.Text, font).Width;
+        }
         void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius, bool focusMode = true)
         {
             using (var brush = new SolidBrush(fore))
@@ -1378,20 +1462,14 @@ namespace AntdUI
             mouseClicks = e.Clicks;
             if (FocusMode != TFocusMode.None) Focus();
             CloseTip();
-            CloseDropDown();
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
+            mDown = null;
             if (ScrollBar.MouseDown(e.X, e.Y))
             {
                 if (items == null || items.Count == 0) return;
-                if (scroll_show)
-                {
-                    if (rect_r.Contains(e.X, e.Y)) return;
-                }
+                if (scroll_show && rect_r.Contains(e.X, e.Y)) return;
                 OnTouchDown(e.X, e.Y);
-                foreach (var it in items)
-                {
-                    if (IMouseDown(items, it, e.X, e.Y)) return;
-                }
+                mDown = HitTestItem(e.X, e.Y + ScrollBar.ValueY, items);
             }
         }
 
@@ -1399,97 +1477,83 @@ namespace AntdUI
         {
             base.OnMouseUp(e);
             if (e.Button == MouseButtons.Right && !MouseRightCtrl) return;
-            if (ScrollBar.MouseUp() && OnTouchUp())
+            if (!ScrollBar.MouseUp() || !OnTouchUp()) return;
+            var down = mDown;
+            mDown = null;
+            if (down == null)
             {
-                if (items == null || items.Count == 0 || mDown == null)
-                {
-                    OnNonItemClick(e);
-                    return;
-                }
-                foreach (var it in items)
-                {
-                    var list = new List<MenuItem> { it };
-                    if (IMouseUp(items, it, list, e.X, e.Y, mDown, e)) return;
-                }
+                CloseTip();
+                CloseDropDown();
                 OnNonItemClick(e);
             }
-        }
-
-        bool IMouseDown(MenuItemCollection items, MenuItem item, int x, int y)
-        {
-            if (item.Visible)
+            else
             {
-                if (item is MenuDividerItem) return false;
-                bool can = item.CanExpand;
-                if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out _))
+                if (down.Enabled && down.Contains(e.X, e.Y, 0, ScrollBar.Value, out var btn))
                 {
-                    mDown = item;
-                    return true;
-                }
-                if (can && item.Expand && !collapsed)
-                {
-                    foreach (var sub in item.Sub)
+                    if (btn != null)
                     {
-                        if (IMouseDown(items, sub, x, y)) return true;
+                        OnCustomButtonClick(btn, down);
+                        return;
                     }
-                }
-            }
-            return false;
-        }
-
-        bool IMouseUp(MenuItemCollection items, MenuItem item, List<MenuItem> list, int x, int y, MenuItem MDown, MouseEventArgs e)
-        {
-            if (item.Visible)
-            {
-                bool can = item.CanExpand;
-                if (MDown == item)
-                {
-                    if (item.Enabled && item.Contains(x, y, 0, ScrollBar.Value, out var btn))
+                    if (OnSelectChanging(down))
                     {
-                        if (btn == null)
+                        if (down.CanExpand && (IsModeNeedDropDown || collapsed) && down.items != null && down.items.Count > 0) OpenDropDown(down);
+                        else if (down.CanExpand)
                         {
-                            if (OnSelectChanging(item))
-                            {
-                                if (can)
-                                {
-                                    if (IsModeNeedDropDown && Trigger == Trigger.Click && item.items != null && item.items.Count > 0)
-                                    {
-                                        if (subForm == null) OpenDropDown(item);
-                                        else CloseDropDown();
-                                    }
-                                    else item.Expand = !item.Expand;
-                                }
-                                else
-                                {
-                                    IUSelect(items);
-                                    if (list.Count > 1)
-                                    {
-                                        foreach (var it in list) it.Select = true;
-                                    }
-                                    item.Select = true;
-                                    SelectItem = item;
-                                    OnItemClick(item, e);
-                                    Invalidate();
-                                }
-                            }
+                            CloseDropDown();
+                            down.Expand = !down.Expand;
                         }
-                        else OnCustomButtonClick(btn, item);
+                        else
+                        {
+                            CloseDropDown();
+                            IUSelect(items!);
+                            down.Select = true;
+                            ISelectParent(down);
+                            SelectItem = down;
+                            OnItemClick(down, e);
+                            Invalidate();
+                        }
                     }
-                    return true;
                 }
-                if (item is MenuDividerItem) return false;
-                if (can && item.Expand && !collapsed)
+                else
                 {
-                    foreach (var sub in item.Sub)
+                    CloseTip();
+                    CloseDropDown();
+                    OnNonItemClick(e);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 命中测试（只判断，不改变悬浮状态）
+        /// </summary>
+        MenuItem? HitTestItem(int x, int y, MenuItemCollection? items)
+        {
+            if (items == null || items.Count == 0) return null;
+            foreach (var it in items)
+            {
+                if (it.show && it.Visible)
+                {
+                    if (it is MenuDividerItem) return null;
+                    if (it.rect.Contains(x, y)) return it;
+                    if (it.CanExpand && it.Expand && !collapsed)
                     {
-                        var list_ = new List<MenuItem>(list.Count + 1);
-                        list_.AddRange(list);
-                        list_.Add(sub);
-                        if (IMouseUp(items, sub, list_, x, y, MDown, e)) return true;
+                        var hit = HitTestItem(x, y, it.Sub);
+                        if (hit != null) return hit;
                     }
                 }
             }
-            return false;
+            return null;
+        }
+
+        void ISelectParent(MenuItem item)
+        {
+            var parent = item.ParentItem;
+            while (parent != null)
+            {
+                parent.Select = true;
+                parent = parent.ParentItem;
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1527,21 +1591,7 @@ namespace AntdUI
                             if (it.show) it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
                         }
                     }
-                    else if (mode == TMenuMode.Inline)
-                    {
-                        foreach (var it in items) IMouseMove(it, e.X, e.Y, ref count, ref hand);
-                    }
-                    else if (mode == TMenuMode.InlineNoText)
-                    {
-                        foreach (var it in items)
-                        {
-                            if (it.show)
-                            {
-                                it.Contains(e.X, e.Y, 0, ScrollBar.Value, ref hand, ref count);
-                                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, e.X, e.Y, ref count, ref hand);
-                            }
-                        }
-                    }
+                    else if (mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText) IMouseMove(items, e.X, e.Y, ref count, ref hand);
                     else
                     {
                         foreach (var it in items)
@@ -1556,12 +1606,16 @@ namespace AntdUI
             else ILeave();
         }
 
-        void IMouseMove(MenuItem it, int x, int y, ref int count, ref int hand)
+        void IMouseMove(MenuItemCollection? items, int x, int y, ref int count, ref int hand)
         {
-            if (it.show)
+            if (items == null || items.Count == 0) return;
+            foreach (var it in items)
             {
-                if (it.Contains(x, y, 0, ScrollBar.Value, ref hand, ref count)) return;
-                if (it.items != null && it.items.Count > 0) foreach (var sub in it.items) IMouseMove(sub, x, y, ref count, ref hand);
+                if (it.show)
+                {
+                    if (it.Contains(x, y, 0, ScrollBar.Value, ref hand, ref count)) return;
+                    IMouseMove(it.items, x, y, ref count, ref hand);
+                }
             }
         }
 
@@ -1569,7 +1623,6 @@ namespace AntdUI
 
         protected override bool CanMouseMove { get; set; } = true;
 
-        MenuItem? tmpItem;
         protected override bool OnMouseHover(int x, int y)
         {
             if (items == null || items.Count == 0)
@@ -1578,49 +1631,40 @@ namespace AntdUI
                 CloseDropDown();
                 return false;
             }
+            var pos = PointToClient(MousePosition);
+            if (pos.X != x || pos.Y != y) return false;
+            if (!ClientRectangle.Contains(pos)) return false;
+
             if (scroll_show && rect_r.Contains(x, y))
             {
-                tmpItem = null;
                 CloseTip();
-                if (subForm == null)
+                var list = new List<MenuItem>(items.Count);
+                foreach (var item in items)
                 {
-                    var list = new List<MenuItem>(items.Count);
-                    foreach (var item in items)
-                    {
-                        if (item.rect.X > (rect_r.X - item.rect.Width)) list.Add(item);
-                    }
-                    subForm = new LayeredFormMenuDown(this, radius, rect_r, list);
-                    subForm.Show(this);
-                    return true;
+                    if (item.rect.X > (rect_r.X - item.rect.Width)) list.Add(item);
                 }
-                return false;
+                OpenScrollDropDown(list);
+                return true;
             }
             int sy = ScrollBar.Value;
             var it = GetItemMouseHover(items, x, y, sy, out int drop);
             if (it == null)
             {
-                tmpItem = null;
                 CloseTip();
-                CloseDropDown();
+                if (Trigger == Trigger.Hover) CloseDropDown();
+                return false;
             }
-            else
+            switch (drop)
             {
-                if (tmpItem == it) return false;
-                CloseTip();
-                CloseDropDown();
-                tmpItem = it;
-                switch (drop)
-                {
-                    case 0:
-                        if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
-                        return true;
-                    case 1:
-                        OpenDropDown(it);
-                        return true;
-                    case 2:
-                        OpenTip(it, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - sy, it.rect.Width, rect_r.Height));
-                        return true;
-                }
+                case 0:
+                    if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
+                    return true;
+                case 1:
+                    OpenDropDown(it);
+                    return true;
+                case 2:
+                    OpenTip(it, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - sy, it.rect.Width, rect_r.Height));
+                    return true;
             }
             return false;
         }
@@ -1715,7 +1759,7 @@ namespace AntdUI
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            tmpItem = null;
+            mDown = null;
             if (RectangleToScreen(ClientRectangle).Contains(MousePosition)) return;
             CloseTip();
             ScrollBar.Leave();
@@ -1811,6 +1855,8 @@ namespace AntdUI
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            // Alt + 字母 命中助记键
+            if (ProcessMnemonicKey(keyData)) return true;
             var r = base.ProcessCmdKey(ref msg, keyData);
             switch (keyData)
             {
@@ -1836,6 +1882,15 @@ namespace AntdUI
                     break;
             }
             return r;
+        }
+
+        bool ProcessMnemonicKey(Keys keyData)
+        {
+            if (!useMnemonic) return false;
+            if ((keyData & Keys.Alt) != Keys.Alt) return false;
+            var code = keyData & Keys.KeyCode;
+            if (code < Keys.A || code > Keys.Z) return false;
+            return ProcessMnemonic((char)code);
         }
 
         bool FKeyUp(bool r)
@@ -1976,10 +2031,7 @@ namespace AntdUI
         {
             if (item.CanExpand)
             {
-                if (IsModeNeedDropDown)
-                {
-                    if (subForm == null) OpenDropDown(item);
-                }
+                if (IsModeNeedDropDown) OpenDropDown(item);
                 else item.Expand = true;
             }
             return true;
@@ -2259,15 +2311,51 @@ namespace AntdUI
 
         bool OpenDropDown(MenuItem it)
         {
-            if (it.items == null || it.items.Count == 0) return true;
+            if (it.items == null || it.items.Count == 0)
+            {
+                CloseDropDown();
+                return true;
+            }
+            if (subForm is LayeredFormMenuDown form && !form.IsDisposed)
+            {
+                if (form.Tag is MenuItem old && old == it) return false;
+                CloseDropDown();
+            }
             select_x = 0;
-            subForm = new LayeredFormMenuDown(this, radius, it.Rect(0, ScrollBar.ValueY), it.items);
-            subForm.Show(this);
+            var down = new LayeredFormMenuDown(this, radius, it.Rect(0, ScrollBar.ValueY), it.items) { Tag = it };
+            AttachSubForm(down).Show(this);
             return false;
         }
+
+        void OpenScrollDropDown(List<MenuItem> list)
+        {
+            if (list.Count == 0) CloseDropDown();
+            if (subForm is LayeredFormMenuDown form && !form.IsDisposed)
+            {
+                if (form.Tag is List<MenuItem> old && old.Count == list.Count) return;
+                CloseDropDown();
+            }
+            select_x = 0;
+            var down = new LayeredFormMenuDown(this, radius, rect_r, list) { Tag = list };
+            AttachSubForm(down).Show(this);
+        }
+
+        /// <summary>
+        /// 绑定下拉窗体：窗体自行关闭（Esc、选中项等）时同步清理引用，避免后续悬浮/助记键命中已释放窗体
+        /// </summary>
+        LayeredFormMenuDown AttachSubForm(LayeredFormMenuDown form)
+        {
+            subForm = form;
+            form.Disposed += (a, b) =>
+            {
+                if (ReferenceEquals(subForm, form)) subForm = null;
+            };
+            return form;
+        }
+
         void CloseDropDown()
         {
-            subForm?.Close();
+            subForm?.IClose();
             subForm = null;
         }
 
