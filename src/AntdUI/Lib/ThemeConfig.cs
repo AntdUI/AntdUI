@@ -20,7 +20,7 @@ namespace AntdUI
         public void Change(bool dark)
         {
             ChangeBefore(dark);
-            form.Dark = dark;
+            form.Mode = dark ? TAMode.Dark : TAMode.Light;
             if (btn != null) btn.Toggle = dark;
             if (dark)
             {

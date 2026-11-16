@@ -6,6 +6,7 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace AntdUI
@@ -183,106 +184,133 @@ namespace AntdUI
 
         public Bitmap ToBitmap(Bitmap bmp)
         {
-            var vertex = new PointF[] { d, a, b, c };
-
-            using (var srcCB = new ImageData())
+            using (var src = BgraImage.FromBitmap(bmp))
             {
-                srcCB.FromBitmap(bmp);
-
-                int srcH = bmp.Height, srcW = bmp.Width;
-
-                #region setVertex
-
-                float xmin = float.MaxValue;
-                float ymin = xmin;
-                float xmax = float.MinValue;
-                float ymax = xmax;
-                for (int i = 0; i < 4; i++)
-                {
-                    xmax = Math.Max(xmax, vertex[i].X);
-                    ymax = Math.Max(ymax, vertex[i].Y);
-                    xmin = Math.Min(xmin, vertex[i].X);
-                    ymin = Math.Min(ymin, vertex[i].Y);
-                }
-                var rect = new Rectangle((int)xmin, (int)ymin, (int)(xmax - xmin), (int)(ymax - ymin));
-
-                Vector AB = new Vector(vertex[0], vertex[1]), BC = new Vector(vertex[1], vertex[2]), CD = new Vector(vertex[2], vertex[3]), DA = new Vector(vertex[3], vertex[0]);
-                AB /= AB.Magnitude;
-                BC /= BC.Magnitude;
-                CD /= CD.Magnitude;
-                DA /= DA.Magnitude;
-
-                #endregion
-
-                #region 返回
-
-                using (var destCB = new ImageData())
-                {
-                    destCB.A = new byte[rect.Width, rect.Height];
-                    destCB.B = new byte[rect.Width, rect.Height];
-                    destCB.G = new byte[rect.Width, rect.Height];
-                    destCB.R = new byte[rect.Width, rect.Height];
-                    byte[,] srcA = srcCB.A!, srcB = srcCB.B!, srcG = srcCB.G!, srcR = srcCB.R!;
-                    byte[,] destA = destCB.A!, destB = destCB.B!, destG = destCB.G!, destR = destCB.R!;
-                    var ptInPlane = new PointF();
-                    int x1, x2, y1, y2;
-                    double dab, dbc, dcd, dda;
-                    float dx1, dx2, dy1, dy2, dx1y1, dx1y2, dx2y1, dx2y2, nbyte;
-
-                    int y = 0, x;
-                    while (++y < rect.Height)
-                    {
-                        x = 0;
-                        while (++x < rect.Width)
-                        {
-                            var srcPt = new Point(x, y);
-                            srcPt.Offset(rect.X, rect.Y);
-
-                            if ((!Vector.IsCCW(srcPt, vertex[0], vertex[1])) && (!Vector.IsCCW(srcPt, vertex[1], vertex[2])) && (!Vector.IsCCW(srcPt, vertex[2], vertex[3])) && (!Vector.IsCCW(srcPt, vertex[3], vertex[0])))
-                            {
-                                dab = Math.Abs((new Vector(vertex[0], srcPt)).CrossProduct(AB));
-                                dbc = Math.Abs((new Vector(vertex[1], srcPt)).CrossProduct(BC));
-                                dcd = Math.Abs((new Vector(vertex[2], srcPt)).CrossProduct(CD));
-                                dda = Math.Abs((new Vector(vertex[3], srcPt)).CrossProduct(DA));
-                                ptInPlane.X = (float)(srcW * (dda / (dda + dbc)));
-                                ptInPlane.Y = (float)(srcH * (dab / (dab + dcd)));
-
-                                x1 = (int)ptInPlane.X;
-                                y1 = (int)ptInPlane.Y;
-
-                                if (x1 >= 0 && x1 < srcW && y1 >= 0 && y1 < srcH)
-                                {
-                                    x2 = (x1 == srcW - 1) ? x1 : x1 + 1;
-                                    y2 = (y1 == srcH - 1) ? y1 : y1 + 1;
-                                    dx1 = ptInPlane.X - x1;
-                                    if (dx1 < 0) dx1 = 0;
-                                    dx1 = 1f - dx1;
-                                    dx2 = 1f - dx1;
-                                    dy1 = ptInPlane.Y - y1;
-                                    if (dy1 < 0) dy1 = 0;
-                                    dy1 = 1f - dy1;
-                                    dy2 = 1f - dy1;
-                                    dx1y1 = dx1 * dy1;
-                                    dx1y2 = dx1 * dy2;
-                                    dx2y1 = dx2 * dy1;
-                                    dx2y2 = dx2 * dy2;
-                                    nbyte = srcA[x1, y1] * dx1y1 + srcA[x2, y1] * dx2y1 + srcA[x1, y2] * dx1y2 + srcA[x2, y2] * dx2y2;
-                                    destA[x, y] = (byte)nbyte;
-                                    nbyte = srcB[x1, y1] * dx1y1 + srcB[x2, y1] * dx2y1 + srcB[x1, y2] * dx1y2 + srcB[x2, y2] * dx2y2;
-                                    destB[x, y] = (byte)nbyte;
-                                    nbyte = srcG[x1, y1] * dx1y1 + srcG[x2, y1] * dx2y1 + srcG[x1, y2] * dx1y2 + srcG[x2, y2] * dx2y2;
-                                    destG[x, y] = (byte)nbyte;
-                                    nbyte = srcR[x1, y1] * dx1y1 + srcR[x2, y1] * dx2y1 + srcR[x1, y2] * dx1y2 + srcR[x2, y2] * dx2y2;
-                                    destR[x, y] = (byte)nbyte;
-                                }
-                            }
-                        }
-                    }
-                    return destCB.ToBitmap();
-                }
+                return ToBitmap(src);
             }
+        }
+
+        /// <summary>
+        /// 快速透视变换：源像素以交错 BGRA 整段布局采样（单缓存流），点到四条边的带符号距离用行内 DDA 增量计算
+        /// </summary>
+        internal unsafe Bitmap ToBitmap(BgraImage srcBmp)
+        {
+            var vertex = new PointF[4] { d, a, b, c };
+            int srcW = srcBmp.Width, srcH = srcBmp.Height;
+
+            #region 投影包围盒（并补上原先被跳过的第 0 行/列）
+
+            float xmin = float.MaxValue;
+            float ymin = xmin;
+            float xmax = float.MinValue;
+            float ymax = xmax;
+            for (int i = 0; i < 4; i++)
+            {
+                xmax = Math.Max(xmax, vertex[i].X);
+                ymax = Math.Max(ymax, vertex[i].Y);
+                xmin = Math.Min(xmin, vertex[i].X);
+                ymin = Math.Min(ymin, vertex[i].Y);
+            }
+            int rx = (int)xmin, ry = (int)ymin;
+            int rw = (int)(xmax - xmin) + 1, rh = (int)(ymax - ymin) + 1;
+            if (rw <= 0 || rh <= 0 || srcW <= 0 || srcH <= 0) return new Bitmap(1, 1);
 
             #endregion
+
+            #region 边距离函数（凸四边形内部四个带符号距离同号，其比值与绝对距离的比值一致）
+
+            // 边 P1->P2（单位方向 ex, ey）：s(x, y) = ey * x - ex * y + (ex * P1.Y - ey * P1.X)
+            EdgeOf(vertex[0], vertex[1], out double abDx, out double abDy, out double abC);
+            EdgeOf(vertex[1], vertex[2], out double bcDx, out double bcDy, out double bcC);
+            EdgeOf(vertex[2], vertex[3], out double cdDx, out double cdDy, out double cdC);
+            EdgeOf(vertex[3], vertex[0], out double daDx, out double daDy, out double daC);
+
+            #endregion
+
+            var bmp = new Bitmap(rw, rh, PixelFormat.Format32bppArgb);
+            var bmpData = bmp.LockBits(new Rectangle(0, 0, rw, rh), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            try
+            {
+                int stride = bmpData.Stride;
+                byte[] src = srcBmp.Pixels;
+                fixed (byte* srcPtr = src)
+                {
+                    byte* dst = (byte*)bmpData.Scan0;
+                    for (int y = 0; y < rh; y++)
+                    {
+                        double py = ry + y;
+                        // 行起点距离，随后逐像素做 DDA 增量（每像素仅 4 次加法）
+                        double sAB = abDx * rx + abDy * py + abC;
+                        double sBC = bcDx * rx + bcDy * py + bcC;
+                        double sCD = cdDx * rx + cdDy * py + cdC;
+                        double sDA = daDx * rx + daDy * py + daC;
+                        byte* row = dst + y * stride;
+                        for (int x = 0; x < rw; x++)
+                        {
+                            bool pos = sAB > 0;
+                            if (pos == (sBC > 0) && pos == (sCD > 0) && pos == (sDA > 0))
+                            {
+                                double uDen = sDA + sBC;
+                                double vDen = sAB + sCD;
+                                if (uDen != 0 && vDen != 0)
+                                {
+                                    float ppx = (float)(srcW * (sDA / uDen));
+                                    float ppy = (float)(srcH * (sAB / vDen));
+                                    int x1 = (int)ppx;
+                                    if (x1 < 0) x1 = 0;
+                                    else if (x1 > srcW - 1) x1 = srcW - 1;
+                                    int x2 = x1 + 1;
+                                    if (x2 > srcW - 1) x2 = srcW - 1;
+                                    int y1 = (int)ppy;
+                                    if (y1 < 0) y1 = 0;
+                                    else if (y1 > srcH - 1) y1 = srcH - 1;
+                                    int y2 = y1 + 1;
+                                    if (y2 > srcH - 1) y2 = srcH - 1;
+                                    float wx = ppx - x1;
+                                    if (wx < 0) wx = 0;
+                                    else if (wx > 1) wx = 1;
+                                    float wy = ppy - y1;
+                                    if (wy < 0) wy = 0;
+                                    else if (wy > 1) wy = 1;
+                                    float w1x = 1f - wx, w1y = 1f - wy;
+                                    float w00 = w1x * w1y, w10 = wx * w1y, w01 = w1x * wy, w11 = wx * wy;
+                                    byte* p00 = srcPtr + ((y1 * srcW + x1) << 2);
+                                    byte* p10 = srcPtr + ((y1 * srcW + x2) << 2);
+                                    byte* p01 = srcPtr + ((y2 * srcW + x1) << 2);
+                                    byte* p11 = srcPtr + ((y2 * srcW + x2) << 2);
+                                    row[0] = (byte)(p00[0] * w00 + p10[0] * w10 + p01[0] * w01 + p11[0] * w11);
+                                    row[1] = (byte)(p00[1] * w00 + p10[1] * w10 + p01[1] * w01 + p11[1] * w11);
+                                    row[2] = (byte)(p00[2] * w00 + p10[2] * w10 + p01[2] * w01 + p11[2] * w11);
+                                    row[3] = (byte)(p00[3] * w00 + p10[3] * w10 + p01[3] * w01 + p11[3] * w11);
+                                }
+                            }
+                            sAB += abDx; sBC += bcDx; sCD += cdDx; sDA += daDx;
+                            row += 4;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                bmp.UnlockBits(bmpData);
+            }
+            return bmp;
+        }
+
+        static void EdgeOf(PointF p1, PointF p2, out double dx, out double dy, out double c)
+        {
+            double ex = p2.X - p1.X, ey = p2.Y - p1.Y;
+            double len = Math.Sqrt(ex * ex + ey * ey);
+            if (len <= 0)
+            {
+                dx = 0; dy = 0; c = 0;
+                return;
+            }
+            ex /= len;
+            ey /= len;
+            dx = ey;
+            dy = -ex;
+            c = ex * p1.Y - ey * p1.X;
         }
     }
 }

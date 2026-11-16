@@ -85,12 +85,22 @@ namespace AntdUI
 
         #region 主题
 
-        TAMode colorScheme = TAMode.Auto;
+        internal TAMode? colorScheme;
         /// <summary>
         /// 色彩模式
         /// </summary>
-        [Description("色彩模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TAMode.Auto)]
+        [Description("色彩模式"), Category(nameof(CategoryAttribute.Appearance))]
         public TAMode ColorScheme
+        {
+            get
+            {
+                if (colorScheme.HasValue) return colorScheme.Value;
+                return GetParentColorScheme(Parent);
+            }
+            set => InternalColorScheme = value;
+        }
+
+        TAMode? InternalColorScheme
         {
             get => colorScheme;
             set
@@ -99,7 +109,60 @@ namespace AntdUI
                 colorScheme = value;
                 OnColorSchemeChanged(EventArgs.Empty);
                 if (IsHandleCreated) Invalidate();
+                NotifyColorSchemeChanged(Controls);
                 OnPropertyChanged(nameof(ColorScheme));
+            }
+        }
+
+        /// <summary>
+        /// 沿父级链查找环境色彩模式
+        /// </summary>
+        /// <param name="parent">父级</param>
+        static TAMode GetParentColorScheme(Control? parent)
+        {
+            while (parent != null)
+            {
+                if (parent is IControl control)
+                {
+                    if (control.InternalColorScheme.HasValue) return control.InternalColorScheme.Value;
+                }
+                else if (parent is DoubleBufferForm formd && formd.Tag is Form form)
+                {
+                    // 双缓冲窗口的实际宿主窗体
+                    if (form is BaseForm baseForm) return baseForm.Mode;
+                }
+                else if (parent is BaseForm baseForm) return baseForm.Mode;
+                parent = parent.Parent;
+            }
+            return TAMode.Auto;
+        }
+
+        /// <summary>
+        /// 是否应序列化 ColorScheme
+        /// </summary>
+        public bool ShouldSerializeColorScheme() => colorScheme.HasValue;
+
+        /// <summary>
+        /// 重置 ColorScheme，恢复继承父级
+        /// </summary>
+        public void ResetColorScheme() => InternalColorScheme = null;
+
+        /// <summary>
+        /// 环境色彩模式变化时，通知所有子级
+        /// </summary>
+        /// <param name="controls">控件集合</param>
+        internal static void NotifyColorSchemeChanged(ControlCollection controls)
+        {
+            foreach (Control it in controls)
+            {
+                if (it is IControl control)
+                {
+                    if (control.InternalColorScheme.HasValue) continue;
+                    control.OnColorSchemeChanged(EventArgs.Empty);
+                    if (control.IsHandleCreated) control.Invalidate();
+                    if (control.Controls.Count > 0) NotifyColorSchemeChanged(control.Controls);
+                }
+                else if (it.Controls.Count > 0) NotifyColorSchemeChanged(it.Controls);
             }
         }
 

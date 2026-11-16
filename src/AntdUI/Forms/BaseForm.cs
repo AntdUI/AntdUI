@@ -38,7 +38,7 @@ namespace AntdUI
         /// <summary>
         /// 深色模式
         /// </summary>
-        [Description("深色模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        [Description("深色模式"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false), Obsolete("use Mode"), Browsable(false)]
         public bool Dark
         {
             get => dark;
@@ -46,11 +46,7 @@ namespace AntdUI
             {
                 if (dark == value) return;
                 dark = value;
-                mode = dark ? TAMode.Dark : TAMode.Light;
-                if (IsHandleCreated)
-                {
-                    if (Win32.WindowTheme(this, value)) SetThemeOK(value);
-                }
+                Mode = dark ? TAMode.Dark : TAMode.Light;
             }
         }
 
@@ -65,9 +61,15 @@ namespace AntdUI
             set
             {
                 if (mode == value) return;
+                bool isdark = value == TAMode.Dark || (value == TAMode.Auto && Config.Mode == TMode.Dark);
+                Dark = isdark;
                 mode = value;
-                if (mode == TAMode.Dark || (mode == TAMode.Auto || Config.Mode == TMode.Dark)) Dark = true;
-                else Dark = false;
+                if (IsHandleCreated)
+                {
+                    if (Win32.WindowTheme(this, isdark)) SetThemeOK(isdark);
+                }
+                // 环境色彩模式变化，通知窗体内所有 Auto 子级重绘
+                IControl.NotifyColorSchemeChanged(Controls);
             }
         }
 
@@ -90,6 +92,7 @@ namespace AntdUI
         internal void SetTheme()
         {
             if (DisableTheme) return;
+            bool dark = mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark);
             if (mode == TAMode.Auto)
             {
                 if (themeConfig == null)
@@ -98,19 +101,17 @@ namespace AntdUI
                     {
                         themeConfig = new ThemeConfig(this);
                         themeConfig.SetConfig(Config.ThemeConfig);
-                        SetTheme(themeConfig);
+                        SetTheme(themeConfig, dark);
                     }
                 }
-                else SetTheme(themeConfig);
+                else SetTheme(themeConfig, dark);
             }
-            bool dark = mode == TAMode.Dark || (mode == TAMode.Auto && Config.Mode == TMode.Dark);
             if (Win32.WindowTheme(this, dark, true)) SetThemeOK(dark);
         }
         protected virtual void SetThemeOK(bool dark) { }
-        internal void SetTheme(ThemeConfig themeConfig)
+        internal void SetTheme(ThemeConfig themeConfig, bool dark)
         {
             if (themeConfig.pageheader == null && (themeConfig.headerLight.HasValue || themeConfig.headerDark.HasValue)) themeConfig.pageheader = GetPageHeader(Controls);
-            dark = Config.IsDark;
             themeConfig.Change(dark);
             EventHub.Add(this);
         }
