@@ -72,5 +72,18 @@ namespace Demo.Controls
                 menu2.Width = (int)(251 * form.Dpi);
             }
         }
+
+        private void Select1_SelectedIndexChanged(object sender, AntdUI.IntEventArgs e)
+        {
+            var value = select1.Items[e.Value];
+            if (value is "Click")
+            {
+                menu2.Trigger = AntdUI.Trigger.Click;
+            }
+            else
+            {
+                menu2.Trigger = AntdUI.Trigger.Hover;
+            }
+        }
     }
 }
