@@ -29,7 +29,7 @@ namespace AntdUI
         bool leftAlign = false;
 
         ScrollBar ScrollBar;
-        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items)
+        public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items, bool up = false)
         {
             CloseMode = CloseMode.Leave;
             ColorScheme = control.ColorScheme;
@@ -79,7 +79,13 @@ namespace AntdUI
             {
                 // 垂直模式：子菜单显示在主菜单项右侧
                 x = point.X + control.Width - rect.X - shadow + offsetX;
-                y = point.Y + rect.Y + shadow + offsetY;
+                if (up)
+                {
+                    // 外层反向项贴底：子菜单以项底部为基准向上展开
+                    animateConfig.Inverted = true;
+                    y = point.Y + rect.Bottom - TargetRect.Height + shadow2 - offsetY;
+                }
+                else y = point.Y + rect.Y + shadow + offsetY;
             }
 
             // 边界限制

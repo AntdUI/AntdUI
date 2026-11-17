@@ -267,6 +267,24 @@ namespace AntdUI
         /// </summary>
         public bool IsModeHorizontal => mode == TMenuMode.Horizontal || mode == TMenuMode.Horizontal_Arrow;
 
+        TOrientation align = TOrientation.Left;
+        /// <summary>
+        /// 水平对齐
+        /// </summary>
+        /// <remarks>仅水平模式生效。<see cref="TOrientation.Left"/> 左对齐（默认）、<see cref="TOrientation.None"/> 居中、<see cref="TOrientation.Right"/> 右对齐。</remarks>
+        [Description("水平对齐（仅水平模式生效，None 居中）"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TOrientation.Left)]
+        public TOrientation HorizontalAlign
+        {
+            get => align;
+            set
+            {
+                if (align == value) return;
+                align = value;
+                ChangeList(true);
+                OnPropertyChanged(nameof(Align));
+            }
+        }
+
         /// <summary>
         /// 触发下拉的行为
         /// </summary>
@@ -742,6 +760,7 @@ namespace AntdUI
                             int ico_size = (int)(rect_r.Height * .6F), ico_xy = (rect_r.Height - ico_size) / 2;
                             rect_r_ico = new Rectangle(rect_r.X + ico_xy, rect_r.Y + ico_xy, ico_size, ico_size);
                         }
+                        else ChangeListHorizontalAlign(rect, items!, x > 0 ? x - sp : 0, sp); // 有滚动条时保持原样
                     }
                     else if (mode == TMenuMode.Horizontal_Arrow)
                     {
@@ -754,6 +773,7 @@ namespace AntdUI
                             int ico_size = (int)(rect_r.Height * .6F), ico_xy = (rect_r.Height - ico_size) / 2;
                             rect_r_ico = new Rectangle(rect_r.X + ico_xy, rect_r.Y + ico_xy, ico_size, ico_size);
                         }
+                        else ChangeListHorizontalAlign(rect, items!, x > 0 ? x - sp : 0, sp); // 有滚动条时保持原样
                     }
                     else
                     {
@@ -812,6 +832,7 @@ namespace AntdUI
         int ChangeList(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int inlineIndent, int iconsp, int scx, int depth)
         {
             int collapsedWidth = 0, i = 0;
+            if (Parent == null) foreach (var it in items) it.ReverseLayout = false;
             foreach (var it in items)
             {
                 it.Index = i;
@@ -835,6 +856,7 @@ namespace AntdUI
                         {
                             if (collapsed)
                             {
+                                it.SubHeight = 0; // 折叠时不占位，避免反向贴底按旧高度计算
                                 int oldy = y;
                                 int size2 = ChangeList(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, inlineIndent, iconsp, scx, depth + 1);
                                 if (size2 > collapsedWidth) collapsedWidth = size2;
@@ -861,11 +883,13 @@ namespace AntdUI
                     }
                 }
             }
+            if (Parent == null) ChangeListVerticalReverse(rect, items, sp);
             return collapsedWidth;
         }
         int ChangeListInlineNoText(Rectangle rect, Canvas g, MenuItem? Parent, MenuItemCollection items, ref int y, int height, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
         {
             int collapsedWidth = 0, i = 0;
+            if (Parent == null) foreach (var it in items) it.ReverseLayout = false;
             foreach (var it in items)
             {
                 it.Index = i;
@@ -889,6 +913,7 @@ namespace AntdUI
                         {
                             if (collapsed)
                             {
+                                it.SubHeight = 0; // 折叠时不占位，避免反向贴底按旧高度计算
                                 int oldy = y;
                                 int size2 = ChangeListInlineNoText(rect, g, it, it.Sub, ref y, height, icon_size, arrow_size, gap, gap2, divider, sp, sp2, iconsp);
                                 if (size2 > collapsedWidth) collapsedWidth = size2;
@@ -916,11 +941,13 @@ namespace AntdUI
                     }
                 }
             }
+            if (Parent == null) ChangeListVerticalReverse(rect, items, sp);
             return collapsedWidth;
         }
         void ChangeListHorizontal(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
         {
             int i = 0;
+            foreach (var it in items) it.ReverseLayout = false;
             foreach (var it in items)
             {
                 it.Index = i;
@@ -958,6 +985,7 @@ namespace AntdUI
         void ChangeListHorizontalArrow(Rectangle rect, Canvas g, MenuItemCollection items, ref int x, int icon_size, int arrow_size, int gap, int gap2, int divider, int sp, int sp2, int iconsp)
         {
             int i = 0;
+            foreach (var it in items) it.ReverseLayout = false;
             foreach (var it in items)
             {
                 it.Index = i;
@@ -1011,6 +1039,124 @@ namespace AntdUI
                     }
                 }
                 if (it.items?.Count > 0) it.SubY = rect.Height; // 子菜单从主菜单底部开始
+            }
+        }
+
+        /// <summary>
+        /// 水平模式：对齐与反向项定位（仅内容未超出可视区域时生效）
+        /// </summary>
+        /// <param name="rect">可用区域</param>
+        /// <param name="items">菜单集合</param>
+        /// <param name="width">正向排布后的内容宽度</param>
+        /// <param name="sp">项间距</param>
+        void ChangeListHorizontalAlign(Rectangle rect, MenuItemCollection items, int width, int sp)
+        {
+            if (width > rect.Width) return; // 超出可视区域（可滚动），保持左对齐
+            switch (align)
+            {
+                case TOrientation.None:
+                    // 居中：整体居中，反向已无空间，忽略 Reverse
+                    int ox = (rect.Width - width) / 2;
+                    if (ox > 0) foreach (var it in items) it.SetOffset(ox, 0);
+                    return;
+                case TOrientation.Right:
+                    // 右对齐：整体贴右，反向已无空间，忽略 Reverse
+                    int ox2 = rect.Width - width;
+                    if (ox2 > 0) foreach (var it in items) it.SetOffset(ox2, 0);
+                    return;
+            }
+            // 左对齐：Reverse 项贴右堆叠（保持原有先后顺序）
+            int w = 0, count = 0;
+            foreach (var it in items)
+            {
+                if (!it.Visible || !it.Reverse) continue;
+                w += it.rect.Width;
+                count++;
+            }
+            if (count == 0) return;
+            if (count > 1) w += sp * (count - 1);
+            int xr = rect.Right - w;
+            if (xr < rect.X + width) return; // 放不下，保持正向排布
+            foreach (var it in items)
+            {
+                if (!it.Visible || !it.Reverse) continue;
+                it.SetOffset(xr - it.rect.X, 0);
+                it.ReverseLayout = true;
+                xr += it.rect.Width + sp;
+            }
+        }
+
+        /// <summary>
+        /// 垂直模式：外层反向项贴底堆叠，展开内容朝上（内层容器高度不足，只处理最外层）
+        /// </summary>
+        /// <param name="rect">可用区域</param>
+        /// <param name="items">菜单集合</param>
+        /// <param name="sp">项间距</param>
+        void ChangeListVerticalReverse(Rectangle rect, MenuItemCollection items, int sp)
+        {
+            bool inline = mode == TMenuMode.Inline || mode == TMenuMode.InlineNoText;
+            int fh = 0, rh = 0, fc = 0, rc = 0;
+            foreach (var it in items)
+            {
+                if (!it.Visible) continue;
+                int ih = it.rect.Height + (inline && it.Expand ? it.SubHeight : 0);
+                if (it.Reverse)
+                {
+                    rh += ih;
+                    rc++;
+                }
+                else
+                {
+                    fh += ih;
+                    fc++;
+                }
+            }
+            if (rc == 0) return;
+            if (fc > 1) fh += sp * (fc - 1);
+            if (rc > 1) rh += sp * (rc - 1);
+            int total = fh + rh + (fc > 0 && rc > 0 ? sp : 0); // 两组之间还差一个间距
+            if (total > rect.Height) return; // 内容超出可视高度（出现滚动条），按原来的方式
+
+            void OffsetSub(MenuItemCollection subs, int x, int y)
+            {
+                foreach (var it in subs)
+                {
+                    it.SetOffset(x, y);
+                    if (it.items != null) OffsetSub(it.items, x, y);
+                }
+            }
+
+            // 正向项贴顶部紧凑排列
+            int yf = rect.Y;
+            foreach (var it in items)
+            {
+                if (!it.Visible || it.Reverse) continue;
+                int sub = inline && it.Expand ? it.SubHeight : 0;
+                int dy = yf - it.rect.Y;
+                if (dy != 0)
+                {
+                    if (sub > 0 && it.items != null) OffsetSub(it.items, 0, dy);
+                    it.SetOffset(0, dy);
+                    if (sub > 0) it.SubY += dy;
+                }
+                yf += it.rect.Height + sub + sp;
+            }
+
+            // 反向项从底部向上堆叠，展开的子项整体平移到父项上方
+            int yb = rect.Bottom - rh;
+            foreach (var it in items)
+            {
+                if (!it.Visible || !it.Reverse) continue;
+                int sub = inline && it.Expand ? it.SubHeight : 0;
+                if (sub > 0 && it.items != null)
+                {
+                    int sy = yb + sp / 2 - it.SubY;
+                    OffsetSub(it.items, 0, sy);
+                    it.SubY = yb;
+                }
+                it.SetOffset(0, (yb + sub) - it.rect.Y);
+                it.ReverseLayout = true;
+                yb += it.rect.Height + sub + sp;
             }
         }
 
@@ -1092,7 +1238,12 @@ namespace AntdUI
                         if (!collapsed && (it.Expand || it.ExpandThread) && it.items != null && it.items.Count > 0)
                         {
                             var state = g.Save();
-                            if (it.ExpandThread) g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, it.ExpandHeight * it.ExpandProg));
+                            if (it.ExpandThread)
+                            {
+                                int eh = (int)(it.ExpandHeight * it.ExpandProg);
+                                if (it.ReverseLayout) g.SetClip(new RectangleF(rect.X, it.rect.Y - eh, rect.Width, eh));
+                                else g.SetClip(new RectangleF(rect.X, it.rect.Bottom, rect.Width, eh));
+                            }
                             if (ShowSubBack) g.Fill(sub_bg, new RectangleF(rect.X, it.SubY, rect.Width, it.SubHeight));
                             PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split, enable);
                             g.Restore(state);
@@ -1121,11 +1272,18 @@ namespace AntdUI
                                     it.ExpandTemp = new Bitmap(rect.Width, it.ExpandHeight);
                                     using (var g2 = Graphics.FromImage(it.ExpandTemp).HighLay(Dpi, true))
                                     {
-                                        g2.TranslateTransform(0, -it.rect.Bottom);
+                                        // Reverse 生效时子项位于父项上方，位图原点随之上移
+                                        if (it.ReverseLayout) g2.TranslateTransform(0, -(it.rect.Y - it.ExpandHeight));
+                                        else g2.TranslateTransform(0, -it.rect.Bottom);
                                         PaintItemExpand(g2, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split, enable);
                                     }
                                 }
-                                g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
+                                if (it.ReverseLayout)
+                                {
+                                    g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Y - it.ExpandRHeight, it.ExpandTemp.Width, it.ExpandRHeight),
+                                        new Rectangle(0, it.ExpandHeight - it.ExpandRHeight, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandProg);
+                                }
+                                else g.Image(it.ExpandTemp, new Rectangle(rect.X, it.rect.Bottom, it.ExpandTemp.Width, it.ExpandRHeight), it.ExpandTemp.Width, it.ExpandRHeight, it.ExpandProg);
                             }
                             else PaintItemExpand(g, rect, sy, it.items, fore, fore_active, fore_enabled, back_hover, back_active, radius, brush_split, enable);
                         }
@@ -1657,11 +1815,19 @@ namespace AntdUI
             switch (drop)
             {
                 case 0:
-                    if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
+                    if (Trigger == Trigger.Hover)
+                    {
+                        if (OpenDropDown(it)) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
+                    }
+                    else if (subForm == null) OpenTip(it, it.Rect(0, ScrollBar.ValueY));
                     return true;
                 case 1:
-                    OpenDropDown(it);
-                    return true;
+                    if (Trigger == Trigger.Hover)
+                    {
+                        OpenDropDown(it);
+                        return true;
+                    }
+                    break;
                 case 2:
                     OpenTip(it, new Rectangle(it.rect.X, it.rect.Y + (it.rect.Height / 2) - sy, it.rect.Width, rect_r.Height));
                     return true;
@@ -2322,7 +2488,7 @@ namespace AntdUI
                 CloseDropDown();
             }
             select_x = 0;
-            var down = new LayeredFormMenuDown(this, radius, it.Rect(0, ScrollBar.ValueY), it.items) { Tag = it };
+            var down = new LayeredFormMenuDown(this, radius, it.Rect(0, ScrollBar.ValueY), it.items, it.ReverseLayout) { Tag = it };
             AttachSubForm(down).Show(this);
             return false;
         }
@@ -2554,6 +2720,26 @@ namespace AntdUI
             {
                 if (visible == value) return;
                 visible = value;
+                Invalidates();
+            }
+        }
+
+        bool reverse = false;
+        /// <summary>
+        /// 反向
+        /// </summary>
+        /// <remarks>
+        /// 仅最外层项生效（内层容器高度不足）。水平模式贴右堆叠，垂直模式贴底堆叠且展开的子项朝上；
+        /// 出现滚动条或空间不足时保持正向排布。
+        /// </remarks>
+        [Description("是否反向"), Category(nameof(CategoryAttribute.Data)), DefaultValue(false)]
+        public bool Reverse
+        {
+            get => reverse;
+            set
+            {
+                if (reverse == value) return;
+                reverse = value;
                 Invalidates();
             }
         }
@@ -3071,6 +3257,22 @@ namespace AntdUI
             Show = true;
         }
 
+        /// <summary>
+        /// 整体偏移（对齐、反向定位）
+        /// </summary>
+        internal void SetOffset(int x, int y)
+        {
+            if (x == 0 && y == 0) return;
+            rect = new Rectangle(rect.X + x, rect.Y + y, rect.Width, rect.Height);
+            txt_rect = new Rectangle(txt_rect.X + x, txt_rect.Y + y, txt_rect.Width, txt_rect.Height);
+            ico_rect = new Rectangle(ico_rect.X + x, ico_rect.Y + y, ico_rect.Width, ico_rect.Height);
+            arrow_rect = new Rectangle(arrow_rect.X + x, arrow_rect.Y + y, arrow_rect.Width, arrow_rect.Height);
+            if (Button != null)
+            {
+                foreach (var btn in Button) btn.rect = new Rectangle(btn.rect.X + x, btn.rect.Y + y, btn.rect.Width, btn.rect.Height);
+            }
+        }
+
         internal Rectangle rect { get; set; }
         internal Rectangle arrow_rect { get; set; }
 
@@ -3145,6 +3347,11 @@ namespace AntdUI
 
         internal int SubY { get; set; }
         internal int SubHeight { get; set; }
+
+        /// <summary>
+        /// 本次布局 Reverse 是否生效（生效时子菜单向上展开）
+        /// </summary>
+        internal bool ReverseLayout { get; set; }
 
         internal int ExpandHeight { get; set; }
         internal int ExpandRHeight { get; set; }
@@ -3231,6 +3438,12 @@ namespace AntdUI
         public MenuItem SetVisible(bool value = false)
         {
             visible = value;
+            return this;
+        }
+
+        public MenuItem SetReverse(bool value = true)
+        {
+            Reverse = value;
             return this;
         }
 
