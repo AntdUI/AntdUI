@@ -581,13 +581,16 @@ namespace AntdUI
             else SetCursor(false);
             if (hoveindexold == hoveindex) return;
             hoveindexold = hoveindex;
-            subForm?.IClose();
-            subForm = null;
+            if (PARENT is Menu { Trigger: Trigger.Hover })
+            {
+                subForm?.IClose();
+                subForm = null;
+            }
             if (hoveindex > -1)
             {
                 if (PARENT is Menu menu) menu.select_x = select_x;
 
-                if (Items[hoveindex] is OMenuItem it && it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
+                if (PARENT is Menu { Trigger: Trigger.Hover } && Items[hoveindex] is OMenuItem it && it.Sub != null && it.Sub.Count > 0 && PARENT != null) OpenDown(it);
             }
         }
         protected override void OnMouseUp(MouseButtons button, int clicks, int x, int y, int delta)
@@ -620,9 +623,18 @@ namespace AntdUI
                 if (subForm == null) OpenDown(it);
                 else
                 {
-                    if (subForm.Guid == it.Val) return false;
-                    subForm?.IClose();
+                    if (subForm.Guid == it.Val)
+                    {
+                        if (PARENT is Menu { Trigger: Trigger.Click })
+                        {
+                            subForm.IClose();
+                            subForm = null;
+                        }
+                        return false;
+                    }
+                    subForm.IClose();
                     subForm = null;
+                    OpenDown(it);
                 }
             }
             return false;

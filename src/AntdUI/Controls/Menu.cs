@@ -1838,7 +1838,7 @@ namespace AntdUI
         MenuItem? GetItemMouseHover(MenuItemCollection items, int x, int y, int sy, out int drop)
         {
             drop = 0;
-            if (collapsed)
+            if (collapsed && Trigger == Trigger.Hover)
             {
                 foreach (var it in items)
                 {
