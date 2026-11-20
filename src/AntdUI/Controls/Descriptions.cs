@@ -293,7 +293,7 @@ namespace AntdUI
             get
             {
                 if (string.IsNullOrEmpty(fieldKey)) return null;
-                return Items.Find(di=> di != null && di.Label== fieldKey || di.ID == fieldKey || di.Name == fieldKey);
+                return Items.Find(di => di != null && di.Label == fieldKey || di.ID == fieldKey || di.Name == fieldKey);
             }
         }
         #endregion

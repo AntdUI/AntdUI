@@ -1007,7 +1007,7 @@ namespace AntdUI
                                     g.Fill(brush, 0, 0, bmp.Width, bmp.Height);
                                 }
                             }
-                            Helper.Blur(bmp, BlurBarHeight * 6);
+                            Helper.BlurCSS(bmp, BlurBarHeight / 2);
                             IBlurBar(BlurBar, bmp);
                         }
                         else IBlurBar(BlurBar, null);

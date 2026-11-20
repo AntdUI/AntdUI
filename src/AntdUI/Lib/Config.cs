@@ -205,6 +205,11 @@ namespace AntdUI
         public static bool ShadowEnabled { get; set; } = true;
 
         /// <summary>
+        /// 阴影模式兼容老版本（支持多色）
+        /// </summary>
+        public static bool ShadowModeCompatible { get; set; }
+
+        /// <summary>
         /// 阴影大小 (默认10像素)
         /// </summary>
         public static int ShadowSize { get; set; } = 10;

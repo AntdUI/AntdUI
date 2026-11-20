@@ -844,7 +844,7 @@ namespace AntdUI
             float _saturation = saturation;
             float _lightness = lightness;
             float c = (1 - Math.Abs(2 * _lightness - 1)) * _saturation;
-            float _hue = (hue % 360) / 60;
+            float _hue = (((hue % 360F) + 360F) % 360F) / 60F;
             float x = c * (1 - Math.Abs(_hue % 2 - 1));
             float r = 0, g = 0, b = 0;
             if (_hue >= 0 && _hue < 1)
@@ -874,7 +874,7 @@ namespace AntdUI
             else if (_hue > 4 && _hue <= 5)
             {
                 r = x;
-                g = 9;
+                g = 0;
                 b = c;
             }
             else if (_hue > 5 && _hue <= 6)
@@ -938,7 +938,7 @@ namespace AntdUI
 
 
         /// <summary>
-        /// 字符串转颜色（支持 rgba/rgb/16进制 格式）
+        /// 字符串转颜色（支持 rgba/rgb/hsl/16进制 格式）
         /// </summary>
         /// <param name="str">颜色字符串</param>
         public static Color ToColor(this string? str)
@@ -946,6 +946,7 @@ namespace AntdUI
             if (str == null) return Color.Black;
             try
             {
+                str = str.Trim();
                 if (str.StartsWith("rgba"))
                 {
                     str = str.Substring(4).Trim().TrimStart('(').TrimEnd(')');
@@ -957,6 +958,10 @@ namespace AntdUI
                     str = str.Substring(3).Trim().TrimStart('(').TrimEnd(')');
                     var arr = str.Split(new string[] { " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
                     if (arr.Length == 3 && int.TryParse(arr[0], out int r) && int.TryParse(arr[1], out int g) && int.TryParse(arr[2], out int b)) return Color.FromArgb(rgbbyte(r), rgbbyte(g), rgbbyte(b));
+                }
+                else if (str.StartsWith("hsl"))
+                {
+                    if (TryParseHSL(str, out var hsl)) return hsl!.Value;
                 }
                 else if (str.Length > 5)
                 {
@@ -974,6 +979,84 @@ namespace AntdUI
             {
             }
             return Color.Black;
+        }
+
+        /// <summary>
+        /// 解析 hsl()/hsla() 颜色字符串
+        /// </summary>
+        /// <param name="str">例如 hsl(0 100% 63%)、hsl(0, 100%, 63%)、hsl(0 100% 63% / 0.5)、hsla(0, 100%, 63%, 0.5)</param>
+        /// <param name="color">解析结果</param>
+        static bool TryParseHSL(string str, out Color? color)
+        {
+            str = str.Substring(3).Trim().TrimStart('(').TrimEnd(')');
+            float alpha = 1F;
+            int slash = str.IndexOf('/');
+            if (slash >= 0)
+            {
+                if (!TryParseRatio(str.Substring(slash + 1), out alpha))
+                {
+                    color = null;
+                    return false;
+                }
+                str = str.Substring(0, slash).Trim();
+            }
+            var arr = str.Split(new string[] { " ", " , ", ", ", "," }, StringSplitOptions.RemoveEmptyEntries);
+            if (arr.Length < 3)
+            {
+                color = null;
+                return false;
+            }
+            if (TryParseHue(arr[0], out float hue) && TryParseRatio(arr[1], out float saturation) && TryParseRatio(arr[2], out float lightness))
+            {
+                if (slash < 0 && arr.Length > 3 && !TryParseRatio(arr[3], out alpha))
+                {
+                    color = null;
+                    return false;
+                }
+                hue = ((hue % 360F) + 360F) % 360F;
+                color = HSLToColor(hue, rgbfloat(saturation), rgbfloat(lightness), rgbfloat(alpha));
+                return true;
+            }
+            color = null;
+            return false;
+        }
+
+        /// <summary>
+        /// 解析色相（支持 deg/grad/rad/turn 单位，默认角度）
+        /// </summary>
+        /// <param name="str">色相字符串</param>
+        /// <param name="hue">色相（角度）</param>
+        static bool TryParseHue(string str, out float hue)
+        {
+            hue = 0F;
+            str = str.Trim();
+            if (str.Length == 0) return false;
+            float scale = 1F;
+            if (str.EndsWith("turn", StringComparison.OrdinalIgnoreCase)) { str = str.Substring(0, str.Length - 4); scale = 360F; }
+            else if (str.EndsWith("grad", StringComparison.OrdinalIgnoreCase)) { str = str.Substring(0, str.Length - 4); scale = 0.9F; }
+            else if (str.EndsWith("rad", StringComparison.OrdinalIgnoreCase)) { str = str.Substring(0, str.Length - 3); scale = 180F / (float)Math.PI; }
+            else if (str.EndsWith("deg", StringComparison.OrdinalIgnoreCase)) { str = str.Substring(0, str.Length - 3); }
+            if (!float.TryParse(str.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float value)) return false;
+            hue = value * scale;
+            return true;
+        }
+
+        /// <summary>
+        /// 解析百分比/比例值（100% 或 100 或 1 均表示满值）
+        /// </summary>
+        /// <param name="str">数值字符串</param>
+        /// <param name="ratio">结果（0-1）</param>
+        static bool TryParseRatio(string str, out float ratio)
+        {
+            ratio = 0F;
+            str = str.Trim();
+            if (str.Length == 0) return false;
+            bool percent = str.EndsWith("%");
+            if (percent) str = str.Substring(0, str.Length - 1);
+            if (!float.TryParse(str.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float value)) return false;
+            if (percent || value > 1F) value /= 100F;
+            ratio = value < 0F ? 0F : (value > 1F ? 1F : value);
+            return true;
         }
 
         /// <summary>

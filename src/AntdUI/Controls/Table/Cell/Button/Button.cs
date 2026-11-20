@@ -354,7 +354,7 @@ namespace AntdUI
         #region 加载动画
 
         bool loading = false;
-        internal int AnimationLoadingValue = 0;
+        internal float AnimationLoadingValue = 0f;
         /// <summary>
         /// 加载状态
         /// </summary>
@@ -370,15 +370,20 @@ namespace AntdUI
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(PARENT.PARENT, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearFixedConfig(PARENT.PARENT, i =>
                     {
                         AnimationLoadingValue = i;
                         OnPropertyChanged();
                         return loading;
-                    }, 10, 360, 6).SetEnd(() => OnPropertyChanged(true)));
+                    }, 10, Animation.TotalFrames(10, LoadingSpeedTime)).SetEnd(() => OnPropertyChanged(true)).SetPriority());
                 }
             }
         }
+
+        /// <summary>
+        /// 加载速度(毫秒)
+        /// </summary>
+        public int LoadingSpeedTime { get; set; } = 1000;
 
         /// <summary>
         /// 加载图标

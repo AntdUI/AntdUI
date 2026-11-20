@@ -92,6 +92,7 @@ namespace AntdUI
             else if (config is AnimationLoopConfig animationLoopConfig) Run(animationLoopConfig);
             else if (config is AnimationFixedConfig animationFixedConfig) Run(animationFixedConfig);
             else if (config is AnimationFixed2Config animationFixed2Config) Run(animationFixed2Config);
+            else if (config is AnimationLinearFixedConfig animationLinearFixedConfig) Run(animationLinearFixedConfig);
         }
 
         void Run(AnimationLinearConfig config)
@@ -402,6 +403,24 @@ namespace AntdUI
                     }
                 }
                 return true;
+            }, config);
+        }
+        void Run(AnimationLinearFixedConfig config)
+        {
+            Run(() =>
+            {
+                while (true)
+                {
+                    for (int i = 0; i < config.TotalFrames; i++)
+                    {
+                        if (token.Wait(config.Control)) return false;
+                        else
+                        {
+                            if (config.Call(Animation.Animate((i + 1), config.TotalFrames, 1F, config.Type))) Thread.Sleep(config.Interval);
+                            else return true;
+                        }
+                    }
+                }
             }, config);
         }
 
@@ -722,6 +741,69 @@ namespace AntdUI
             Add = add;
             if (add > 0) Max = 1F;
             else Max = 0F;
+            return this;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// 线性增量帧率动画
+    /// </summary>
+    public class AnimationLinearFixedConfig : IAnimationConfig
+    {
+        public AnimationLinearFixedConfig(Control control, Func<float, bool> call, int interval, int totalFrames, AnimationType value = AnimationType.Liner)
+        {
+            Control = control;
+            Call = call;
+            Interval = interval;
+            TotalFrames = totalFrames;
+            Type = value;
+        }
+
+        /// <summary>
+        /// 句柄
+        /// </summary>
+        public Control Control { get; set; }
+
+        /// <summary>
+        /// 任务
+        /// </summary>
+        public Func<float, bool> Call { get; set; }
+
+        /// <summary>
+        /// 动画间隔
+        /// </summary>
+        public int Interval { get; set; }
+
+        /// <summary>
+        /// 总帧数
+        /// </summary>
+        public int TotalFrames { get; set; }
+
+        public AnimationType Type { get; set; }
+
+        #region 设置
+
+        public AnimationLinearFixedConfig SetCall(Func<float, bool> value)
+        {
+            Call = value;
+            return this;
+        }
+        public AnimationLinearFixedConfig SetInterval(int value)
+        {
+            Interval = value;
+            return this;
+        }
+        public AnimationLinearFixedConfig SetTotalFrames(int value)
+        {
+            TotalFrames = value;
+            return this;
+        }
+
+        public AnimationLinearFixedConfig SetType(AnimationType value = AnimationType.Ball)
+        {
+            Type = value;
             return this;
         }
 

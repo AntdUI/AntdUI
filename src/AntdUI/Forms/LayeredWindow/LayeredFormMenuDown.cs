@@ -632,7 +632,7 @@ namespace AntdUI
                         }
                         return false;
                     }
-                    subForm.IClose();
+                    subForm?.IClose();
                     subForm = null;
                     OpenDown(it);
                 }

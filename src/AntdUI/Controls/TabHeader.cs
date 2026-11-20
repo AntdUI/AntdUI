@@ -592,13 +592,12 @@ namespace AntdUI
                     {
                         if (ThreadLoading == null)
                         {
-                            ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
+                            ThreadLoading = new AnimationTask(new AnimationLinearFixedConfig(this, i =>
                             {
-                                AnimationLoadingValue += 6;
-                                if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
+                                AnimationLoadingValue = i;
                                 Invalidate();
                                 return true;
-                            }, 10).SetEnd(Invalidate).SetPriority());
+                            }, 10, Animation.TotalFrames(10, LoadingSpeedTime)).SetEnd(Invalidate).SetPriority());
                         }
                     }
                     else
@@ -761,7 +760,7 @@ namespace AntdUI
 
         #region Loading
 
-        int AnimationLoadingValue = 0;
+        float AnimationLoadingValue = 0f;
         AnimationTask? ThreadLoading;
 
         protected override void Dispose(bool disposing)

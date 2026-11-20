@@ -360,7 +360,7 @@ namespace AntdUI
         #region 加载动画
 
         bool loading = false;
-        int AnimationLoadingValue = 0;
+        float AnimationLoadingValue = 0f;
         /// <summary>
         /// 加载状态
         /// </summary>
@@ -375,18 +375,23 @@ namespace AntdUI
                 ThreadLoading?.Dispose();
                 if (loading)
                 {
-                    ThreadLoading = new AnimationTask(new AnimationLoopConfig(this, () =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearFixedConfig(this, i =>
                     {
-                        AnimationLoadingValue += 6;
-                        if (AnimationLoadingValue > 360) AnimationLoadingValue = 0;
+                        AnimationLoadingValue = i;
                         Invalidate();
                         return loading;
-                    }, 10).SetEnd(Invalidate).SetPriority());
+                    }, 10, Animation.TotalFrames(10, LoadingSpeedTime)).SetEnd(Invalidate).SetPriority());
                 }
                 else Invalidate();
                 OnPropertyChanged(nameof(Loading));
             }
         }
+
+        /// <summary>
+        /// 加载速度(毫秒)
+        /// </summary>
+        [Description("加载速度(毫秒)"), Category("加载"), DefaultValue(1000)]
+        public int LoadingSpeedTime { get; set; } = 1000;
 
         /// <summary>
         /// 加载图标

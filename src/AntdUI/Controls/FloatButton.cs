@@ -196,6 +196,11 @@ namespace AntdUI
             public int Gap { get; set; } = 40;
 
             /// <summary>
+            /// 加载速度(毫秒)
+            /// </summary>
+            public int LoadingSpeedTime { get; set; } = 1000;
+
+            /// <summary>
             /// 按钮列表
             /// </summary>
             public ConfigBtn[] Btns { get; set; }
@@ -326,7 +331,7 @@ namespace AntdUI
             }
 
             bool loading = false;
-            internal int AnimationLoadingValue = 0;
+            internal float AnimationLoadingValue = 0f;
             /// <summary>
             /// 加载
             /// </summary>

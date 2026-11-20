@@ -80,7 +80,7 @@ namespace AntdUI
                 Loading = loading;
                 if (loading)
                 {
-                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearFixedConfig(this, i =>
                     {
                         foreach (var it in config.Btns)
                         {
@@ -88,7 +88,7 @@ namespace AntdUI
                         }
                         Print();
                         return Loading;
-                    }, 10, 360, 6).SetEnd(PrintNo));
+                    }, 10, Animation.TotalFrames(10, config.LoadingSpeedTime)).SetEnd(PrintNo).SetPriority());
                 }
                 else
                 {

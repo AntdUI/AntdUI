@@ -5,7 +5,6 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -229,6 +228,31 @@ namespace AntdUI
         /// </summary>
         [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
         public int WaveSize { get; set; } = 4;
+
+        /// <summary>
+        /// 波浪颜色
+        /// </summary>
+        [Description("波浪颜色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        [Editor(typeof(Design.ColorEditor), typeof(UITypeEditor))]
+        public Color? WaveColor { get; set; }
+
+        /// <summary>
+        /// 波浪渐变色
+        /// </summary>
+        [Description("波浪渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? WaveColorExtend { get; set; }
+
+        /// <summary>
+        /// 波浪投影
+        /// </summary>
+        [Description("波浪投影"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        public bool WaveShadow { get; set; }
+
+        /// <summary>
+        /// 波浪投影大小
+        /// </summary>
+        [Description("波浪投影大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public int? WaveShadowSize { get; set; }
 
         int radius = 6;
         /// <summary>
@@ -879,8 +903,7 @@ namespace AntdUI
         #region 加载动画
 
         bool loading = false;
-        int AnimationLoadingValue = 0;
-        int AnimationLoadingWaveValue = 0;
+        float AnimationLoadingValue = 0f;
         /// <summary>
         /// 加载状态
         /// </summary>
@@ -898,19 +921,23 @@ namespace AntdUI
                 if (loading)
                 {
                     AnimationClickValue = 0;
-                    ThreadLoading = new AnimationTask(new AnimationLinearConfig(this, i =>
+                    ThreadLoading = new AnimationTask(new AnimationLinearFixedConfig(this, i =>
                     {
-                        AnimationLoadingWaveValue += 1;
-                        if (AnimationLoadingWaveValue > 100) AnimationLoadingWaveValue = 0;
                         AnimationLoadingValue = i;
                         Invalidate();
                         return loading;
-                    }, 10, 360, 6).SetEnd(Invalidate));
+                    }, 10, Animation.TotalFrames(10, LoadingSpeedTime)).SetEnd(Invalidate).SetPriority());
                 }
                 else Invalidate();
                 OnPropertyChanged(nameof(Loading));
             }
         }
+
+        /// <summary>
+        /// 加载速度(毫秒)
+        /// </summary>
+        [Description("加载速度(毫秒)"), Category("加载"), DefaultValue(1000)]
+        public int LoadingSpeedTime { get; set; } = 1000;
 
         /// <summary>
         /// 加载图标
@@ -1467,108 +1494,73 @@ namespace AntdUI
         /// </summary>
         protected virtual void PaintShadow(Canvas g, Rectangle rect_t, Rectangle rect, GraphicsPath path, Color color, float radius)
         {
-            float wave = (WaveSize * Dpi / 2);
-            using (var path_shadow = new RectangleF(rect.X, rect.Y + wave, rect.Width, rect.Height).RoundPath(radius))
+            float wave = WaveSize * Dpi, wavez2 = wave / 2f;
+            if (loading)
             {
-                path_shadow.AddPath(path, false);
-                g.Fill(color, path_shadow);
+                int width2 = rect.Width * 2;
+                var progX = (int)(width2 * AnimationLoadingValue);
+                if (WaveShadow)
+                {
+                    int tmpWave = (int)(WaveShadowSize.HasValue ? (WaveShadowSize.Value * Dpi) : wave);
+                    var rect_client = ClientRectangle;
+                    using (var bmp = new Bitmap(rect_client.Width, rect_client.Height))
+                    {
+                        using (var g_tmp = Graphics.FromImage(bmp).HighLay())
+                        {
+                            using (var bg = WaveColorExtend.BrushEx(new Rectangle(rect.X - progX, rect.Y + rect.Height, width2, tmpWave), WaveColor ?? color))
+                            {
+                                g_tmp.Fill(bg, new Rectangle(rect.X, rect.Y + rect.Height, rect.Width, tmpWave));
+                            }
+                        }
+                        Helper.BlurCSS(bmp, tmpWave);
+                        g.Image(bmp, rect_client);
+                    }
+                }
+                var rect_shadow = new RectangleF(rect.X, rect.Y, rect.Width, rect.Height + wavez2);
+                using (var path_shadow = rect_shadow.RoundPath(radius))
+                {
+                    path_shadow.AddPath(path, false);
+                    using (var bg = WaveColorExtend.BrushEx(new RectangleF(rect.X - progX, rect.Y, width2, rect_shadow.Height), WaveColor ?? color))
+                    {
+                        g.Fill(bg, path_shadow);
+                    }
+                }
+            }
+            else
+            {
+                if (WaveShadow)
+                {
+                    int tmpWave = (int)(WaveShadowSize.HasValue ? (WaveShadowSize.Value * Dpi) : wave);
+                    var rect_client = ClientRectangle;
+                    using (var bmp = new Bitmap(rect_client.Width, rect_client.Height))
+                    {
+                        using (var g_tmp = Graphics.FromImage(bmp).HighLay())
+                        {
+                            var rect_tmp = new Rectangle(rect.X, rect.Y + rect.Height, rect.Width, tmpWave);
+                            using (var bg = WaveColorExtend.BrushEx(rect_tmp, WaveColor ?? color))
+                            {
+                                g_tmp.Fill(bg, rect_tmp);
+                            }
+                        }
+                        Helper.BlurCSS(bmp, tmpWave);
+                        g.Image(bmp, rect_client);
+                    }
+                }
+                var rect_shadow = new RectangleF(rect.X, rect.Y, rect.Width, rect.Height + wavez2);
+                using (var path_shadow = rect_shadow.RoundPath(radius))
+                {
+                    path_shadow.AddPath(path, false);
+                    using (var bg = WaveColorExtend.BrushEx(rect_shadow, WaveColor ?? color))
+                    {
+                        g.Fill(bg, path_shadow);
+                    }
+                }
             }
         }
 
         protected virtual void PaintLoadingWave(Canvas g, GraphicsPath path, Rectangle rect, float radius)
         {
-            if (loading && LoadingWaveValue > 0)
-            {
-                using (var brush = new SolidBrush(LoadingWaveColor ?? Colour.Fill.Get(ColorScheme, nameof(Button), Name)))
-                {
-                    if (LoadingWaveValue >= 1) g.Fill(brush, path);
-                    else if (LoadingWaveCount > 0)
-                    {
-                        var state = g.Save();
-                        g.SetClip(path);
-                        g.ResetTransform();
-                        int len = (int)(LoadingWaveSize * Dpi), count = LoadingWaveCount * 2 + 2;
-                        if (count < 6) count = 6;
-                        if (LoadingWaveVertical)
-                        {
-                            int pvalue = (int)(rect.Height * LoadingWaveValue);
-                            if (pvalue > 0)
-                            {
-                                pvalue = rect.Height - pvalue + rect.Y;
-                                int wd = rect.Width / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue - len, rr = rect.X + wd * count;
-                                using (var path_line = new GraphicsPath())
-                                {
-                                    g.TranslateTransform(-(wd + wd2 * (AnimationLoadingWaveValue / 100F)), 0);
-                                    path_line.AddLine(rr, pvalue, rr, rect.Bottom);
-                                    path_line.AddLine(rr, rect.Bottom, rect.X, rect.Bottom);
-                                    path_line.AddLine(rect.X, rect.Bottom, rect.X, pvalue);
-                                    bool to = true;
-                                    var line = new List<PointF>(count);
-                                    for (int i = 0; i < count + 1; i++)
-                                    {
-                                        line.Add(new PointF(rect.X + wd * i, to ? pvalue : pvalue2));
-                                        to = !to;
-                                    }
-                                    path_line.AddCurve(line.ToArray());
-                                    g.Fill(brush, path_line);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            int pvalue = (int)(rect.Width * LoadingWaveValue);
-                            if (pvalue > 0)
-                            {
-                                pvalue += rect.X;
-                                int wd = rect.Height / LoadingWaveCount, wd2 = wd * 2, pvalue2 = pvalue + len, rb = rect.Y + wd * count;
-
-                                using (var path_line = new GraphicsPath())
-                                {
-                                    g.TranslateTransform(0, -(wd + wd2 * (AnimationLoadingWaveValue / 100F)));
-                                    path_line.AddLine(pvalue, rb, rect.X, rb);
-                                    path_line.AddLine(rect.X, rb, rect.X, rect.Y);
-                                    path_line.AddLine(rect.X, rect.Y, pvalue, rect.Y);
-                                    bool to = true;
-                                    var line = new List<PointF>(count);
-                                    for (int i = 0; i < count + 1; i++)
-                                    {
-                                        line.Add(new PointF(to ? pvalue : pvalue2, rect.Y + wd * i));
-                                        to = !to;
-                                    }
-                                    path_line.AddCurve(line.ToArray());
-                                    g.Fill(brush, path_line);
-                                }
-                            }
-                        }
-                        g.Restore(state);
-                    }
-                    else
-                    {
-                        if (LoadingWaveVertical)
-                        {
-                            int pvalue = (int)(rect.Height * LoadingWaveValue);
-                            if (pvalue > 0)
-                            {
-                                var state = g.Save();
-                                g.SetClip(new Rectangle(rect.X, rect.Y + rect.Height - pvalue, rect.Width, pvalue));
-                                g.Fill(brush, path);
-                                g.Restore(state);
-                            }
-                        }
-                        else
-                        {
-                            int pvalue = (int)(rect.Width * LoadingWaveValue);
-                            if (pvalue > 0)
-                            {
-                                var state = g.Save();
-                                g.SetClip(new Rectangle(rect.X, rect.Y, pvalue, rect.Height));
-                                g.Fill(brush, path);
-                                g.Restore(state);
-                            }
-                        }
-                    }
-                }
-            }
+            if (loading && LoadingWaveValue > 0) g.PaintLoadingWave(path, rect, radius, LoadingWaveColor ?? Colour.Fill.Get(ColorScheme, nameof(Button), Name), Dpi, LoadingWaveValue, AnimationLoadingValue, LoadingWaveCount, LoadingWaveSize, LoadingWaveVertical);
         }
         Size MeasureText(Canvas g, string? text, Rectangle rect, out int txt_height, out bool multiLine)
         {
