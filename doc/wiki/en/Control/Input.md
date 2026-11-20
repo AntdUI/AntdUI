@@ -12,84 +12,103 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | Original background color | Color | Transparent |
-||||
-**ForeColor** | Text color | Color`?` | `null` |
-**BackColor** | Background color | Color`?` | `null` |
-**BackExtend** | Background gradient color | string`?` | `null` |
-||||
-**BackgroundImage** | Background image | Image`?` | `null` |
-**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
-||||
-**BorderWidth** | Border width | float | 1F |
-**BorderColor** | Border color | Color`?` | `null` |
-**BorderHover** | Hover border color | Color`?` | `null` |
-**BorderActive** | Activate border color | Color`?` | `null` |
-||||
-**SelectionColor** | Select color | Color | 102, 0, 127, 255 |
-||||
-**CaretColor** | Caret color | Color`?` | `null` |
-**CaretSpeed** | Caret speed | int | 1000 |
-||||
-**WaveSize** | Wave size `Click animation` | int | 4 |
-**Radius** | Rounded corners | int | 6 |
-**Round** | Rounded corner style | bool | false |
-**Status** | Set verification status | [TType](Enum.md#ttype) | None |
-**Variant** | Variant | [TVariant](Enum.md#tvariant) | Outlined |
-||||
-**AllowClear** | Support clearing | bool | false |
-**AutoScroll** | Show scrollbars | bool | false |
 **Text** | Text | string ||
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**IsTextEmpty** | Is text empty | bool | true |
+**TextAlign** | Text alignment | HorizontalAlignment | Left |
 **TextTotalLine** | Total lines of text | int | 0 |
-**ImeMode** | IME (Input Method Editor) Status | ImeMode | NoControl |
+||||
+**ForeColor** | Text color | Color`?` | `null` |
 **EmojiFont** | EmojiFont | string`?` | `null` |
-**AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
-**Multiline** | Multiline | bool | false |
-**WordWrap** | Auto wrap | bool | true |
-**LineHeight** | Multi row height | int | 0 |
+**PrefixFore** | Prefix foreground | Color`?` | `null` |
+**SuffixFore** | Suffix foreground | Color`?` | `null` |
+||||
+**BackColor** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
+**OriginalBackColor** | Original background color | Color | Transparent |
+||||
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
+**IconRatio** | Icon Scale | float | 0.7F |
+**IconRatioRight** | Right icon ratio | float`?` | `null` |
+**LoadingIcon** | Loading icon | Image`?` | `null` |
+||||
+**LoadingWaveColor** | Water wave color | Color`?` | `null` |
+**LoadingWaveCount** | Number of water waves | int | 1 |
+**LoadingWaveSize** | Water wave size | int | 2 |
+**LoadingWaveValue** | Water wave progress | float | 0F |
+**LoadingWaveVertical** | Is the water wave vertical | bool | false |
+**WaveSize** | Wave size `Click animation` | int | 4 |
+||||
+**Loading** | Loading State | bool | false |
+**LoadingSpeedTime** | Loading speed (ms) | int | 1000 |
+**LoadingSvg** | Loading icon SVG | string`?` | `null` |
+**LoadingValue** | Loading progress | float | 0.3F |
+||||
 **ReadOnly** | Read only | bool | false |
-**PlaceholderText** | Watermark Text | string`?` | `null` |
-🌏 **LocalizationPlaceholderText** | International Watermark Text | string`?` | `null` |
-**PlaceholderColor** | Watermark color | Color`?` | `null` |
-**PlaceholderColorExtend** | Watermark gradient color | string`?` | `null` |
+**AllowClear** | Support clearing | bool | false |
+**AutoScroll** | Show scrollbars | bool | false |
+**CaretVisible** | Determines whether the caret is visible or hidden | bool | true |
+**HideSelection** | Whether to hide selection when losing focus | bool | true |
+**ImeMode** | IME (Input Method Editor) Status | ImeMode | NoControl |
+**JoinMode** | Join Mode | [TJoinMode](Enum.md#tjoinmode) | None |
+**SelectionColor** | Select color | Color | 102, 0, 127, 255 |
+**SetTextSelectionEnd** | Select to the end after setting text | bool | false |
+**UseContextMenu** | Use default context menu | bool | true |
+**UseSystemPasswordChar** | Use password box | bool | false |
+**VirtualMode** | Virtual mode | bool | false |
+**BorderHover** | Hover border color | Color`?` | `null` |
+**BorderActive** | Activate border color | Color`?` | `null` |
 **LostFocusClearSelection** | Loss of focus, clear selection | bool | true |
 ||||
-**TextAlign** | Text alignment | HorizontalAlignment | Left |
-**UseSystemPasswordChar** | Use password box | bool | false |
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 1F |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
+||||
+**AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
+**AdapterSystemMnemonic** | Adapt to system mnemonics | bool | false |
+**LineHeight** | Multi row height | int | 0 |
+**Lines** | Multi-line text collection | string[] | 
+**MaxLength** | Maximum Text Length | int | 32767 |
+**Multiline** | Multiline | bool | false |
+**PaddGap** | Border spacing ratio | float | 0.4F |
+**PaddingLR** | Left/right margin | int | 0 |
+**PrefixWidth** | Prefix width | int`?` | `null` |
+**SuffixWidth** | Suffix width | int`?` | `null` |
+**WordWrap** | Auto wrap | bool | true |
+||||
+**AcceptsEscape** | Whether multi-line editing allows input of Escape key | bool | false |
+**CaretColor** | Caret color | Color`?` | `null` |
+**CaretSpeed** | Caret speed | int | 1000 |
+**HandShortcutKeys** | Handle shortcut keys `Obsolete` | bool | true |
+**HasPrefix** | Whether to include prefix | bool | `false` |
+**HasSuffix** | Whether to include suffix | bool | `false` |
+**IsTextEmpty** | Is text empty | bool | true |
+**JoinLeft** | Connect left area `Combination button` `Obsolete` | bool | false |
+**JoinRight** | Connect right area `Combination button` `Obsolete` | bool | false |
 **PasswordChar** | Custom password characters | char | (char)0 |
 **PasswordCopy** | Passwords can be copied | bool | false |
 **PasswordPaste** | Password can be pasted | bool | true |
-**MaxLength** | Maximum Text Length | int | 32767 |
-||||
-**IconRatio** | Icon Scale | float | 0.7F |
-**IconRatioRight** | Right icon ratio | float`?` | `null` |
-**IconGap** | Ratio of icon to text spacing | float | 0.25F |
-**PaddGap** | Border spacing ratio | float | 0.4F |
+**PlaceholderColor** | Watermark color | Color`?` | `null` |
+**PlaceholderText** | Watermark Text | string`?` | `null` |
+🌏 **LocalizationPlaceholderText** | International Watermark Text | string`?` | `null` |
 **Prefix** | Prefix | Image`?` | `null` |
-**PrefixFore** | Prefix foreground | Color`?` | `null` |
+**PrefixFormat** | Prefix alignment | FormatFlags | `FormatFlags.Center \| FormatFlags.NoWrap` |
 **PrefixSvg** | Prefix SVG | string`?` | `null` |
 **PrefixText** | Prefix text | string`?` | `null` |
 🌏 **LocalizationPrefixText** | International Prefix Text | string`?` | `null` |
-**HasPrefix** | Whether to include prefix | bool | `false` |
-||||
+**RightToLeft** | Reverse | RightToLeft | No |
+**Status** | Set verification status | [TType](Enum.md#ttype) | None |
 **Suffix** | Suffix | Image`?` | `null` |
-**SuffixFore** | Suffix foreground | Color`?` | `null` |
+**SuffixFormat** | Suffix alignment | FormatFlags | `FormatFlags.Center \| FormatFlags.NoWrap` |
 **SuffixSvg** | Suffix SVG | string`?` | `null` |
 **SuffixText** | Suffix text | string`?` | `null` |
 🌏 **LocalizationSuffixText** | International Suffix Text | string`?` | `null` |
-**HasSuffix** | Whether to include suffix | bool | `false` |
+**Variant** | Variant | [TVariant](Enum.md#tvariant) | Outlined |
+**PlaceholderColorExtend** | Watermark gradient color | string`?` | `null` |
 ||||
-**JoinMode** | Join Mode | [TJoinMode](Enum.md#tjoinmode) | None |
-**JoinLeft** | Connect left area `Combination button` `Obsolete` | bool | false |
-**JoinRight** | Connect right area `Combination button` `Obsolete` | bool | false |
-||||
-**AdapterSystemMnemonic** | Adapt to system mnemonics | bool | false |
-**HandShortcutKeys** | Handle shortcut keys `Obsolete` | bool | true |
-**UseContextMenu** | Use default context menu | bool | true |
 |||
-**RightToLeft** | Reverse | RightToLeft | No |
 
 ### Methods
 

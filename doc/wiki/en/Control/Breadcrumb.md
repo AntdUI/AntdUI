@@ -12,15 +12,18 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Items** | Data | BreadcrumbItemCollection | [] |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeActive** | Activate Text color | Color`?` | `null` |
 ||||
+**PauseLayout** | Pause Layout | bool | false |
+||||
 **Radius** | Rounded corners | int | 4 |
+||||
 **Gap** | Gap | int | 12 |
 ||||
-**Items** | Data | BreadcrumbItemCollection | [] |
-||||
-**PauseLayout** | Pause Layout | bool | false |
+**Separator** | Gets or sets the separator | string | "/" |
 
 ### Events
 
@@ -36,8 +39,14 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**Tag** | User defined data | object`?` | `null` |
+||||
+**Fore** | Text color | Color`?` | `null`
+**ForeActive** | Activate Text color | Color`?` | `null` |
+||||
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+||||
+**Separator** | Gets or sets the custom trailing separator | string`?` | `null` |

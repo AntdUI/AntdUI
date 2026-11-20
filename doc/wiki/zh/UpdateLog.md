@@ -1,5 +1,28 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.20` 2026-11-20
+
+> 🎉 NET 11.0
+
+- ➕ Button 新增 Wave 系列属性
+- ➕ Preview 新增 MaskClosable 点击空白处是否允许关闭
+- ➕ Preview 新增 Loop 允许循环
+- ➕ Preview ImageTextContent 新增 TextPadding
+- ➕ Menu MenuItem 新增 RightText、Reverse
+- ➕ Menu 新增 HorizontalAlign、UseMnemonic
+- ➕ Menu 支持 Trigger.Click 折叠菜单和子菜单 ([#189](https://github.com/AntdUI/AntdUI/pull/189))
+- ➕ Descriptions 新增标题图标 TitleIconSvg ([!216](https://gitee.com/AntdUI/AntdUI/pulls/216))
+- ➕ Image3D 新增 3D 倾斜/边框、ShowText、TextAlign 属性以支持显示 Text ([!215](https://gitee.com/AntdUI/AntdUI/pulls/215))
+- ➕ Slider 新增 Increment 步长属性 ([!214](https://gitee.com/AntdUI/AntdUI/pulls/214))
+- ➕ ToColor 新增 hsl 解析
+- ➕ 新增 CSS 模糊（性能与 Blur 持平）/ 单通道模糊（最高速，适合窗口阴影）
+- ➕ IControl ColorScheme 支持继承父级
+- ✍️ Table EditAutoHeight 修复最底部错位
+- ✍️ 修复 Menu Trigger 交互
+- ✍️ 修复 Menu 子菜单碰撞屏幕弹出遮挡父菜单
+- ✍️ Image3D 优化 3D 翻转性能
+- ✍️ Carousel 修复无法点击面板指示点
+
 ### `2.4.19` 2026-11-09
 
 - ➕ ContextMenuStrip 项背景、渐变色样式适配更多

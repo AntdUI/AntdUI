@@ -15,10 +15,12 @@ Signal 信号强度 👚
 :--|:--|:--|:--|
 **Value** | 信号强度 | int | 0 `0-5` |
 ||||
-**StyleLine** | 启用线样式 | bool | false |
+**Fill** | 填充颜色 | Color`?` | `null` |
+||||
 **Loading** | 加载状态 | bool | false |
 ||||
-**Fill** | 填充颜色 | Color`?` | `null` |
+**StyleLine** | 启用线样式 | bool | false |
+||||
+**FillDanger** | 危险颜色 | Color`?` | `null` |
 **FillFully** | 满格颜色 | Color`?` | `null` |
 **FillWarn** | 警告颜色 | Color`?` | `null` |
-**FillDanger** | 危险颜色 | Color`?` | `null` |

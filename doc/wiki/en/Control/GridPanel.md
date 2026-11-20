@@ -11,9 +11,11 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Span** | Span | string | 50% 50%;50% 50% |
-**Gap** | Gap | int | 0 |
 **PauseLayout** | Pause Layout | bool | false |
+||||
+**Gap** | Gap | int | 0 |
+||||
+**Span** | Span | string | 50% 50%;50% 50% |
 
 ### ExtenderProvider
 

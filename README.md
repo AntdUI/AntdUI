@@ -81,19 +81,21 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| [**Transfer**](doc/wiki/en/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger**](doc/wiki/en/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| Data Display `24` | Animation | Disable |
+⬇️| Data Display `26` | Animation | Disable |
 ➡️| [**Avatar**](doc/wiki/en/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge**](doc/wiki/en/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar**](doc/wiki/en/Control/Calendar.md) | ✅ | ❎ |
 ➡️| [**Panel**](doc/wiki/en/Control/Panel.md) | ✅ | ❎ |
 ➡️| [**Carousel**](doc/wiki/en/Control/Carousel.md) | ✅ | ❎ |
 ➡️| [**Collapse**](doc/wiki/en/Control/Collapse.md) | ✅ | ❎ |
-➡️| **Descriptions** 🚧 | ✅ | ❎ |
+➡️| [**Descriptions**](doc/wiki/en/Control/Descriptions.md) | ✅ | ❎ |
+➡️| [**Statistic**](doc/wiki/en/Control/Statistic.md) | ✅ | ❎ |
 ➡️| [**Preview**](doc/wiki/en/Control/Preview.md) | ✅ | ✅ |
 ➡️| [**ImagePreview**](doc/wiki/en/Control/ImagePreview.md) | ✅ | ❎ |
 ➡️| [**Popover**](doc/wiki/en/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented**](doc/wiki/en/Control/Segmented.md) | ✅ | ✅ |
 ➡️| [**Table**](doc/wiki/en/Control/Table.md) | ✅ | ✅ |
+➡️| [**EditableTable**](doc/wiki/en/Control/EditableTable.md) | ✅ | ❎ |
 ➡️| [**Tabs**](doc/wiki/en/Control/Tabs.md) | ✅ | ❎ |
 ➡️| [**Tag**](doc/wiki/en/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline**](doc/wiki/en/Control/Timeline.md) | ❎ | ❎ |
@@ -129,7 +131,7 @@ Ant Design for WinForms, reimagines desktop app aesthetics with modern frontend 
 ➡️| **Docking** | ✅ | ❎ |
 ➡️| **Ribbon** | ✅ | ❎ |
 ➡️| **OutlookBar** | ✅ | ❎ |
-➡️| **Markdown** 🚧 | ✅ | ❎ |
+➡️| [**Markdown**](doc/wiki/en/Control/Markdown.md) | ✅ | ❎ |
 
 ### 🐿️ Donation
 ![Payment](doc/pre/Payment.png)

@@ -16,27 +16,39 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Text** | Text | string ||
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-|||
-**FontSize** | Font size | int`?` | `null` |
-**EmojiFont** | Emoji Font | string`?` | `null` |
-|||
-**DotSize** | Dot size | int | 4 |
-**DotGap** | Dot distance | int | 2 |
+**TextAlign** | Text alignment | ContentAlignment | MiddleCenter |
 **TextScale** | Text scale | float | 1F |
-**DotShape** | Dot shape | [LedDotShape](#leddotshape) | Square |
-|||
-**DotColor** | Dot color | Color`?` | `null` |
-**ShowOffLed** | Show off LED | bool | false |
-**OffDotColor** | Off LED color | Color`?` | `null` |
-|||
+||||
+**EmojiFont** | Emoji Font | string`?` | `null` |
+**FontSize** | Font size | int`?` | `null` |
+||||
 **Back** | Background color | Color`?` | `null` |
 **BackExtend** | Background color | string`?` | `null` |
-|||
+||||
+**ShowOffLed** | Show off LED | bool | false |
+||||
 **Shadow** | Shadow size | int | 0 |
 **ShadowColor** | Shadow color | Color`?` | `null` |
-**ShadowOpacity** | Shadow opacity | float | 0.3F |
 **ShadowOffsetX** | Shadow offset X | int | 0 |
 **ShadowOffsetY** | Shadow offset Y | int | 0 |
+**ShadowOpacity** | Shadow opacity | float | 0.3F |
+||||
+**DotGap** | Dot distance | int | 2 |
+**DotSize** | Dot size | int | 4 |
+||||
+**DotColor** | Dot color | Color`?` | `null` |
+**DotShape** | Dot shape | [LedDotShape](#leddotshape) | Square |
+**OffDotColor** | Off LED color | Color`?` | `null` |
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||
 
 ### Enum
 

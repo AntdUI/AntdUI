@@ -10,19 +10,22 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | Belonging window | Form | `Required` |
-**Content** | Content | Control | `Required` |
-**ColorScheme** | Color scheme | [TAMode](Enum.md#tamode) | Auto |
-**Mask** | Display mask or not | bool | true |
-**MaskClosable** | Click whether to allow the mask to be closed | bool | true |
-**ManualActivateParent** | Manually activate parent window after closing | bool | false |
-**Padding** | Padding | int | 24 |
-**Align** | Align | [TAlignMini](Enum.md#talignmini) | Right |
-**Dispose** | Should it be released | bool | true |
 **Tag** | User defined data | object`?` | `null` |
-**OnLoad** | Load callback | Action`?` | `null` |
-**OnClose** | Close callback | Action`?` | `null` |
+**Content** | Content | Control | `Required` |
+||||
 **DisplayDelay** | Display Delay `Adding delay can effectively avoid competing with Mask animation` | int | 100 |
+**MaskClosable** | Click whether to allow the mask to be closed | bool | true |
+**OnClose** | Close callback | Action`?` | `null` |
+||||
+**Align** | Align | [TAlignMini](Enum.md#talignmini) | Right |
+**Padding** | Padding | int | 24 |
+||||
+**ColorScheme** | Color scheme | [TAMode](Enum.md#tamode) | Auto |
+**Dispose** | Should it be released | bool | true |
+**Form** | Belonging window | Form | `Required` |
+**ManualActivateParent** | Manually activate parent window after closing | bool | false |
+**Mask** | Display mask or not | bool | true |
+**OnLoad** | Load callback | Action`?` | `null` |
 
 ***
 

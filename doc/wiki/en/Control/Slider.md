@@ -12,27 +12,28 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Value** | Current value | int | 0 |
+||||
 **Fill** | Colour | Color`?` | `null` |
 **FillHover** | Hover color | Color`?` | `null` |
 **FillActive** | Activate color | Color`?` | `null` |
-**TrackColor** | Slide color | Color`?` | `null` |
 ||||
-**MinValue** | Minimum value | int | 0 |
-**MaxValue** | Maximum value | int | 100 |
-**Value** | Current value | int | 0 |
-**Increment** | Keyboard, wheel and drag increment (> 0), relative to MinValue; endpoints remain reachable. Dots with Marks takes priority; direct assignments are unchanged | int | 1 |
 **KeyboardModifyEnabled** | Modify value with arrow keys; enable Tab and click focus | bool | true |
-**WheelModifyEnabled** | Modify value with the mouse wheel using Increment, or move to an adjacent mark in Dots mode | bool | true |
-||||
-**Align** | Align | [TAlignMini](Enum.md#talignmini) | Left |
 **ShowValue** | Whether to display numerical values | bool | false |
-**LineSize** | line Thickness | int | 4 |
-**DotSize** | Dot size | int | 10 |
+**WheelModifyEnabled** | Modify value with the mouse wheel using Increment, or move to an adjacent mark in Dots mode | bool | true |
 **DotSizeActive** | Click to activate size | int | 12 |
 ||||
-**Dots** | Can only be dragged onto the scale | bool | false |
-**Marks** | Tick marks `SliderMarkItemCollection` | SliderMarkItemCollection | `null` |
+**Align** | Align | [TAlignMini](Enum.md#talignmini) | Left |
+**DotSize** | Dot size | int | 10 |
+**LineSize** | line Thickness | int | 4 |
 **MarkTextGap** | Scale text spacing | int | 4 |
+**MaxValue** | Maximum value | int | 100 |
+**MinValue** | Minimum value | int | 0 |
+||||
+**Dots** | Can only be dragged onto the scale | bool | false |
+**Increment** | Keyboard, wheel and drag increment (> 0), relative to MinValue; endpoints remain reachable. Dots with Marks takes priority; direct assignments are unchanged | int | 1 |
+**Marks** | Tick marks `SliderMarkItemCollection` | SliderMarkItemCollection | `null` |
+**TrackColor** | Slide color | Color`?` | `null` |
 
 ### Events
 
@@ -48,7 +49,8 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Value** | Value | int | 0 |
-**Fore** | Text color | Color`?` | `null` |
-**Text** | Text | string`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |
+**Text** | Text | string`?` | `null` |
+**Value** | Value | int | 0 |
+||||
+**Fore** | Text color | Color`?` | `null` |

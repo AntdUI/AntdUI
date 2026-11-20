@@ -13,19 +13,19 @@ Rate 评分 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**AutoSize** | 自动宽度 | bool | false |
+**Value** | 当前值 | float | 0F |
 ||||
 **Fill** | 颜色 | Color | 250, 219, 20 |
 ||||
+**AutoSize** | 自动宽度 | bool | false |
 **AllowClear** | 支持清除 | bool | false |
 **AllowHalf** | 是否允许半选 | bool | false |
-**Count** | Star 总数 | int | 5 |
-**Value** | 当前值 | float | 0F |
 ||||
-**Tooltips** | 自定义每项的提示信息 | string[]`?` | `null` |
 **Character** | 自定义字符SVG | string`?` | `null` |
 🌏 **LocalizationCharacter** | 国际化自定义字符 | string`?` | `null` |
+**Count** | Star 总数 | int | 5 |
 **TooltipConfig** | 文字提示配置 | [TTooltipConfig](Enum.md#ttipconfig) | `null` |
+**Tooltips** | 自定义每项的提示信息 | string[]`?` | `null` |
 
 ### 事件
 

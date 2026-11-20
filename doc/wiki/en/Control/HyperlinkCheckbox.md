@@ -15,26 +15,31 @@ Name | Description | Type | Default Value |
 **Text** | Text content, support `<a href="...">...</a>` syntax | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextAlign** | Text position | ContentAlignment | MiddleLeft |
-**NormalStyle** | Link style in normal state | LinkAppearance`?` | `null` |
-**HoverStyle** | Link style when mouse hovers | LinkAppearance`?` | `null` |
-**LinkPadding** | Distance between links and surrounding characters | Padding | 2, 0, 2, 0 |
-**LinkAutoNavigation** | Automatically open hyperlinks with default browser | bool | false |
-**AutoSize** | Auto size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
+||||
+**AutoSize** | Auto size | bool | false |
 **Checked** | Checked state | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
 **CheckAlign** | Checkbox position | ContentAlignment | MiddleLeft |
-**ThreeState** | Three-state mode | bool | false |
 **CheckState** | Checkbox state | CheckState | Unchecked |
+**LinkAutoNavigation** | Automatically open hyperlinks with default browser | bool | false |
+**HoverStyle** | Link style when mouse hovers | LinkAppearance`?` | `null` |
+||||
+**LinkPadding** | Distance between links and surrounding characters | Padding | 2, 0, 2, 0 |
+**NormalStyle** | Link style in normal state | LinkAppearance`?` | `null` |
+||||
+**ThreeState** | Three-state mode | bool | false |
 
 ### LinkAppearance Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**LinkColor** | Link text color | Color`?` | `null` |
-**LinkStyle** | Link font style | FontStyle | Regular |
 **UnderlineColor** | Underline color | Color`?` | `null` |
 **UnderlineThickness** | Underline thickness (0 for no underline) | int | 1 |
+||||
+**LinkColor** | Link text color | Color`?` | `null` |
+**LinkStyle** | Link font style | FontStyle | Regular |
 
 ### Events
 

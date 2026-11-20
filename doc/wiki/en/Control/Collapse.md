@@ -12,25 +12,31 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | Auto size | bool | false |
+**Items** | Data collection | CollapseItemCollection | - |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
+**FontExpand** | Expanded title font | Font`?` | `null` |
 **ForeActive** | Text active color | Color`?` | `null` |
-**HeaderBg** | Head background | Color`?` | `null` |
-**HeaderPadding** | Head padding | Size | 16, 12 |
-**ContentPadding** | Content padding | Size | 16, 16 |
 ||||
-**BorderWidth** | Border width | float | 1F |
+**AnimationSpeed** | Expand/collapse animation speed | int | 100 |
+||||
+**AutoSize** | Auto size | bool | false |
+**EnableResizing** | Manual resize | bool | false |
+||||
 **BorderColor** | Border color | Color`?` | `null` |
-||||
+**BorderWidth** | Border width | float | 1F |
 **Radius** | Rounded corners | int | 6 |
+||||
+**ContentPadding** | Content padding | Size | 16, 16 |
 **Gap** | Gap | int | 0 |
+**HeaderPadding** | Head padding | Size | 16, 12 |
+**ResizingLineColor** | Resize line color (default follows Primary) | Color`?` | `null` |
+**ResizingLineThickness** | Resize line thickness (0 to disable) | float | 2 |
+||||
+**HeaderBg** | Head background | Color`?` | `null` |
+**TooltipConfig** | Text overflow tooltip configuration | TooltipConfig`?` | `null` |
 **Unique** | Keep only one unfolded | bool | false |
 **UniqueFull** | One expanded full | bool | false |
-**AnimationSpeed** | Expand/collapse animation speed | int | 100 |
-**FontExpand** | Expanded title font | Font`?` | `null` |
-**TooltipConfig** | Text overflow tooltip configuration | TooltipConfig`?` | `null` |
-||||
-**Items** | Data collection | CollapseItemCollection | - |
 
 ### Events
 
@@ -48,8 +54,12 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Expand** | Whether to expand | bool | false |
-**Full** | Whether to fill remaining space | bool | false |
 **Text** | Text | string | "" |
 🌏 **LocalizationText** | International text | string`?` | `null` |
+||||
+**Icon** | Icon | Image`?` | `null`
+**IconSvg** | Icon SVG | string`?` | `null`
+||||
 **Buttons** | Button collection | CollapseGroupButtonCollection | - |
+**Expand** | Whether to expand | bool | false |
+**Full** | Whether to fill remaining space | bool | false |

@@ -1,5 +1,28 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.20` 2026-11-20
+
+> 🎉 NET 11.0
+
+- ➕ Button adds Wave series properties
+- ➕ Preview adds MaskClosable to allow closing by clicking the blank area
+- ➕ Preview adds Loop to allow looping
+- ➕ Preview ImageTextContent adds TextPadding
+- ➕ Menu MenuItem adds RightText and Reverse
+- ➕ Menu adds HorizontalAlign and UseMnemonic
+- ➕ Menu supports Trigger.Click for collapsed menus and submenus ([#189](https://github.com/AntdUI/AntdUI/pull/189))
+- ➕ Descriptions adds title icon TitleIconSvg ([!216](https://gitee.com/AntdUI/AntdUI/pulls/216))
+- ➕ Image3D adds 3D tilt/border, ShowText and TextAlign properties to display Text ([!215](https://gitee.com/AntdUI/AntdUI/pulls/215))
+- ➕ Slider adds Increment step property ([!214](https://gitee.com/AntdUI/AntdUI/pulls/214))
+- ➕ ToColor adds hsl parsing
+- ➕ Added CSS blur (performance on par with Blur) / single-channel blur (fastest, suitable for window shadows)
+- ➕ IControl ColorScheme supports inheriting from parent
+- ✍️ Table EditAutoHeight fixes misalignment at the bottom
+- ✍️ Fixed Menu Trigger interaction
+- ✍️ Fixed Menu submenu popping up and covering the parent menu when hitting the screen edge
+- ✍️ Image3D optimizes 3D flip performance
+- ✍️ Carousel fixes inability to click panel indicator dots
+
 ### `2.4.19` 2026-11-09
 
 - ➕ ContextMenuStrip item background, gradient style adaptation for more

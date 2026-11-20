@@ -12,20 +12,22 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Minimum** | Minimum value | decimal`?` | `null` |
-**Maximum** | Maximum value | decimal`?` | `null` |
 **Value** | Current value | decimal | 0 |
 ||||
-**ShowControl** | Show controller | bool | true |
 **AlwaysShowControl** | Whether to always show the controller, even when not focused | bool | false |
-**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
-**KeyboardModifyEnabled** | Modify value with Up/Down using Increment | bool | true |
-**DecimalPlaces** | Number of decimal places displayed | int | 0 |
-**ThousandsSeparator** | Whether to show thousands separator | bool | false |
-**Hexadecimal** | Whether values should be displayed in hexadecimal | bool | false |
-**InterceptArrowKeys** | Whether to continuously increase/decrease when arrow keys are pressed | bool | true |
 **EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**KeyboardModifyEnabled** | Modify value with Up/Down using Increment | bool | true |
+**ShowControl** | Show controller | bool | true |
+**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
+||||
+**InterceptArrowKeys** | Whether to continuously increase/decrease when arrow keys are pressed | bool | true |
+**Maximum** | Maximum value | decimal`?` | `null` |
+**Minimum** | Minimum value | decimal`?` | `null` |
+||||
+**DecimalPlaces** | Number of decimal places displayed | int | 0 |
+**Hexadecimal** | Whether values should be displayed in hexadecimal | bool | false |
 **Increment** | The amount to increase/decrease each time the arrow key is clicked | decimal | 1 |
+**ThousandsSeparator** | Whether to show thousands separator | bool | false |
 
 ### Events
 

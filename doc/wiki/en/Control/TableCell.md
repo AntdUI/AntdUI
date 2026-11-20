@@ -12,17 +12,19 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | Font color | Color`?` ||
-**Back** | Background color | Color`?` ||
+**Text** | Text | string`?` ||
+||||
 **Font** | Font | Font`?` ||
+**Fore** | Font color | Color`?` ||
+||||
+**Back** | Background color | Color`?` ||
 ||||
 **IconRatio** | Icon Scale | float | 0.7F |
+||||
 **Prefix** | Prefix | Image`?` ||
 **PrefixSvg** | Prefix SVG | string`?` ||
 **Suffix** | Suffix | Image`?` ||
 **SuffixSvg** | Suffix SVG | string`?` ||
-||||
-**Text** | Text | string`?` ||
 
 #### CellBadge
 
@@ -30,11 +32,13 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Text** | Text | string`?` |
+||||
 **Fore** | Font color | Color`?` ||
+||||
 **Fill** | Colour | Color`?` ||
 ||||
 **State** | State | [TState](Enum.md#tstate) | Default |
-**Text** | Text | string`?` |
 
 #### CellTag
 
@@ -42,12 +46,14 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | Font color | Color`?` ||
-**Back** | Background color | Color`?` ||
-**BorderWidth** | Border width | float |1F|
-||||
-**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
 **Text** | Text | string`?` ||
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+||||
+**Fore** | Font color | Color`?` ||
+||||
+**Back** | Background color | Color`?` ||
+||||
+**BorderWidth** | Border width | float |1F|
 
 #### CellImage
 
@@ -55,18 +61,18 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Image** | Image | Image`?` | `null` |
+**ImageFit** | Image layout | [TFit](Enum.md#tfit) | Fill |
+**ImageSvg** | Image SVG | string`?` | `null` |
+||||
 **BorderColor** | Border color | Color`?` ||
 **BorderWidth** | Border width | float |0F|
 **Radius** | Rounded corners | int |6|
-||||
 **Round** | Rounded corner style | bool |false|
+||||
 **Size** | Custom size | Size`?` ||
 ||||
-**Image** | Image | Image`?` | `null` |
-**ImageSvg** | Image SVG | string`?` | `null` |
 **FillSvg** | SVG Fill Color | Color`?` ||
-**ImageFit** | Image layout | [TFit](Enum.md#tfit) | Fill |
-||||
 **Tooltip** | Text Tips | string`?` ||
 
 #### CellButton
@@ -75,33 +81,33 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Text** | Text | string`?` ||
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+||||
 **Fore** | Font color | Color`?` ||
+||||
 **Back** | Background color | Color`?` ||
+**DefaultBack** | Default type background color | Color`?` ||
 **BackHover** | Hover background color | Color`?` ||
 **BackActive** | Activate background color | Color`?` ||
 ||||
-**DefaultBack** | Default type background color | Color`?` ||
-**DefaultBorderColor** | Default type border color | Color`?` ||
-||||
-**Radius** | Rounded corners | int |6|
-**BorderWidth** | Border width | float |0F|
-||||
-**IconRatio** | Icon Scale | float | 0.7F |
-**IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `null` |
-**IconHover** | Hover icon | Image`?` | `null` |
-**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
-**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **IconPosition** | Location of button icon components | [TAlignMini](Enum.md#talignmini) | Left |
+**IconRatio** | Icon Scale | float | 0.7F |
+**IconHover** | Hover icon | Image`?` | `null` |
+**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
 ||||
-**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
 **Ghost** | Ghost attribute `Transparent button background` | bool | false |
-**ShowArrow** | Display arrows | bool | false |
 **IsLink** | Arrow Link Style | bool | false |
+**ShowArrow** | Display arrows | bool | false |
 ||||
-**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
-**Text** | Text | string`?` ||
+**BorderWidth** | Border width | float |0F|
+**Radius** | Rounded corners | int |6|
+**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
+**DefaultBorderColor** | Default type border color | Color`?` ||
 
 #### CellLink
 
@@ -110,10 +116,10 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Id** | ID | string ||
-**Enabled** | Enable | bool |true|
-||||
 **Text** | Text | string`?` ||
 **TextAlign** | Text position | ContentAlignment | MiddleCenter |
+||||
+**Enabled** | Enable | bool |true|
 ||||
 **Tooltip** | Text Tips | string`?` ||
 
@@ -123,13 +129,13 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Value** | Progress `0.0-1.0` | float |0F|
+||||
 **Back** | Background color | Color`?` ||
 **Fill** | Progress bar color | Color`?` ||
 ||||
 **Radius** | Rounded corners | int |6|
 **Shape** | Shape | [TShape](Enum.md#tshape) | Default |
-||||
-**Value** | Progress `0.0-1.0` | float |0F|
 
 #### CellDivider
 
@@ -141,16 +147,17 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | Font color | Color`?` ||
-**Font** | Font | Font`?` ||
-**Fill** | Fill color | Color`?` ||
-**Enabled** | Enabled | bool | true |
-**AutoCheck** | Click to automatically change the selected status | bool | true |
-||||
 **Text** | Text | string`?` ||
 🌏 **LocalizationText** | International Text | string`?` ||
 ||||
+**Font** | Font | Font`?` ||
+**Fore** | Font color | Color`?` ||
+||||
+**Fill** | Fill color | Color`?` ||
+||||
 **Checked** | Checked state | bool | false |
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
 **CheckState** | Checked state | CheckState | Unchecked |
 
 #### CellRadio
@@ -159,16 +166,17 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | Font color | Color`?` ||
-**Font** | Font | Font`?` ||
-**Fill** | Fill color | Color`?` ||
-**Enabled** | Enabled | bool | true |
-**AutoCheck** | Click to automatically change the selected status | bool | true |
-||||
 **Text** | Text | string`?` ||
 🌏 **LocalizationText** | International Text | string`?` ||
 ||||
+**Font** | Font | Font`?` ||
+**Fore** | Font color | Color`?` ||
+||||
+**Fill** | Fill color | Color`?` ||
+||||
 **Checked** | Checked state | bool | false |
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
 
 #### CellSwitch
 
@@ -176,11 +184,12 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Fore** | Font color | Color`?` ||
-**Enabled** | Enabled | bool | true |
-**AutoCheck** | Click to automatically change the selected status | bool | true |
-||||
 **Text** | Text | string`?` ||
 🌏 **LocalizationText** | International Text | string`?` ||
 ||||
+**Fore** | Font color | Color`?` ||
+||||
 **Checked** | Checked state | bool | false |
+**Enabled** | Enabled | bool | true |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
+**CheckedText** | Text displayed when selected | string`?` | `null` |

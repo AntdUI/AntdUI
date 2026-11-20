@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon>icon.ico</ApplicationIcon>
 		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
@@ -30,10 +30,6 @@
 		<PackageReference Include="VC-LTL" Version="5.3.1" />
 		<PackageReference Include="YY-Thunks" Version="1.2.3" />
 		<RdXmlFile Include="rd.xml" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' != 'net10.0-windows'">
-		<PackageReference Include="WinFormsComInterop" Version="0.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -16,24 +16,25 @@ UploadDragger 拖拽上传 👚
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextDesc** | 文本描述 | string`?` | `null` |
-**Radius** | 圆角 | int | 8 |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` ||
-**Back** | 背景颜色 | Color`?` | `null` |
 ||||
+**Back** | 背景颜色 | Color`?` | `null` |
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
-**IconRatio** | 图标比例 | float | 1.92F |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `InboxOutlined` |
+**IconRatio** | 图标比例 | float | 1.92F |
 ||||
-**BorderWidth** | 边框宽度 | float | 1F |
+**Multiselect** | 多个文件 | bool | true |
+||||
 **BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**Radius** | 圆角 | int | 8 |
 **BorderStyle** | 边框样式 | DashStyle | Dash |
 ||||
 **ClickHand** | 点击上传 | bool | true |
-**Multiselect** | 多个文件 | bool | true |
 **Filter** | 文件名筛选器字符串 | string`?` | `null` 参考 OpenFileDialog 格式 |
 
 ### 方法

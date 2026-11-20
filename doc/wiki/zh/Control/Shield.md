@@ -13,24 +13,25 @@ Shield 徽章 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Text** | 文本 | string | `AntdUI` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Label** | 左侧文本 | string`?` | `null` |
+🌏 **LocalizationLabel** | 国际化左侧文本 | string`?` | `null` |
+||||
+**Color** | 右侧部分的背景颜色 | Color`?` | `null` |
+**Fore** | 右侧部分的文本颜色 | Color`?` | `null` |
+**LabelFore** | 左侧部分的文本颜色 | Color`?` | `null` |
+||||
+**Logo** | Logo | Image`?` | `null` |
+**LogoSvg** | Logo SVG | string`?` | `null` |
+||||
 **AutoSize** | 自动大小 | bool | false |
 **AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
 ||||
 **Radius** | 圆角 | int | 6 |
 ||||
-**Text** | 文本 | string | `AntdUI` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Fore** | 右侧部分的文本颜色 | Color`?` | `null` |
-**Color** | 右侧部分的背景颜色 | Color`?` | `null` |
-||||
-**Logo** | Logo | Image`?` | `null` |
-**LogoSvg** | Logo SVG | string`?` | `null` |
-||||
-**Label** | 左侧文本 | string`?` | `null` |
-🌏 **LocalizationLabel** | 国际化左侧文本 | string`?` | `null` |
-**LabelFore** | 左侧部分的文本颜色 | Color`?` | `null` |
-**LabelColor** | 左侧部分的背景颜色 | Color`?` | `null` |
-**Bold** | 左侧文本粗体 | bool | false |
-||||
 **ShadowOffsetX** | 阴影偏移X | int | 0 |
 **ShadowOffsetY** | 阴影偏移Y | int | 0 |
+||||
+**Bold** | 左侧文本粗体 | bool | false |
+**LabelColor** | 左侧部分的背景颜色 | Color`?` | `null` |

@@ -12,16 +12,19 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Value** | Current time | TimeSpan | `00:00:00` |
 **Format** | Format | string | HH:mm:ss |
 ||||
-**Value** | Current time | TimeSpan | `00:00:00` |
+**ShowIcon** | Display icon or not | bool | true |
+||||
+**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**ShowButtonNow** | Show now button | bool | true |
 ||||
 **Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
-**ShowIcon** | Display icon or not | bool | true |
+||||
+**ExpandDrop** | Expand dropdown menu | bool | false |
 **ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
-**ShowButtonNow** | Show now button | bool | true |
-**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
 
 
 ### Events

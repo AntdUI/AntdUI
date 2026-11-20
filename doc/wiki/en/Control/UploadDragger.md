@@ -15,24 +15,25 @@ Name | Description | Type | Default Value |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextDesc** | Text description | string`?` | `null` |
-**Radius** | Rounded corners | int | 8 |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
-**Back** | Background color | Color`?` | `null` |
 ||||
+**Back** | Background color | Color`?` | `null` |
 **BackgroundImage** | Background image | Image`?` | `null` |
 **BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
 ||||
-**IconRatio** | Icon Scale | float | 1.92F |
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `InboxOutlined` |
+**IconRatio** | Icon Scale | float | 1.92F |
 ||||
-**BorderWidth** | Border width | float | 1F |
+**Multiselect** | Multiple files | bool | true |
+||||
 **BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 1F |
+**Radius** | Rounded corners | int | 8 |
 **BorderStyle** | Border Style | DashStyle | Dash |
 ||||
 **ClickHand** | Click to upload | bool | true |
-**Multiselect** | Multiple files | bool | true |
 **Filter** | Filename filter string | string`?` | `null` Refer to OpenFileDialog format |
 
 ### Methods

@@ -12,28 +12,31 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Current** | Current page number | int | 1 |
-**Total** | Total number of data items | int | 0 |
-**PageSize** | Number of data items per page | int | 10 |
-**MaxPageTotal** | Maximum display total page count | int | 0 |
-**PageTotal** | Total pages | int | 1 `Read only` |
-**RecordsPerPageText** | Records per page text, label reminder text | string`?` | `null` |
+**TextDesc** | Proactively display content `ShowTotalChanged becomes invalid after setting non null` | string`?` | `null` |
+🌏 **LocalizationTextDesc** | International Proactively display content | string`?` | `null` |
 ||||
-**ShowSizeChanger** | Do you want to display the `PageSize` switcher | bool | false |
-**SizeChangerWidth** | `SizeChanger` Width | int | 0 `0 Auto Width` |
-**PageSizeOptions** | Specify how many `dropdown selections` can be displayed per page | int[]? | null |
-**DropDownRadius** | Dropdown rounded corners | int`?` | `null` |
-**SizeChangerTabStop** | Whether to allow PageSize switcher to get focus via Tab key | bool | true |
+**ForeColor** | Text color | Color`?` | `null` |
 ||||
 **Fill** | Colour | Color`?` | `null` |
 ||||
-**Gap** | Gap | int | 8 |
-**Radius** | Rounded corners | int | 6 |
-**BorderWidth** | Border width | float | 1F |
+**ShowSizeChanger** | Do you want to display the `PageSize` switcher | bool | false |
 ||||
-**TextDesc** | Proactively display content `ShowTotalChanged becomes invalid after setting non null` | string`?` | `null` |
-🌏 **LocalizationTextDesc** | International Proactively display content | string`?` | `null` |
+**BorderWidth** | Border width | float | 1F |
+**Radius** | Rounded corners | int | 6 |
+||||
+**Gap** | Gap | int | 8 |
+**MaxPageTotal** | Maximum display total page count | int | 0 |
+**PageSize** | Number of data items per page | int | 10 |
+**PageSizeOptions** | Specify how many `dropdown selections` can be displayed per page | int[]? | null |
+**PageTotal** | Total pages | int | 1 `Read only` |
+**RecordsPerPageText** | Records per page text, label reminder text | string`?` | `null` |
+**SizeChangerTabStop** | Whether to allow PageSize switcher to get focus via Tab key | bool | true |
+**SizeChangerWidth** | `SizeChanger` Width | int | 0 `0 Auto Width` |
+||||
+**Current** | Current page number | int | 1 |
 **RightToLeft** | Reverse | RightToLeft | No |
+**Total** | Total number of data items | int | 0 |
+**DropDownRadius** | Dropdown rounded corners | int`?` | `null` |
 
 ### Method
 

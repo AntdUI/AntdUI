@@ -13,35 +13,37 @@ TabHeader 多标签页头 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Radius** | 圆角 | int | 6 |
-**RadiusContent** | 内容圆角 | int | 4 |
-**OffsetY** | Y偏移量 | int | 0 |
+**Items** | 数据 `TagTabItem[]` | [TagTabItem](#tagtabitem) | [] |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **ForeHover** | 悬浮文本颜色 | Color`?` | `null` |
 **ForeActive** | 激活文本颜色 | Color`?` | `null` |
+||||
 **BackHover** | 悬浮背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
-**BorderWidth** | 边框宽度 | float | 0F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-||||
-**TabIconRatio** | 图标比例 | float | 1.34F |
-**TabCloseRatio** | 关闭按钮比例 | float | 1.408F |
-**TabCloseIconRatio** | 关闭图标比例 | float | 0.74F |
-**TabGapRatio** | 边距比例 | float | 0.6F |
-**TabIconGapRatio** | 图标与文字间距比例 | float | 0.74F |
-**TabAddIconRatio** | 新增按钮图标比例 | float | 1.18F |
-**TabAddGapRatio** | 新增按钮边距比例 | float | 0.148F |
-**LeftGap** | 左侧边距 | int | 0 |
-**RightGap** | 右侧边距 | int | 0 |
-||||
-**DragSort** | 拖拽排序 | bool | false |
-**ShowAdd** | 是否显示添加 | bool | false |
 **AddIconSvg** | 新增按钮Svg图标（默认 PlusOutlined） | string`?` | `null` |
+**TabAddIconRatio** | 新增按钮图标比例 | float | 1.18F |
+**TabCloseIconRatio** | 关闭图标比例 | float | 0.74F |
+**TabIconGapRatio** | 图标与文字间距比例 | float | 0.74F |
+**TabIconRatio** | 图标比例 | float | 1.34F |
 ||||
-**Items** | 数据 `TagTabItem[]` | [TagTabItem](#tagtabitem) | [] |
 **SelectedIndex** | 选中序号 | int | 0 |
+**DragSort** | 拖拽排序 | bool | false |
 **SelectedItem** | 选中选项 | [TagTabItem](#tagtabitem)`?` | `null` |
+**ShowAdd** | 是否显示添加 | bool | false |
+**TabCloseRatio** | 关闭按钮比例 | float | 1.408F |
+||||
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 0F |
+**Radius** | 圆角 | int | 6 |
+**RadiusContent** | 内容圆角 | int | 4 |
+||||
+**LeftGap** | 左侧边距 | int | 0 |
+**OffsetY** | Y偏移量 | int | 0 |
+**RightGap** | 右侧边距 | int | 0 |
+**TabAddGapRatio** | 新增按钮边距比例 | float | 0.148F |
+**TabGapRatio** | 边距比例 | float | 0.6F |
 
 ### 事件
 
@@ -73,21 +75,33 @@ TabHeader 多标签页头 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string | `必填` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Visible** | 是否显示 | bool | true |
-**Enabled** | 禁用状态 | bool | true |
+||||
+**BadgeFore** | 徽标前景颜色 | Color`?` | `null` |
+||||
+**BadgeBack** | 徽标背景颜色 | Color`?` | `null` |
+||||
+**Icon** | 图标 | Image`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+**LoadingIcon** | 加载图标 | Image`?` | `null`
+||||
 **Loading** | 加载状态 | bool | false |
+**LoadingSvg** | 加载图标SVG | string`?` | `null`
+||||
+**Enabled** | 禁用状态 | bool | true |
+**Visible** | 是否显示 | bool | true |
+**BadgeMode** | 徽标模式（镂空） | bool | false |
 **ShowClose** | 是否显示关闭 | bool | true |
-**Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**BadgeBorderColor** | 徽标边框颜色 | Color`?` | `null` |
+**BadgeBorderWidth** | 徽标边框宽度 | float`?` | `null`
+||||
+**BadgeAlign** | 徽标方向 | [TAlign](Enum.md#talign) | Right |
+**BadgeOffsetX** | 徽标偏移X | int | 1
+**BadgeOffsetY** | 徽标偏移Y | int | 1
+**BadgeSize** | 徽标比例 | float | 0.6F |
 ||||
 **Badge** | 徽标内容 | string`?` | `null` |
 **BadgeSvg** | 徽标SVG | string`?` | `null` |
-**BadgeAlign** | 徽标方向 | [TAlign](Enum.md#talign) | Right |
-**BadgeSize** | 徽标比例 | float | 0.6F |
-**BadgeMode** | 徽标模式（镂空） | bool | false |
-**BadgeFore** | 徽标前景颜色 | Color`?` | `null` |
-**BadgeBack** | 徽标背景颜色 | Color`?` | `null` |
-**BadgeBorderColor** | 徽标边框颜色 | Color`?` | `null` |

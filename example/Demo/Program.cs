@@ -5,7 +5,6 @@
 // GitCode: https://gitcode.com/AntdUI/AntdUI
 
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Demo
@@ -18,16 +17,11 @@ namespace Demo
         [STAThread]
         static void Main(string[] arge)
         {
-#if !NET10_0
-            ComWrappers.RegisterForMarshalling(WinFormsComInterop.WinFormsComWrappers.Instance);
-#endif
             var command = string.Join(" ", arge);
             AntdUI.Localization.DefaultLanguage = "zh-CN";
             var lang = AntdUI.Localization.CurrentLanguage;
             if (lang.StartsWith("en")) AntdUI.Localization.Provider = new Localizer();
-#if NET10_0
             Application.SetColorMode(SystemColorMode.System);
-#endif
             AntdUI.Config.Theme().Dark("#000", "#fff").Light("#fff", "#000").FormBorderColor();
             AntdUI.Config.TextRenderingHighQuality = true;
             AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;

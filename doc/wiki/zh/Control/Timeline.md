@@ -13,13 +13,14 @@ Timeline 时间轴 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**FontDescription** | 描述字体 | Font`?` | `null` |
-**Gap** | 间距 | int`?` | `null` |
-||||
 **Items** | 数据 `TimelineItem[]` | [TimelineItem[]](#timelineitem) | [] |
 ||||
+**ForeColor** | 文字颜色 | Color`?` | `null` |
+**FontDescription** | 描述字体 | Font`?` | `null` |
+||||
 **PauseLayout** | 暂停布局 | bool | false |
+||||
+**Gap** | 间距 | int`?` | `null` |
 
 ### 事件
 
@@ -36,13 +37,19 @@ Timeline 时间轴 👚
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
 **Name** | 名称 | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
+||||
+**DescriptionFore** | 描述文本颜色 | Color`?` | `null`
+||||
+**Fill** | 填充颜色 | Color`?` | `null` |
+||||
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
+||||
 **Visible** | 是否显示 | bool | true |
+||||
 **Description** | 详情描述 | string`?` | `null` |
 🌏 **LocalizationDescription** | 国际化详情描述 | string`?` | `null` |
-**Type** | 颜色类型 | [TTypeMini](Enum.md#ttypemini) | Primary |
-**Fill** | 填充颜色 | Color`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |

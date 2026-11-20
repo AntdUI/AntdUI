@@ -13,16 +13,19 @@ TimePicker 时间选择框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Value** | 控件当前日期 | TimeSpan | `00:00:00` |
 **Format** | 格式化 | string | HH:mm:ss |
 ||||
-**Value** | 控件当前日期 | TimeSpan | `00:00:00` |
+**ShowIcon** | 是否显示图标 | bool | true |
+||||
+**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
+**ShowButtonNow** | 显示此刻 | bool | true |
 ||||
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**ShowIcon** | 是否显示图标 | bool | true |
+||||
+**ExpandDrop** | 展开下拉菜单 | bool | false |
 **ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
-**ShowButtonNow** | 显示此刻 | bool | true |
-**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
 
 
 ### 事件

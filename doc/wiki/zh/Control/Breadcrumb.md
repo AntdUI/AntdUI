@@ -13,15 +13,18 @@ Breadcrumb 面包屑 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Items** | 数据 | BreadcrumbItemCollection | [] |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **ForeActive** | 激活文字颜色 | Color`?` | `null` |
 ||||
+**PauseLayout** | 暂停布局 | bool | false |
+||||
 **Radius** | 圆角 | int | 4 |
+||||
 **Gap** | 间距 | int | 12 |
 ||||
-**Items** | 数据 | BreadcrumbItemCollection | [] |
-||||
-**PauseLayout** | 暂停布局 | bool | false |
+**Separator** | 获取或设置分割符 | string | "/" |
 
 ### 事件
 
@@ -37,8 +40,14 @@ Breadcrumb 面包屑 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**Fore** | 文字颜色 | Color`?` | `null`
+**ForeActive** | 激活文字颜色 | Color`?` | `null` |
+||||
+**Icon** | 图标 | Image`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+||||
+**Separator** | 获取或设置尾部的自定义分割符 | string`?` | `null` |

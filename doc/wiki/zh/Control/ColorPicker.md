@@ -13,44 +13,45 @@ ColorPicker 颜色选择器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
-||||
-**AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
-**Mode** | 颜色模式 | [TColorMode](Enum.md#tcolormode) | Hex |
+**Text** | 文本 | string | `""` |
+**Value** | 颜色的值 | Color | Colour.Primary.Get(nameof(ColorPicker)) `主题色` |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
+**DropDownFontRatio** | 下拉字体比例 | float | 0.9F |
 ||||
-**BorderWidth** | 边框宽度 | float | 1F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
-**BorderActive** | 激活边框颜色 | Color`?` | `null` |
+**BackColor** | 背景颜色 | Color`?` | `null` |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
 ||||
 **WaveSize** | 波浪大小 `点击动画` | int | 4 |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
-**ShowText** | 显示Hex文字 | bool | false |
-**ShowSymbol** | 显示自定义符号(长度<4) | bool | false |
-**Text** | 文本 | string | `""` |
 ||||
-**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
-**JoinLeft** | 连接左边 `组合按钮`（已过时，使用JoinMode） | bool | false |
-**JoinRight** | 连接右边 `组合按钮`（已过时，使用JoinMode） | bool | false |
-||||
-**Value** | 颜色的值 | Color | Colour.Primary.Get(nameof(ColorPicker)) `主题色` |
-**DisabledAlpha** | 禁用透明度 | bool | false |
+**AutoSize** | 自动大小 | bool | false |
 **AllowClear** | 支持清除 | bool | false |
+**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
+**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
+**Mode** | 颜色模式 | [TColorMode](Enum.md#tcolormode) | Hex |
 **ShowClose** | 显示关闭按钮 | bool | false |
 **ShowReset** | 显示还原按钮 | bool | false |
-**HasValue** | 是否包含值 | bool | true |
-**ValueClear** | 获取颜色值 | Color`?` | `null` |
-**Presets** | 预设的颜色 | Color[] | `null` |
-||||
+**ShowSymbol** | 显示自定义符号(长度<4) | bool | false |
+**ShowText** | 显示Hex文字 | bool | false |
 **Trigger** | 触发下拉的行为 | [Trigger](Enum.md#trigger) | Click |
+**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
+**BorderActive** | 激活边框颜色 | Color`?` | `null` |
+**HasFocus** | 是否存在焦点 | bool | false |
+**DisabledAlpha** | 禁用透明度 | bool | false |
+||||
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**Radius** | 圆角 | int | 6 |
+**Round** | 圆角样式 | bool | false |
+||||
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | true |
-**DropDownFontRatio** | 下拉字体比例 | float | 0.9F |
+||||
+**HasValue** | 是否包含值 | bool | true |
+**JoinLeft** | 连接左边 `组合按钮`（已过时，使用JoinMode） | bool | false |
+**JoinRight** | 连接右边 `组合按钮`（已过时，使用JoinMode） | bool | false |
+**Presets** | 预设的颜色 | Color[] | `null` |
+**ValueClear** | 获取颜色值 | Color`?` | `null` |
 
 ### 方法
 

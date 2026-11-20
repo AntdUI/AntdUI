@@ -13,16 +13,19 @@ Tooltip 文字提示 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Font** | 字体 | Font | `系统默认` |
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 ||||
+**Font** | 字体 | Font | `系统默认` |
+**Fore** | 前景色 | Color`?` | `null` |
+||||
+**Back** | 背景色 | Color`?` | `null` |
+||||
 **Radius** | 圆角 | int | 6 |
+||||
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | Top |
 **ArrowSize** | 箭头大小 | int`?` | `null` |
 **CustomWidth** | 自定义宽度 | int`?` | `null` |
-**Back** | 背景色 | Color`?` | `null` |
-**Fore** | 前景色 | Color`?` | `null` |
 
 ### 静态方法
 
@@ -39,6 +42,18 @@ Tooltip 文字提示 👚
 
 名称 | 描述 | 类型 |
 :--|:--|:--|
+**Font** | 字体 | Font`?` | `null` |
+**Fore** | 前景色 | Color`?` | `null` |
+||||
+**Back** | 背景色 | Color`?` | `null` |
+||||
+**Radius** | 圆角 | int | 6 |
+||||
+**ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | Top |
+**ArrowSize** | 箭头大小 | int`?` | `null` |
+**CustomWidth** | 自定义宽度 | int`?` | `null` |
+||||
+**Delay** | 延迟时间（毫秒） | int | 500
 **Tip** | 文本 | string |
 
 
@@ -49,8 +64,10 @@ Tooltip 文字提示 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Font** | 字体 | Color`?` | `null` |
+||||
 **Radius** | 圆角 | int | 6 |
+||||
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | 箭头大小 | int | 8 |
-**Offset** | 偏移量 | Rectangle / RectangleF | `null` |
 **CustomWidth** | 设定宽度 | int`?` | `null` |
+**Offset** | 偏移量 | Rectangle / RectangleF | `null` |

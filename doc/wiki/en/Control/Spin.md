@@ -14,8 +14,14 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**Fill** | Colour | Color`?` | `null` |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
+||||
+**Fill** | Colour | Color`?` | `null` |
+||||
+**CirSize** | Loading circle size | int`?` | `null` |
+**CirWidth** | Loading circle thickness | int`?` | `null` |
+||||
 **Indicator** | Loading indicator | Image`?` | `null` |
 **IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
 
@@ -50,17 +56,22 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Text** | Text | string`?` | `null` |
-**Back** | Background color | Color`?` | `null` |
-**Color** | Colour | Color`?` | `null` |
-**Fore** | Text color | Color`?` | `null` |
-**Radius** | Rounded corners | int`?` | `null` |
-**Font** | Font | Font`?` | `null` |
 **Value** | Progress | float`?` | `null` |
-**Rate** | Progress rate | float`?` | `null` |
-**Indicator** | Loading indicator | Image`?` | `null` |
-**IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
+||||
+**Color** | Colour | Color`?` | `null` |
+**Font** | Font | Font`?` | `null` |
+**Fore** | Text color | Color`?` | `null` |
+||||
+**Back** | Background color | Color`?` | `null` |
+||||
 **CancelText** | Cancel button text | string`?` | `Cancel` |
 **CancelTokenSource** | Cancellation token source | CancellationTokenSource`?` | `null` |
+||||
+**Radius** | Rounded corners | int`?` | `null` |
+||||
+**Indicator** | Loading indicator | Image`?` | `null` |
+**IndicatorSvg** | Loading indicator SVG | string`?` | `null` |
+**Rate** | Progress rate | float`?` | `null` |
 
 ***
 

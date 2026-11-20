@@ -12,31 +12,30 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | Original background color | Color | Transparent |
-||||
-**AutoSize** | Auto Size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
-||||
-**ForeColor** | Text color | Color`?` | `null` |
-**BackColor** | Background color | Color`?` | `null` |
-||||
-**BackgroundImage** | Background image | Image`?` | `null` |
-**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
-||||
-**BorderWidth** | Border width | float | 1F |
-||||
-**Radius** | Rounded corners | int | 6 |
-**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
-**CloseIcon** | Display close icon | bool | false |
-||||
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
 **TextAlign** | Text position | ContentAlignment | MiddleCenter |
-**AutoEllipsis** | Text exceeds automatic processing | bool | false |
 **TextMultiLine** | Multiple lines | bool | false |
 ||||
+**ForeColor** | Text color | Color`?` | `null` |
+||||
+**BackColor** | Background color | Color`?` | `null` |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
+**OriginalBackColor** | Original background color | Color | Transparent |
+||||
 **Image** | Image | Image`?` | `null` |
+**CloseIcon** | Display close icon | bool | false |
 **ImageSvg** | Image SVG | string`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
+**AutoEllipsis** | Text exceeds automatic processing | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+||||
+**BorderWidth** | Border width | float | 1F |
+**Radius** | Rounded corners | int | 6 |
+||||
 **ImageSize** | Image size `Default automatic size` | Size | 0 × 0 |
 
 ### Events

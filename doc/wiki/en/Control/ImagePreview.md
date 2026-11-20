@@ -13,16 +13,19 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Image** | Image item collection | ImagePreviewItemCollection | `New Collection` |
+**BtnIconSize** | Button icon size | int | 18 |
+||||
 **SelectIndex** | Currently selected image index | int | 0 |
-**Fit** | Image fit mode | [TFit](Enum.md#tfit) | `null` |
 **ShowBtn** | Show buttons | bool | true |
 **ShowDefaultBtn** | Show default buttons | bool | true |
-**BtnSize** | Button size | Size | `42, 46` |
-**BtnIconSize** | Button icon size | int | 18 |
+||||
 **BtnLRSize** | Left/right button size | int | 40 |
-**ContainerPadding** | Container padding | int | 24 |
 **BtnPadding** | Button padding | Size | `12, 32` |
+**BtnSize** | Button size | Size | `42, 46` |
+**ContainerPadding** | Container padding | int | 24 |
+||||
 **CustomButton** | Custom button collection | ImagePreviewButtonCollection | `New Collection` |
+**Fit** | Image fit mode | [TFit](Enum.md#tfit) | `null` |
 
 ### Methods
 
@@ -53,10 +56,12 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
+||||
 **Img** | Image | Image`?` | `null` |
+||||
 **Call** | Async loading image delegate | Func<int, ImagePreviewItem, Image>`?` | `null` |
 **CallProg** | Async loading with progress delegate | Func<int, ImagePreviewItem, Action<float, string?>, Image>`?` | `null` |
-**Tag** | User defined data | object`?` | `null` |
 
 #### ImagePreviewButton
 
@@ -65,8 +70,9 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Name** | Button name | string | `null` |
-**IconSvg** | Icon SVG | string | `null` |
 **Tag** | User defined data | object`?` | `null` |
+||||
+**IconSvg** | Icon SVG | string | `null` |
 
 ### Example
 

@@ -12,22 +12,23 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Touch** | Gesture sliding | bool | true |
-**TouchOut** | Slide outside | bool | false |
-**Autoplay** | Automatic play | bool | false |
-**Autodelay** | Automatic switching delay(s) | int | 4 |
+**Image** | Image Collection `CarouselItemCollection` | [CarouselItemCollection](#carouselitem) | [] |
+**ImageFit** | Image layout | [TFit](Enum.md#tfit) | Cover |
 ||||
-**DotSize** | Panel indicator dot size | Size | 28 × 4 |
-**DotMargin** | Panel indicator dot margin | int | 12 |
-**DotPosition** | Position of panel indicator dot | [TAlignMini](Enum.md#talignmini) | None |
+**Autodelay** | Automatic switching delay(s) | int | 4 |
+**Autoplay** | Automatic play | bool | false |
+**SelectIndex** | Select index | int | 0 |
 **DotFocusedColor** | Focused panel indicator dot color | Color`?` | `null` |
 ||||
 **Radius** | Rounded corners | int | 0 |
 **Round** | Rounded corner style | bool | false |
 ||||
-**Image** | Image Collection `CarouselItemCollection` | [CarouselItemCollection](#carouselitem) | [] |
-**ImageFit** | Image layout | [TFit](Enum.md#tfit) | Cover |
-**SelectIndex** | Select index | int | 0 |
+**DotMargin** | Panel indicator dot margin | int | 12 |
+**DotPosition** | Position of panel indicator dot | [TAlignMini](Enum.md#talignmini) | None |
+**DotSize** | Panel indicator dot size | Size | 28 × 4 |
+||||
+**Touch** | Gesture sliding | bool | true |
+**TouchOut** | Slide outside | bool | false |
 
 ### Events
 
@@ -42,5 +43,6 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Img** | Image | Image`?` | `null` |
 **Tag** | User defined data | object`?` | `null` |
+||||
+**Img** | Image | Image`?` | `null` |

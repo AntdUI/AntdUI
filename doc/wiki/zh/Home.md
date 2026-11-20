@@ -261,7 +261,7 @@
 
 
 
-### 数据展示 `23`
+### 数据展示 `25`
 
 #### [Avatar 头像](Control/Avatar.md)
 
@@ -311,12 +311,17 @@
 
 
 
-#### Descriptions 描述列表
+#### [Descriptions 描述列表](Control/Descriptions.md)
 
 > 展示多个只读字段的组合。
 > 
-> ![Descriptions](Icon/Descriptions.png)
+> [![Descriptions](Icon/Descriptions.png)](Control/Descriptions.md)
 
+
+
+#### [Statistic 统计数值](Control/Statistic.md)
+
+> 统计数值展示，支持饼图/折线图。
 
 
 #### [Preview 图片预览](Control/Preview.md)
@@ -355,6 +360,11 @@
 > 
 > [![Table](Icon/Table.png)](Control/Table.md)
 
+
+
+#### [EditableTable 可编辑表格](Control/EditableTable.md)
+
+> 行级编辑表格，整行同时进入编辑态，支持保存校验与取消还原（[Table](Control/Table.md) 的变体，PR #182）。
 
 
 #### [Tabs 标签页](Control/Tabs.md)
@@ -556,11 +566,11 @@
 > [![Image3D](Icon/Image3D.gif)](Control/Image3D.md)
 
 
-#### Markdown
+#### [Markdown](Control/Markdown.md)
 
 > MD渲染控件
 > 
-> ![Markdown](Icon/Markdown.png)
+> [![Markdown](Icon/Markdown.png)](Control/Markdown.md)
 
 
 

@@ -13,46 +13,53 @@ SelectNumber 数字选择器 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Value** | 当前值 | decimal | 0 |
-**Minimum** | 最小值 | decimal`?` | `null` |
-**Maximum** | 最大值 | decimal`?` | `null` |
-**Increment** | 每次单击箭头键时增加/减少的数量 | decimal | 1 |
-**DecimalPlaces** | 显示的小数点位数 | int | 0 |
-**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
-**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
-**ShowControl** | 显示控制器 | bool | true |
-**WheelModifyEnabled** | 鼠标滚轮修改值 | bool | true |
-**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
-**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
-**ReadOnly** | 只读 | bool | false |
 **Text** | 文本 | string ||
+**Value** | 当前值 | decimal | 0 |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+**PrefixFore** | 前缀前景色 | Color`?` | `null` |
+**SuffixFore** | 后缀前景色 | Color`?` | `null` |
+||||
 **BackColor** | 背景颜色 | Color`?` | `null` |
 **BackExtend** | 背景渐变色 | string`?` | `null` |
-**BorderWidth** | 边框宽度 | float | 1F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
-**BorderActive** | 激活边框颜色 | Color`?` | `null` |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
-**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
-**Variant** | 形态 | [TVariant](Enum.md#tvariant) | Outlined |
+||||
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
 **IconRatio** | 图标比例 | float | 0.7F |
 **IconRatioRight** | 右图标比例 | float`?` | `null` |
-**IconGap** | 图标与文字间距比例 | float | 0.25F |
+||||
+**ReadOnly** | 只读 | bool | false |
+**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
+**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
+**ShowControl** | 显示控制器 | bool | true |
+**WheelModifyEnabled** | 鼠标滚轮修改值 | bool | true |
+**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
+**BorderActive** | 激活边框颜色 | Color`?` | `null` |
+||||
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**Radius** | 圆角 | int | 6 |
+**Round** | 圆角样式 | bool | false |
+||||
+**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
+**Maximum** | 最大值 | decimal`?` | `null` |
+**Minimum** | 最小值 | decimal`?` | `null` |
 **PaddGap** | 边框间距比例 | float | 0.4F |
+||||
+**DecimalPlaces** | 显示的小数点位数 | int | 0 |
+**HasPrefix** | 是否包含前缀 | bool | `false` |
+**HasSuffix** | 是否包含后缀 | bool | `false` |
+**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
+**Increment** | 每次单击箭头键时增加/减少的数量 | decimal | 1 |
 **Prefix** | 前缀 | Image`?` | `null` |
-**PrefixFore** | 前缀前景色 | Color`?` | `null` |
 **PrefixSvg** | 前缀SVG | string`?` | `null` |
 **PrefixText** | 前缀文本 | string`?` | `null` |
-**HasPrefix** | 是否包含前缀 | bool | `false` |
+**RightToLeft** | 反向 | RightToLeft | No |
+**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
 **Suffix** | 后缀 | Image`?` | `null` |
-**SuffixFore** | 后缀前景色 | Color`?` | `null` |
 **SuffixSvg** | 后缀SVG | string`?` | `null` |
 **SuffixText** | 后缀文本 | string`?` | `null` |
-**HasSuffix** | 是否包含后缀 | bool | `false` |
-**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
-**RightToLeft** | 反向 | RightToLeft | No |
+**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
+**Variant** | 形态 | [TVariant](Enum.md#tvariant) | Outlined |
 
 ### 事件
 

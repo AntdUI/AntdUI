@@ -264,7 +264,7 @@
 
 
 
-### Data Display `23`
+### Data Display `25`
 
 #### [Avatar](Control/Avatar.md)
 
@@ -314,12 +314,17 @@
 
 
 
-#### Descriptions
+#### [Descriptions](Control/Descriptions.md)
 
 > Display multiple read-only fields in a group.
 > 
-> ![Descriptions](Icon/Descriptions.png)
+> [![Descriptions](Icon/Descriptions.png)](Control/Descriptions.md)
 
+
+
+#### [Statistic](Control/Statistic.md)
+
+> Statistic value display with optional pie/line chart.
 
 
 #### [Preview](Control/Preview.md)
@@ -358,6 +363,11 @@
 > 
 > [![Table](Icon/Table.png)](Control/Table.md)
 
+
+
+#### [EditableTable](Control/EditableTable.md)
+
+> Editable table with row-level editing, supporting save validation and cancel revert (a [Table](Control/Table.md) variant, PR #182).
 
 
 #### [Tabs](Control/Tabs.md)
@@ -553,11 +563,11 @@
 > [![Image3D](Icon/Image3D.gif)](Control/Image3D.md)
 
 
-#### Markdown
+#### [Markdown](Control/Markdown.md)
 
 > Markdown rendering control
 > 
-> ![Markdown](Icon/Markdown.png)
+> [![Markdown](Icon/Markdown.png)](Control/Markdown.md)
 
 ---
 

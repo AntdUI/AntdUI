@@ -12,34 +12,37 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Items** | Data `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeActive** | Activate Text color | Color`?` | `null` |
+||||
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**Gap** | Gap | int | 8 |
-**GapIndent** | Gap indent | int`?` | `null` |
-**Radius** | Rounded corners | int | 6 |
-**Round** | Rounded corner style | bool | false |
+**DragHandleIconSize** | Drag and drop handle icon size | int | 14 |
 **IconRatio** | Icon Scale | float | 1F |
+||||
 **Checkable** | Add Checkbox checkbox in front of the node | bool | false |
 **CheckStrictly** | Node selection is fully controlled in Checkable state `The selected status of parent-child nodes is no longer associated` | bool | true |
-**BlockNode** | Nodes occupy a row | bool | false |
-**Multiple** | Support selecting multiple nodes | bool | false |
-||||
+**DragAutoExpandDelay** | Drag hover auto expand delay (ms) | int | 1000 |
 **Draggable** | Enable node drag and drop | bool | true |
 **DragHandleVisible** | Show drag handle | bool | true |
-**DragAutoExpandDelay** | Drag hover auto expand delay (ms) | int | 1000 |
-||||
-**Items** | Data `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+**Multiple** | Support selecting multiple nodes | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
 **SelectItem** | Selected item | [TreeItem](#treeitem)`?` | `null` |
-||||
-**Empty** | Is it displayed | bool | true |
-**EmptyText** | Display text when data is empty | string`?` | `null` |
-**EmptyImage** | Display image with empty data | Image`?` | `null` |
 **VirtualMode** | Virtual mode (only visible rows are rendered for large data) | bool | false |
 ||||
-**PauseLayout** | Pause Layout | bool | false |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
+||||
+**Gap** | Gap | int | 8 |
+**GapIndent** | Gap indent | int`?` | `null` |
+||||
+**BlockNode** | Nodes occupy a row | bool | false |
+**Empty** | Is it displayed | bool | true |
+**EmptyImage** | Display image with empty data | Image`?` | `null` |
+**EmptyText** | Display text when data is empty | string`?` | `null` |
 
 ### Events
 
@@ -87,24 +90,46 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
 **Name** | Name | string`?` | `null` |
-**Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+||||
+**Fore** | Font color | Color`?` |`null`|
+**BadgeFore** | Badge foreground color | Color`?` | `null`
+**ForeSub** | Sub-text color | Color`?` | `null`
+||||
+**Back** | Background color | Color`?` |`null`|
+**BadgeBack** | Badge background color | Color`?` | `null`
+||||
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+||||
+**Loading** | Loading State | bool | false
+||||
+**Checked** | Checked state | bool | false |
+**Enabled** | Enable | bool | true |
+**Visible** | Is it displayed | bool | true |
+**BadgeMode** | Badge mode (hollow out) | bool | false
+**CanExpand** | Can it be expanded | bool | `Read only` |
+**Checkable** | Add Checkbox checkbox in front of the node | bool | true |
+**CheckState** | Checked state | CheckState | `Unchecked` |
+**Select** | Active state | bool | false |
+||||
+**BadgeBorderColor** | Badge border color | Color`?` | `null`
+**BadgeBorderWidth** | Badge border width | float`?` | `null`
+||||
+**BadgeAlign** | Badge align | [TAlign](Enum.md#talign) | Right
+**BadgeOffsetX** | Badge offset X | int | 1
+**BadgeOffsetY** | Badge offset Y | int | 1
+**BadgeSize** | Badge size ratio | float | .6F
+**PARENTITEM** | Parent object | [TreeItem](#treeitem)`?` | `null` |
+||||
+**Badge** | Badge content | string`?` | `null`
+**BadgeSvg** | Badge SVG | string`?` | `null`
+**Expand** | Expand | bool | true |
+**Sub** | Subset ♾️ | [TreeItem[]](#treeitem) | [] |
 **SubTitle** | Subtitle | string | `null` |
 🌏 **LocalizationSubTitle** | International Subtitle | string`?` | `null` |
-**Fore** | Font color | Color`?` |`null`|
-**Back** | Background color | Color`?` |`null`|
-**Visible** | Is it displayed | bool | true |
-**Enabled** | Enable | bool | true |
-**Expand** | Expand | bool | true |
-**CanExpand** | Can it be expanded | bool | `Read only` |
-**Checked** | Checked state | bool | false |
-**CheckState** | Checked state | CheckState | `Unchecked` |
-**Sub** | Subset ♾️ | [TreeItem[]](#treeitem) | [] |
-**Tag** | User defined data | object`?` | `null` |
-||||
-**PARENTITEM** | Parent object | [TreeItem](#treeitem)`?` | `null` |
 ### Enum
 
 #### TreeDropMode

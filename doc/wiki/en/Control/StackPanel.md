@@ -9,10 +9,13 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoScroll** | Display scrollbar or not | bool | false |
-**Vertical** | Is it in the vertical direction | bool | false |
-**RightToLeft** | Reverse | RightToLeft | No |
-**ItemSize** | Content size | string`?` | `null` |
-**Gap** | Gap | int | 0 |
-**PauseLayout** | Pause Layout | bool | false |
 **AutoContainerBgTransparent** | Inner container background transparent | bool | false |
+||||
+**AutoScroll** | Display scrollbar or not | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
+||||
+**Gap** | Gap | int | 0 |
+**ItemSize** | Content size | string`?` | `null` |
+||||
+**RightToLeft** | Reverse | RightToLeft | No |
+**Vertical** | Is it in the vertical direction | bool | false |

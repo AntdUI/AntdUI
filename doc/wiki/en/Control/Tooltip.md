@@ -12,16 +12,19 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Font** | Font | Font | `System default` |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 ||||
+**Font** | Font | Font | `System default` |
+**Fore** | Foreground color | Color`?` | `null` |
+||||
+**Back** | Background color | Color`?` | `null` |
+||||
 **Radius** | Rounded corners | int | 6 |
+||||
 **ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | Top |
 **ArrowSize** | Arrow size | int`?` | `null` |
 **CustomWidth** | Custom Width | int`?` | `null` |
-**Back** | Background color | Color`?` | `null` |
-**Fore** | Foreground color | Color`?` | `null` |
 
 ### Static Methods
 
@@ -38,6 +41,18 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type |
 :--|:--|:--|
+**Font** | Font | Font`?` | `null` |
+**Fore** | Foreground color | Color`?` | `null` |
+||||
+**Back** | Background color | Color`?` | `null` |
+||||
+**Radius** | Rounded corners | int | 6 |
+||||
+**ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | Top |
+**ArrowSize** | Arrow size | int`?` | `null` |
+**CustomWidth** | Custom Width | int`?` | `null` |
+||||
+**Delay** | Delay time (ms) | int | 500
 **Tip** | Text | string |
 
 
@@ -48,8 +63,10 @@ Name | Description | Type |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Font** | Font | Color`?` | `null` |
+||||
 **Radius** | Rounded corners | int | 6 |
+||||
 **ArrowAlign** | Arrow direction | [TAlign](Enum.md#talign) | None |
 **ArrowSize** | Arrow size | int | 8 |
-**Offset** | Offset | Rectangle / RectangleF | `null` |
 **CustomWidth** | Custom Width | int`?` | `null` |
+**Offset** | Offset | Rectangle / RectangleF | `null` |

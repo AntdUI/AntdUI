@@ -13,20 +13,22 @@ InputNumber 数字输入框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Minimum** | 最小值 | decimal`?` | `null` |
-**Maximum** | 最大值 | decimal`?` | `null` |
 **Value** | 当前值 | decimal | 0 |
 ||||
-**ShowControl** | 显示控制器 | bool | true |
 **AlwaysShowControl** | 是否始终显示控制器(未获得焦点时也显示) | bool | false |
-**WheelModifyEnabled** | 鼠标滚轮修改值 | bool | true |
-**KeyboardModifyEnabled** | 上下方向键修改值，使用 Increment 步长 | bool | true |
-**DecimalPlaces** | 显示的小数点位数 | int | 0 |
-**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
-**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
-**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
 **EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
+**KeyboardModifyEnabled** | 上下方向键修改值，使用 Increment 步长 | bool | true |
+**ShowControl** | 显示控制器 | bool | true |
+**WheelModifyEnabled** | 鼠标滚轮修改值 | bool | true |
+||||
+**InterceptArrowKeys** | 当按下箭头键时，是否持续增加/减少 | bool | true |
+**Maximum** | 最大值 | decimal`?` | `null` |
+**Minimum** | 最小值 | decimal`?` | `null` |
+||||
+**DecimalPlaces** | 显示的小数点位数 | int | 0 |
+**Hexadecimal** | 值是否应以十六进制显示 | bool | false |
 **Increment** | 每次单击箭头键时增加/减少的数量 | decimal | 1 |
+**ThousandsSeparator** | 是否显示千分隔符 | bool | false |
 
 ### 事件
 

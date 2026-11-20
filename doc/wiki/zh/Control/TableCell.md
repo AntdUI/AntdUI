@@ -12,17 +12,19 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Back** | 背景颜色 | Color`?` ||
+**Text** | 文本 | string`?` ||
+||||
 **Font** | 字体 | Font`?` ||
+**Fore** | 字体颜色 | Color`?` ||
+||||
+**Back** | 背景颜色 | Color`?` ||
 ||||
 **IconRatio** | 图标比例 | float | 0.7F |
+||||
 **Prefix** | 前缀 | Image`?` ||
 **PrefixSvg** | 前缀SVG | string`?` ||
 **Suffix** | 后缀 | Image`?` ||
 **SuffixSvg** | 后缀SVG | string`?` ||
-||||
-**Text** | 文本 | string`?` ||
 
 #### CellBadge
 
@@ -30,11 +32,13 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Text** | 文本 | string`?` |
+||||
 **Fore** | 字体颜色 | Color`?` ||
+||||
 **Fill** | 颜色 | Color`?` ||
 ||||
 **State** | 状态 | [TState](Enum.md#tstate) | Default |
-**Text** | 文本 | string`?` |
 
 #### CellTag
 
@@ -42,12 +46,14 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Back** | 背景颜色 | Color`?` ||
-**BorderWidth** | 边框宽度 | float |1F|
-||||
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
 **Text** | 文本 | string`?` ||
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
+||||
+**Fore** | 字体颜色 | Color`?` ||
+||||
+**Back** | 背景颜色 | Color`?` ||
+||||
+**BorderWidth** | 边框宽度 | float |1F|
 
 #### CellImage
 
@@ -55,18 +61,18 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Image** | 图片 | Image`?` | `null` |
+**ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Fill |
+**ImageSvg** | 图片SVG | string`?` | `null` |
+||||
 **BorderColor** | 边框颜色 | Color`?` ||
 **BorderWidth** | 边框宽度 | float |0F|
 **Radius** | 圆角 | int |6|
-||||
 **Round** | 圆角样式 | bool |false|
+||||
 **Size** | 自定义大小 | Size`?` ||
 ||||
-**Image** | 图片 | Image`?` | `null` |
-**ImageSvg** | 图片SVG | string`?` | `null` |
 **FillSvg** | SVG填充颜色 | Color`?` ||
-**ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Fill |
-||||
 **Tooltip** | 文本提示 | string`?` ||
 
 #### CellButton
@@ -75,33 +81,33 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Text** | 文本 | string`?` ||
+**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
+||||
 **Fore** | 字体颜色 | Color`?` ||
+||||
 **Back** | 背景颜色 | Color`?` ||
+**DefaultBack** | Default模式背景颜色 | Color`?` ||
 **BackHover** | 悬停背景颜色 | Color`?` ||
 **BackActive** | 激活背景颜色 | Color`?` ||
 ||||
-**DefaultBack** | Default模式背景颜色 | Color`?` ||
-**DefaultBorderColor** | Default模式边框颜色 | Color`?` ||
-||||
-**Radius** | 圆角 | int |6|
-**BorderWidth** | 边框宽度 | float |0F|
-||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**IconGap** | 图标与文字间距比例 | float | 0.25F |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
-**IconHover** | 悬停图标 | Image`?` | `null` |
-**IconHoverSvg** | 悬停图标SVG | string`?` | `null` |
-**IconHoverAnimation** | 悬停图标动画时长 | int | 200 |
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
 **IconPosition** | 按钮图标组件的位置 | [TAlignMini](Enum.md#talignmini) | Left |
+**IconRatio** | 图标比例 | float | 0.7F |
+**IconHover** | 悬停图标 | Image`?` | `null` |
+**IconHoverAnimation** | 悬停图标动画时长 | int | 200 |
+**IconHoverSvg** | 悬停图标SVG | string`?` | `null` |
 ||||
-**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
 **Ghost** | 幽灵属性 `使按钮背景透明` | bool |false |
-**ShowArrow** | 显示箭头 | bool |false |
 **IsLink** | 箭头链接样式 | bool |false |
+**ShowArrow** | 显示箭头 | bool |false |
 ||||
-**Type** | 类型 | [TTypeMini](Enum.md#ttypemini) | Default |
-**Text** | 文本 | string`?` ||
+**BorderWidth** | 边框宽度 | float |0F|
+**Radius** | 圆角 | int |6|
+**Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
+**DefaultBorderColor** | Default模式边框颜色 | Color`?` ||
 
 #### CellLink
 
@@ -110,10 +116,10 @@
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Id** | ID | string ||
-**Enabled** | 启用 | bool |true|
-||||
 **Text** | 文本 | string`?` ||
 **TextAlign** | 文本位置 | ContentAlignment | MiddleCenter |
+||||
+**Enabled** | 启用 | bool |true|
 ||||
 **Tooltip** | 文本提示 | string`?` ||
 
@@ -123,13 +129,13 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Value** | 进度条 `0.0-1.0` | float |0F|
+||||
 **Back** | 背景颜色 | Color`?` ||
 **Fill** | 进度条颜色 | Color`?` ||
 ||||
 **Radius** | 圆角 | int |6|
 **Shape** | 形状 | [TShape](Enum.md#tshape) | Default |
-||||
-**Value** | 进度条 `0.0-1.0` | float |0F|
 
 #### CellDivider
 
@@ -141,16 +147,17 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Font** | 字体 | Font`?` ||
-**Fill** | 填充颜色 | Color`?` ||
-**Enabled** | 启用 | bool | true |
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-||||
 **Text** | 文本 | string`?` ||
 🌏 **LocalizationText** | 国际化文本 | string`?` ||
 ||||
+**Font** | 字体 | Font`?` ||
+**Fore** | 字体颜色 | Color`?` ||
+||||
+**Fill** | 填充颜色 | Color`?` ||
+||||
 **Checked** | 选中状态 | bool | false |
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
 **CheckState** | 选中状态 | CheckState | Unchecked |
 
 #### CellRadio
@@ -159,16 +166,17 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Font** | 字体 | Font`?` ||
-**Fill** | 填充颜色 | Color`?` ||
-**Enabled** | 启用 | bool | true |
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-||||
 **Text** | 文本 | string`?` ||
 🌏 **LocalizationText** | 国际化文本 | string`?` ||
 ||||
+**Font** | 字体 | Font`?` ||
+**Fore** | 字体颜色 | Color`?` ||
+||||
+**Fill** | 填充颜色 | Color`?` ||
+||||
 **Checked** | 选中状态 | bool | false |
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
 
 #### CellSwitch
 
@@ -176,11 +184,12 @@
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Fore** | 字体颜色 | Color`?` ||
-**Enabled** | 启用 | bool | true |
-**AutoCheck** | 点击时自动改变选中状态 | bool | true |
-||||
 **Text** | 文本 | string`?` ||
 🌏 **LocalizationText** | 国际化文本 | string`?` ||
 ||||
+**Fore** | 字体颜色 | Color`?` ||
+||||
 **Checked** | 选中状态 | bool | false |
+**Enabled** | 启用 | bool | true |
+**AutoCheck** | 点击时自动改变选中状态 | bool | true |
+**CheckedText** | 选中时显示的文本 | string`?` | `null` |

@@ -12,47 +12,66 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | Original background color | Color | Transparent |
+**Items** | Set `SegmentedItemCollection` | SegmentedItemCollection | `null` |
+**TextAlign** | Text horizontal alignment | [TAlignFlow](Enum.md#talignflow) | Center |
 ||||
-**AutoSize** | Auto Size | bool | false |
-||||
-**Full** | Is it fully covered | bool | false |
-**Radius** | Rounded corners | int | 6 |
-**Round** | Rounded corner style | bool | false |
-|||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeHover** | Hover text color | Color`?` | `null` |
 **ForeActive** | Activate text color | Color`?` | `null` |
+||||
 **BackColor** | Background color | Color`?` | `null` |
+**OriginalBackColor** | Original background color | Color | Transparent |
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
-|||
+||||
+**IconAlign** | Icon alignment direction | [TAlignMini](Enum.md#talignmini) | Top |
+**IconGap** | Ratio of icon to text spacing | float | 0.2F |
+**IconRatio** | Icon Scale | float`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
+**SelectIndex** | Select Index | int | -1 |
+||||
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 0F |
+**Radius** | Rounded corners | int | 6 |
+**ItemBorderColor** | Item border color | Color`?` | `null` |
+**ItemBorderWidth** | Item border width | float | 0F |
+**Round** | Rounded corner style | bool | false |
+||||
+**Shadow** | Shadow | int | 0 |
+**ShadowColor** | Shadow color | Color`?` | `null` |
+**ShadowOffsetX** | Shadow offset X | int | 0 |
+**ShadowOffsetY** | Shadow offset Y | int | 0 |
+**ShadowOpacity** | Shadow Transparency | float | 0.2F |
+||||
+**BarPadding** | Bar padding | int | 0 |
+**BarPosition** | Bar position | [TAlignMini](Enum.md#talignmini) | None |
+**BarSize** | Bar size | float | 3F |
 **Gap** | Gap | int | 0 |
 **ItemGap** | Item gap | float | 0.6F |
-**Vertical** | Is it vertical | bool | false |
-**IconAlign** | Icon alignment direction | [TAlignMini](Enum.md#talignmini) | Top |
-**IconRatio** | Icon Scale | float`?` | `null` |
-**IconGap** | Ratio of icon to text spacing | float | 0.2F |
-|||
-**BarPosition** | Bar position | [TAlignMini](Enum.md#talignmini) | None |
+||||
 **BarBg** | Show bar background | bool | false |
 **BarColor** | Bar background color | Color`?` | `null` |
-**BarSize** | Bar size | float | 3F |
-**BarPadding** | Bar padding | int | 0 |
 **BarRadius** | Bar rounded corners | int | 0 |
-|||
-**BorderWidth** | Border width | float | 0F |
-**BorderColor** | Border color | Color`?` | `null` |
-**ItemBorderWidth** | Item border width | float | 0F |
-**ItemBorderColor** | Item border color | Color`?` | `null` |
-|||
+**Full** | Is it fully covered | bool | false |
 **RightToLeft** | Reverse | RightToLeft | No |
 **TooltipConfig** | Text prompt configuration | TooltipConfig`?` | `null` |
+**Vertical** | Is it vertical | bool | false |
+||||
 |||
-**Items** | Set `SegmentedItemCollection` | SegmentedItemCollection | `null` |
-**SelectIndex** | Select Index | int | -1 |
+||||
 |||
-**PauseLayout** | Pause Layout | bool | false |
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||
 
 ### Events
 
@@ -69,21 +88,40 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string`?` | `null` |
-**IconActive** | Icon activate | Image`?` | `null` |
-**IconActiveSvg** | Icon activate SVG | string`?` | `null` |
-|||||
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+||||
+**ForeColor** | Foreground color | Color`?` | `null` |
+**BadgeFore** | Badge foreground color | Color`?` | `null`
+||||
+**BadgeBack** | Badge background color | Color`?` | `null` |
+||||
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**IconHover** | Icon hover state | Image`?` | `null`
+**IconHoverSvg** | Icon hover state SVG | string`?` | `null`
+**IconActive** | Icon activate | Image`?` | `null` |
+**IconActiveSvg** | Icon activate SVG | string`?` | `null` |
+||||
 **Enabled** | Enable | bool | true |
-**Tag** | User defined data | object`?` | `null` |
+**BadgeMode** | Badge mode (hollow out) | bool | false |
+||||
+**BadgeBorderColor** | Badge border color | Color`?` | `null`
+**BadgeBorderWidth** | Badge border width | float`?` | `null`
+||||
+**BadgeAlign** | Badge align | [TAlignFrom](Enum.md#talignfrom) | TR |
+**BadgeOffsetX** | Badge offset X | float | 0 |
+**BadgeOffsetY** | Badge offset Y | float | 0 |
+**BadgeSize** | Badge size | float | 0.6F |
+**Reverse** | Whether reversed | bool | false
 ||||
 **Badge** | Badge text | string`?` | `null` |
 **BadgeSvg** | Badge SVG | string`?` | `null` |
-**BadgeAlign** | Badge align | [TAlignFrom](Enum.md#talignfrom) | TR |
-**BadgeSize** | Badge size | float | 0.6F |
-**BadgeMode** | Badge mode (hollow out) | bool | false |
-**BadgeOffsetX** | Badge offset X | float | 0 |
-**BadgeOffsetY** | Badge offset Y | float | 0 |
-**BadgeBack** | Badge background color | Color`?` | `null` |
+**Tooltip** | Tooltip | string`?` | `null`
+||||
+|||||
+||||
+**🌏 LocalizationTooltip** | Tooltip | string`?` | `null`
+||||
+**🌏 LocalizationTooltip** | Tooltip | string`?` | `null` |

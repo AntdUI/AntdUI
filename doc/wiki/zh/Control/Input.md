@@ -13,84 +13,103 @@ Input 输入框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
-||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**BackColor** | 背景颜色 | Color`?` | `null` |
-**BackExtend** | 背景渐变色 | string`?` | `null` |
-||||
-**BackgroundImage** | 背景图片 | Image`?` | `null` |
-**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
-||||
-**BorderWidth** | 边框宽度 | float | 1F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
-**BorderActive** | 激活边框颜色 | Color`?` | `null` |
-||||
-**SelectionColor** | 选中颜色 | Color | 102, 0, 127, 255 |
-||||
-**CaretColor** | 光标颜色 | Color`?` | `null` |
-**CaretSpeed** | 光标速度 | int | 1000 |
-||||
-**WaveSize** | 波浪大小 `点击动画` | int | 4 |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
-**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
-**Variant** | 形态 | [TVariant](Enum.md#tvariant) | Outlined |
-||||
-**AllowClear** | 支持清除 | bool | false |
-**AutoScroll** | 显示滚动条 | bool | false |
 **Text** | 文本 | string ||
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**IsTextEmpty** | 文本是否为空 | bool | true |
+**TextAlign** | 文本对齐方向 | HorizontalAlignment | Left |
 **TextTotalLine** | 文本总行数 | int | 0 |
-**ImeMode** | IME(输入法编辑器)状态 | ImeMode | NoControl |
+||||
+**ForeColor** | 文字颜色 | Color`?` | `null` |
 **EmojiFont** | Emoji字体 | string`?` | `null` |
-**AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
-**Multiline** | 多行文本 | bool | false |
-**WordWrap** | 自动换行 | bool | true |
-**LineHeight** | 多行行高 | int | 0 |
+**PrefixFore** | 前缀前景色 | Color`?` | `null` |
+**SuffixFore** | 后缀前景色 | Color`?` | `null` |
+||||
+**BackColor** | 背景颜色 | Color`?` | `null` |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**BackgroundImage** | 背景图片 | Image`?` | `null` |
+**BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
+**OriginalBackColor** | 原装背景颜色 | Color | Transparent |
+||||
+**IconGap** | 图标与文字间距比例 | float | 0.25F |
+**IconRatio** | 图标比例 | float | 0.7F |
+**IconRatioRight** | 右图标比例 | float`?` | `null` |
+**LoadingIcon** | 加载图标 | Image`?` | `null` |
+||||
+**LoadingWaveColor** | 水波颜色 | Color`?` | `null` |
+**LoadingWaveCount** | 水波数量 | int | 1 |
+**LoadingWaveSize** | 水波大小 | int | 2 |
+**LoadingWaveValue** | 水波进度 | float | 0F |
+**LoadingWaveVertical** | 水波是否垂直 | bool | false |
+**WaveSize** | 波浪大小 `点击动画` | int | 4 |
+||||
+**Loading** | 加载状态 | bool | false |
+**LoadingSpeedTime** | 加载速度(毫秒) | int | 1000 |
+**LoadingSvg** | 加载图标SVG | string`?` | `null` |
+**LoadingValue** | 加载进度 | float | 0.3F |
+||||
 **ReadOnly** | 只读 | bool | false |
-**PlaceholderText** | 水印文本 | string`?` | `null` |
-🌏 **LocalizationPlaceholderText** | 国际化水印文本 | string`?` | `null` |
-**PlaceholderColor** | 水印颜色 | Color`?` | `null` |
-**PlaceholderColorExtend** | 水印渐变色 | string`?` | `null` |
+**AllowClear** | 支持清除 | bool | false |
+**AutoScroll** | 显示滚动条 | bool | false |
+**CaretVisible** | 确定光标是可见的还是隐藏的 | bool | true |
+**HideSelection** | 失去焦点时是否隐藏选定内容 | bool | true |
+**ImeMode** | IME(输入法编辑器)状态 | ImeMode | NoControl |
+**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
+**SelectionColor** | 选中颜色 | Color | 102, 0, 127, 255 |
+**SetTextSelectionEnd** | 设置文本后选中到最后 | bool | false |
+**UseContextMenu** | 使用默认右键菜单 | bool | true |
+**UseSystemPasswordChar** | 使用密码框 | bool | false |
+**VirtualMode** | 虚拟模式 | bool | false |
+**BorderHover** | 悬停边框颜色 | Color`?` | `null` |
+**BorderActive** | 激活边框颜色 | Color`?` | `null` |
 **LostFocusClearSelection** | 焦点离开清空选中 | bool | true |
 ||||
-**TextAlign** | 文本对齐方向 | HorizontalAlignment | Left |
-**UseSystemPasswordChar** | 使用密码框 | bool | false |
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**Radius** | 圆角 | int | 6 |
+**Round** | 圆角样式 | bool | false |
+||||
+**AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
+**AdapterSystemMnemonic** | 适配系统助记词 | bool | false |
+**LineHeight** | 多行行高 | int | 0 |
+**Lines** | 多行文本集合 | string[] | 
+**MaxLength** | 文本最大长度 | int | 32767 |
+**Multiline** | 多行文本 | bool | false |
+**PaddGap** | 边框间距比例 | float | 0.4F |
+**PaddingLR** | 左右边距 | int | 0 |
+**PrefixWidth** | 前缀宽度 | int`?` | `null` |
+**SuffixWidth** | 后缀宽度 | int`?` | `null` |
+**WordWrap** | 自动换行 | bool | true |
+||||
+**AcceptsEscape** | 多行编辑是否允许输入退出键 | bool | false |
+**CaretColor** | 光标颜色 | Color`?` | `null` |
+**CaretSpeed** | 光标速度 | int | 1000 |
+**HandShortcutKeys** | 处理快捷键 `已过时` | bool | true |
+**HasPrefix** | 是否包含前缀 | bool | `false` |
+**HasSuffix** | 是否包含后缀 | bool | `false` |
+**IsTextEmpty** | 文本是否为空 | bool | true |
+**JoinLeft** | 连接左边 `组合按钮` `已过时` | bool | false |
+**JoinRight** | 连接右边 `组合按钮` `已过时` | bool | false |
 **PasswordChar** | 自定义密码字符 | char | (char)0 |
 **PasswordCopy** | 密码可以复制 | bool | false |
 **PasswordPaste** | 密码可以粘贴 | bool | true |
-**MaxLength** | 文本最大长度 | int | 32767 |
-||||
-**IconRatio** | 图标比例 | float | 0.7F |
-**IconRatioRight** | 右图标比例 | float`?` | `null` |
-**IconGap** | 图标与文字间距比例 | float | 0.25F |
-**PaddGap** | 边框间距比例 | float | 0.4F |
+**PlaceholderColor** | 水印颜色 | Color`?` | `null` |
+**PlaceholderText** | 水印文本 | string`?` | `null` |
+🌏 **LocalizationPlaceholderText** | 国际化水印文本 | string`?` | `null` |
 **Prefix** | 前缀 | Image`?` | `null` |
-**PrefixFore** | 前缀前景色 | Color`?` | `null` |
+**PrefixFormat** | 前缀对齐方式 | FormatFlags | `FormatFlags.Center \| FormatFlags.NoWrap` |
 **PrefixSvg** | 前缀SVG | string`?` | `null` |
 **PrefixText** | 前缀文本 | string`?` | `null` |
 🌏 **LocalizationPrefixText** | 国际化前缀文本 | string`?` | `null` |
-**HasPrefix** | 是否包含前缀 | bool | `false` |
-||||
+**RightToLeft** | 反向 | RightToLeft | No |
+**Status** | 设置校验状态 | [TType](Enum.md#ttype) | None |
 **Suffix** | 后缀 | Image`?` | `null` |
-**SuffixFore** | 后缀前景色 | Color`?` | `null` |
+**SuffixFormat** | 后缀对齐方式 | FormatFlags | `FormatFlags.Center \| FormatFlags.NoWrap` |
 **SuffixSvg** | 后缀SVG | string`?` | `null` |
 **SuffixText** | 后缀文本 | string`?` | `null` |
 🌏 **LocalizationSuffixText** | 国际化后缀文本 | string`?` | `null` |
-**HasSuffix** | 是否包含后缀 | bool | `false` |
+**Variant** | 形态 | [TVariant](Enum.md#tvariant) | Outlined |
+**PlaceholderColorExtend** | 水印渐变色 | string`?` | `null` |
 ||||
-**JoinMode** | 组合模式 | [TJoinMode](Enum.md#tjoinmode) | None |
-**JoinLeft** | 连接左边 `组合按钮` `已过时` | bool | false |
-**JoinRight** | 连接右边 `组合按钮` `已过时` | bool | false |
-||||
-**AdapterSystemMnemonic** | 适配系统助记词 | bool | false |
-**HandShortcutKeys** | 处理快捷键 `已过时` | bool | true |
-**UseContextMenu** | 使用默认右键菜单 | bool | true |
 |||
-**RightToLeft** | 反向 | RightToLeft | No |
 
 ### 方法
 

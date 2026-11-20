@@ -15,18 +15,25 @@ Alert 警告提示 👚
 :--|:--|:--|:--|
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
 **TextTitle** | 标题 | string`?` | `null` |
 🌏 **LocalizationTextTitle** | 国际化标题 | string`?` | `null` |
-**TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
-**Radius** | 圆角 | int | 6 |
-**BorderWidth** | 边框宽度 | float | 0F |
+||||
+**TextColor** | 文本的自定义颜色 | Color`?` | `null` |
+**TextTitleColor** | 标题的自定义颜色 | Color`?` | `null` |
+||||
 **Icon** | 样式 | [TType](Enum.md#ttype) | None |
 **IconSvg** | 自定义图标SVG | string`?` | `null` |
 **CloseIcon** | 是否显示关闭图标 | bool | false |
-**IconRatio** | 图标比例 | float`?` | `null` |
+**IconCustom** | 自定义图标 | Image`?` | `null` |
 **IconGap** | 图标与文字间距比例 | float`?` | `null` |
+**IconRatio** | 图标比例 | float`?` | `null` |
+||||
 **Loop** | 文本轮播 | bool | false |
-**LoopOverflow** | 溢出轮播 | bool | false |
-**LoopSpeed** | 文本轮播速率 | int | 10 |
 **LoopInfinite** | 轮播文本无尽 | bool | true |
+**LoopOverflow** | 溢出轮播 | bool | false |
 **LoopPauseOnMouseEnter** | 鼠标移入时暂停轮播 | bool | true |
+**LoopSpeed** | 文本轮播速率 | int | 10 |
+||||
+**BorderWidth** | 边框宽度 | float | 0F |
+**Radius** | 圆角 | int | 6 |

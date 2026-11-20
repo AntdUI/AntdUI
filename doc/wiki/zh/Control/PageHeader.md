@@ -13,45 +13,53 @@ PageHeader 页头 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Mode** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Loading** | 加载状态 | bool | false |
-**BackExtend** | 背景渐变色 | string`?` | `null` |
-||||
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**SubText** | 副标题 | string`?` | `null` |
-🌏 **LocalizationSubText** | 国际化副标题 | string`?` | `null` |
-**Description** | 描述文本 | string`?` | `null` |
-🌏 **LocalizationDescription** | 国际化描述文本 | string`?` | `null` |
-**UseTitleFont** | 使用标题大小 | bool | false |
-**UseTextBold** | 标题使用粗体 | bool | true |
-**UseSubCenter** | 副标题居中 | bool | false |
-**UseLeftMargin** | 使用左边边距 | bool | true |
+||||
 **SubFont** | 副标题字体 | Font`Font` | `null` |
+**UseForeColorDrawIcons** | 使用前景色绘制按钮图标 | bool | false |
+**UseTitleFont** | 使用标题大小 | bool | false |
 ||||
-**Gap** | 间隔 | int`?` | `null` |
-**SubGap** | 副标题与标题间隔 | int | 6 |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**BackIcon** | 返回图表 | string`?` | `null` |
+**ShowBack** | 是否显示返回按钮 | bool | false |
 ||||
-**ShowIcon** | 是否显示图标 | bool | false |
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string | `null` |
 **IconRatio** | 图标比例 | float`?` | `null` |
+**LoadingIcon** | 加载图标 | Image`?` | `null` |
+**ShowIcon** | 是否显示图标 | bool | false |
 ||||
-**ShowBack** | 是否显示返回按钮 | bool | false |
+**Loading** | 加载状态 | bool | false |
+**LoadingSpeedTime** | 加载速度(毫秒) | int | 1000 |
+**LoadingSvg** | 加载图标SVG | string`?` | `null` |
+||||
+**CancelButton** | 点击退出关闭 | bool | false |
+**CloseSize** | 关闭按钮大小 | int | 48 |
+**DividerShow** | 显示线 | bool | false |
+**DragMove** | 是否可以拖动位置 | bool | true |
+**EnableButtonTooltip** | 按钮悬浮提示 | bool | false |
+**EnableDoubleClickMaximize** | 是否允许双击最大化 | bool | true |
+**Mode** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
 **ShowButton** | 是否显示标题栏按钮 | bool | false |
+**UseLeftMargin** | 使用左边边距 | bool | true |
+**UseSubCenter** | 副标题居中 | bool | false |
+**UseSystemStyleColor** | 使用系统颜色 | bool | false |
+**UseTextBold** | 标题使用粗体 | bool | true |
+||||
+**DividerMargin** | 线边距 | int | 0 |
+**Gap** | 间隔 | int`?` | `null` |
+**IsMax** | 是否最大化 | bool | false |
 **MaximizeBox** | 是否显示最大化按钮 | bool | true |
 **MinimizeBox** | 是否显示最小化按钮 | bool | true |
-**FullBox** | 是否显示全屏按钮 | bool | false |
-**DragMove** | 是否可以拖动位置 | bool | true |
-**CloseSize** | 关闭按钮大小 | int | 48 |
-**MDI** | 是否仅对父窗口生效 | bool | false |
+**SubGap** | 副标题与标题间隔 | int | 6 |
 ||||
-**UseSystemStyleColor** | 使用系统颜色 | bool | false |
-**UseForeColorDrawIcons** | 使用前景色绘制按钮图标 | bool | false |
-**CancelButton** | 点击退出关闭 | bool | false |
-**EnableDoubleClickMaximize** | 是否允许双击最大化 | bool | true |
-||||
-**DividerShow** | 显示线 | bool | false |
+**Description** | 描述文本 | string`?` | `null` |
+🌏 **LocalizationDescription** | 国际化描述文本 | string`?` | `null` |
 **DividerColor** | 线颜色 | Color`?` | `null` |
 **DividerThickness** | 线厚度 | float | 1F |
-**DividerMargin** | 线边距 | int | 0 |
+**FullBox** | 是否显示全屏按钮 | bool | false |
+**IsFull** | 是否全屏 | bool | false |
+**MDI** | 是否仅对父窗口生效 | bool | false |
+**SubText** | 副标题 | string`?` | `null` |
+🌏 **LocalizationSubText** | 国际化副标题 | string`?` | `null` |

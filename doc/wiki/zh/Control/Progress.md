@@ -13,43 +13,51 @@ Progress 进度条 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Text** | 文本 | string`?` | `null` |
+🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+**Value** | 进度条 `0F-1F` | float | 0F |
+**TextUnit** | 单位文本 | string`?` | % |
+🌏 **LocalizationTextUnit** | 国际化单位文本 | string`?` | `null` |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+||||
 **Back** | 背景颜色 | Color`?` | `null` |
 **Fill** | 进度条颜色 | Color`?` | `null` |
+**FillExtend** | 进度条渐变色 | string`?` | `null` |
+||||
+**IconCircle** | 圆形进度下的图标 | Image`?` | `null` |
+**IconCircleAngle** | 圆形图标是否旋转 | bool | false |
+**IconCircleColor** | 圆形图标颜色 | Color`?` | `null` |
+**IconCirclePadding** | 圆形图标边距 | int | 8 |
+**IconRatio** | 图标比例 | float | 0.7F |
+**IconSvgCircle** | 圆形进度下的图标SVG | string`?` | `null` |
+||||
+**Animation** | 动画时长 | int | 200 |
+||||
+**Loading** | 加载状态 | bool | false |
+**LoadingColor** | Loading 流动光效叠加颜色（`null` 时自动跟随 `State`） | Color`?` | `null` |
+**LoadingDuration** | Loading 流动动画时长 | int | 1000 |
+**LoadingFull** | 动画铺满 | bool | false |
+**LoadingOpacity** | Loading 流动光效不透明度 | float | 1F |
+||||
+**ShowInTaskbar** | 任务栏中显示进度 | bool | false |
+**ShowTextDot** | 显示进度文本小数点位数 | int | 0 |
+**UseSystemText** | 使用系统文本 | bool | false |
+**UseTextCenter** | 使文本居中显示 | bool | false |
 ||||
 **Radius** | 圆角 | int | 0 |
 **Shape** | 形状 | [TShapeProgress](Enum.md#tshapeprogress) | Round |
-**IconRatio** | 图标比例 | float | 0.7F |
-**ValueRatio** | 进度条比例 | float | 0.4F |
 ||||
-**UseSystemText** | 使用系统文本 | bool | false |
-**ShowTextDot** | 显示进度文本小数点位数 | int | 0 |
-**State** | 样式 | [TType](Enum.md#ttype) | None |
-**ShowInTaskbar** | 任务栏中显示进度 | bool | false |
-||||
-**Text** | 文本 | string`?` | `null` |
-🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**TextUnit** | 单位文本 | string`?` | % |
-🌏 **LocalizationTextUnit** | 国际化单位文本 | string`?` | `null` |
-**Value** | 进度条 `0F-1F` | float | 0F |
-**Loading** | 加载状态 | bool | false |
-**LoadingFull** | 动画铺满 | bool | false |
-**LoadingDuration** | Loading 流动动画时长 | int | 1000 |
-**LoadingOpacity** | Loading 流动光效不透明度 | float | 1F |
-**LoadingColor** | Loading 流动光效叠加颜色（`null` 时自动跟随 `State`） | Color`?` | `null` |
-**Animation** | 动画时长 | int | 200 |
-**UseTextCenter** | 使文本居中显示 | bool | false |
-||||
+**GapDegree** | 仪表盘进度条缺口角度，可取值 0 ~ 295 | int | 0 |
+**GapPlacement** | 仪表盘进度条缺口位置 | [TAlignMini](Enum.md#talignmini) | Bottom |
+**StepGap** | 步数间隔 | int | 2 |
 **Steps** | 进度条总共步数 | int | 3 |
 **StepSize** | 步数大小 | int | 14 |
-**StepGap** | 步数间隔 | int | 2 |
+**ValueRatio** | 进度条比例 | float | 0.4F |
 ||||
-**IconCircle** | 圆形进度下的图标 | Image`?` | `null` |
-**IconSvgCircle** | 圆形进度下的图标SVG | string`?` | `null` |
-**IconCircleAngle** | 圆形图标是否旋转 | bool | false |
-**IconCirclePadding** | 圆形图标边距 | int | 8 |
-**IconCircleColor** | 圆形图标颜色 | Color`?` | `null` |
 **ContainerControl** | 窗口对象 | ContainerControl`?` | `null` |
+**Segments** | 分段集合 | ProgressSegment[]`?` | `null` |
+**State** | 样式 | [TType](Enum.md#ttype) | None |
 
 ### 事件
 

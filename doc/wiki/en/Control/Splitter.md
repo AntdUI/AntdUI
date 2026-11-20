@@ -13,21 +13,22 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **SplitterBack** | Slide background | Color`?` | `null` |
-**SplitterBackMove** | Slide to move background | Color`?` | `null` |
-**ArrowColor** | Arrow Color | Color`?` | `null` |
-**ArrawColorHover** | Arrow hover color | Color`?` | `null` |
-**ArrawBackColor** | Arrow background color | Color`?` | `null` |
-**ArrawBackHover** | Mouse hover arrow background color | Color`?` | `null` |
 ||||
-**SplitterWidth** | Thickness of the splitter | int | 4 |
-**SplitterSize** | Slide size | int | 20 |
-**SplitterDistance** | The distance between the splitter and the left or upper edge | int | |
+**ArrawBackHover** | Mouse hover arrow background color | Color`?` | `null` |
+**ArrawColorHover** | Arrow hover color | Color`?` | `null` |
+||||
+**ArrowColor** | Arrow Color | Color`?` | `null` |
+**Orientation** | Is the splitter horizontal or vertical | Orientation | Vertical |
 **Panel1MinSize** | The minimum distance between the splitter and the left or upper edge of Panel1 | int | 25 |
 **Panel2MinSize** | The minimum distance between the splitter and the right or lower edge of Panel2 | int | 25 |
-||||
-**CollapsePanel** | Collapse after clicking Panel | ADCollapsePanel | None |
-**Orientation** | Is the splitter horizontal or vertical | Orientation | Vertical |
 **SplitPanelState** | Current folding state | bool | true |
+**SplitterBackMove** | Slide to move background | Color`?` | `null` |
+**SplitterDistance** | The distance between the splitter and the left or upper edge | int | |
+**SplitterSize** | Slide size | int | 20 |
+**SplitterWidth** | Thickness of the splitter | int | 4 |
+||||
+**ArrawBackColor** | Arrow background color | Color`?` | `null` |
+**CollapsePanel** | Collapse after clicking Panel | ADCollapsePanel | None |
 **Lazy** | Delayed rendering | bool | true |
 
 ### Methods

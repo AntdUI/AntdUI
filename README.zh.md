@@ -82,19 +82,21 @@
 ➡️| [**Transfer** 穿梭框](doc/wiki/zh/Control/Transfer.md) | ✅ | ❎ |
 ➡️| [**UploadDragger** 拖拽上传](doc/wiki/zh/Control/UploadDragger.md) | ✅ | ❎ |
 ||||
-⬇️| 数据展示 `24` | 动画 | 禁用 |
+⬇️| 数据展示 `26` | 动画 | 禁用 |
 ➡️| [**Avatar** 头像](doc/wiki/zh/Control/Avatar.md) | ❎ | ❎ |
 ➡️| [**Badge** 徽标数](doc/wiki/zh/Control/Badge.md) | ✅ | ❎ |
 ➡️| [**Calendar** 日历](doc/wiki/zh/Control/Calendar.md) | ✅ | ❎ |
 ➡️| [**Panel** 面板](doc/wiki/zh/Control/Panel.md) | ✅ | ❎ |
 ➡️| [**Carousel** 走马灯](doc/wiki/zh/Control/Carousel.md) | ✅ | ❎ |
 ➡️| [**Collapse** 折叠面板](doc/wiki/zh/Control/Collapse.md) | ✅ | ❎ |
-➡️| **Descriptions** 描述列表 🚧 | ✅ | ❎ |
+➡️| [**Descriptions** 描述列表](doc/wiki/zh/Control/Descriptions.md) | ✅ | ❎ |
+➡️| [**Statistic** 统计数值](doc/wiki/zh/Control/Statistic.md) | ✅ | ❎ |
 ➡️| [**Preview** 图片预览](doc/wiki/zh/Control/Preview.md) | ✅ | ❎ |
 ➡️| [**ImagePreview** 图片预览](doc/wiki/zh/Control/ImagePreview.md) | ✅ | ❎ |
 ➡️| [**Popover** 气泡卡片](doc/wiki/zh/Control/Popover.md) | ✅ | ❎ |
 ➡️| [**Segmented** 分段控制器](doc/wiki/zh/Control/Segmented.md) | ✅ | ✅ |
 ➡️| [**Table** 表格](doc/wiki/zh/Control/Table.md) | ✅ | ✅ |
+➡️| [**EditableTable** 可编辑表格](doc/wiki/zh/Control/EditableTable.md) | ✅ | ❎ |
 ➡️| [**Tabs** 标签页](doc/wiki/zh/Control/Tabs.md) | ✅ | ✅ |
 ➡️| [**Tag** 标签](doc/wiki/zh/Control/Tag.md) | ✅ | ❎ |
 ➡️| [**Timeline** 时间轴](doc/wiki/zh/Control/Timeline.md) | ❎ | ❎ |
@@ -131,7 +133,7 @@
 ➡️| **Docking** 停靠面板 | ✅ | ❎ |
 ➡️| **Ribbon** 工具栏 | ✅ | ❎ |
 ➡️| **OutlookBar** 导航栏 | ✅ | ❎ |
-➡️| **Markdown** MD渲染控件 🚧 | ✅ | ❎ |
+➡️| [**Markdown** MD渲染控件](doc/wiki/zh/Control/Markdown.md) | ✅ | ❎ |
 
 ### 🐿️ 捐赠
 ![Payment](doc/pre/Payment.png)

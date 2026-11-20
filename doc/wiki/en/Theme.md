@@ -72,6 +72,52 @@ AntdUI.Style.LoadCustom(colorConfig);
 
 ---
 
+## .NET 10 Follow System Color Mode
+
+> 🔴 Available only on .NET 10 and above
+
+Starting from .NET 10, WinForms introduces system color mode APIs that let your app follow the Windows light / dark setting automatically. `AntdUI.Config` is integrated with it:
+
+- On first access to `AntdUI.Config`, its **static constructor** reads `Application.ColorMode` to decide the initial mode: `Classic` → light, `Dark` → dark, `System` → follow the current system value (`Application.SystemColorMode`).
+- Afterwards, setting `Config.Mode` / `Config.IsDark` also calls `Application.SetColorMode` to switch system controls together with AntdUI.
+
+### Usage
+
+**To follow the system automatically, call `Application.SetColorMode(SystemColorMode.System)` before accessing `AntdUI.Config` (or any AntdUI control):**
+
+```csharp
+using System.Windows.Forms;
+
+internal static class Program
+{
+	[STAThread]
+	static void Main()
+	{
+		ApplicationConfiguration.Initialize();
+
+		// 🔴 Must be called before the first access to AntdUI.Config
+		Application.SetColorMode(SystemColorMode.System);
+
+		Application.Run(new MainForm());
+	}
+}
+```
+
+### Why it must come before Config
+
+The static constructor of `Config` runs only once — on **first access** — and reads `Application.ColorMode` at that moment as the initial value. If `Config` is accessed first (for example, a control reads `Config.Dpi` during initialization), the static constructor has already initialized with the default value; calling `SetColorMode(SystemColorMode.System)` afterwards will no longer affect AntdUI's initial theme.
+
+### Specify light / dark manually
+
+If you don't need to follow the system, just set `Config.Mode` (it will be synced to the system):
+
+```csharp
+AntdUI.Config.Mode = AntdUI.TMode.Dark;  // Also calls Application.SetColorMode(Dark)
+AntdUI.Config.IsDark = true;             // Equivalent
+```
+
+---
+
 ## Theme Mode Management
 
 ### 1. Enable Dark Mode
@@ -176,7 +222,7 @@ var infoPalette = AntdUI.Style.Db.Info;       // Info color system
 | **HSLToColor** | HSL to Color | Color | HSL hsl, float alpha = 1 |
 | **HSLToColor** | HSL to Color | Color | float hue, float saturation, float lightness, float alpha = 1 |
 ||||
-| **ToColor** | HEX to RGB | Color | string hex |
+| **ToColor** | String to color (HEX/rgb/rgba/hsl) | Color | string str, e.g. `#1677FF`, `rgb(22, 119, 255)`, `hsl(0 100% 63%)` |
 | **ToHex** | RGB to HEX | string | Color color |
 ||||
 | **rgba** | Convert to color | Color | int r, int g, int b, float alpha = 1 |

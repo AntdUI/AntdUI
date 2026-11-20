@@ -15,8 +15,14 @@ Spin 加载中 👚
 :--|:--|:--|:--|
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**Fill** | 颜色 | Color`?` | `null` |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+||||
+**Fill** | 颜色 | Color`?` | `null` |
+||||
+**CirSize** | 加载圈大小 | int`?` | `null` |
+**CirWidth** | 加载圈粗细 | int`?` | `null` |
+||||
 **Indicator** | 加载指示符 | Image`?` | `null` |
 **IndicatorSvg** | 加载指示符SVG | string`?` | `null` |
 
@@ -51,17 +57,22 @@ Spin 加载中 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Text** | 文本 | string`?` | `null` |
-**Back** | 背景颜色 | Color`?` | `null` |
-**Color** | 颜色 | Color`?` | `null` |
-**Fore** | 文本颜色 | Color`?` | `null` |
-**Radius** | 圆角 | int`?` | `null` |
-**Font** | 字体 | Font`?` | `null` |
 **Value** | 进度 | float`?` | `null` |
-**Rate** | 进度速率 | float`?` | `null` |
-**Indicator** | 加载指示符 | Image`?` | `null` |
-**IndicatorSvg** | 加载指示符SVG | string`?` | `null` |
+||||
+**Color** | 颜色 | Color`?` | `null` |
+**Font** | 字体 | Font`?` | `null` |
+**Fore** | 文本颜色 | Color`?` | `null` |
+||||
+**Back** | 背景颜色 | Color`?` | `null` |
+||||
 **CancelText** | 取消按钮文字 | string`?` | `取消` |
 **CancelTokenSource** | 取消令牌源 | CancellationTokenSource`?` | `null` |
+||||
+**Radius** | 圆角 | int`?` | `null` |
+||||
+**Indicator** | 加载指示符 | Image`?` | `null` |
+**IndicatorSvg** | 加载指示符SVG | string`?` | `null` |
+**Rate** | 进度速率 | float`?` | `null` |
 
 ***
 

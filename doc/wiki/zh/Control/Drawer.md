@@ -12,19 +12,22 @@ Drawer 抽屉
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Form** | 所属窗口 | Form | `必填` |
-**Content** | 控件 | Control | `必填` |
-**ColorScheme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
-**Mask** | 是否展示遮罩 | bool | true |
-**MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
-**ManualActivateParent** | 关闭后手动激活父窗口 | bool | false |
-**Padding** | 边距 | int | 24 |
-**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Right |
-**Dispose** | 是否释放 | bool | true |
 **Tag** | 用户定义数据 | object`?` | `null` |
-**OnLoad** | 加载回调 | Action`?` | `null` |
-**OnClose** | 关闭回调 | Action`?` | `null` |
+**Content** | 控件 | Control | `必填` |
+||||
 **DisplayDelay** | 显示延迟 `加入延迟可有效避免与Mask动画抢占` | int | 100 |
+**MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
+**OnClose** | 关闭回调 | Action`?` | `null` |
+||||
+**Align** | 方向 | [TAlignMini](Enum.md#talignmini) | Right |
+**Padding** | 边距 | int | 24 |
+||||
+**ColorScheme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
+**Dispose** | 是否释放 | bool | true |
+**Form** | 所属窗口 | Form | `必填` |
+**ManualActivateParent** | 关闭后手动激活父窗口 | bool | false |
+**Mask** | 是否展示遮罩 | bool | true |
+**OnLoad** | 加载回调 | Action`?` | `null` |
 
 ***
 

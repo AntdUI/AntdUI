@@ -12,21 +12,24 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Value** | Current date | DateTime`?` | `null` |
 **Format** | Format | string | yyyy-MM-dd `HH:mm:ss Display hour minute second selection box` |
 ||||
-**Value** | Current date | DateTime`?` | `null` |
-**MinDate** | Min date | DateTime`?` | `null` |
-**MaxDate** | Max date | DateTime`?` | `null` |
-**Presets** | Presets | BaseCollection | - |
-**BadgeAction** | Date badge callback | Func<DateTime[], List<DateBadge>?>? | `null` |
+**ShowIcon** | Display icon or not | bool | true |
 ||||
+**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**ShowButtonToDay** | Show today | bool | true |
+||||
+**MaxDate** | Max date | DateTime`?` | `null` |
+**MinDate** | Min date | DateTime`?` | `null` |
 **Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
-**ShowIcon** | Display icon or not | bool | true |
-**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
-**ShowButtonToDay** | Show today | bool | true |
+||||
+**BadgeAction** | Date badge callback | Func<DateTime[], List<DateBadge>?>? | `null` |
+**ExpandDrop** | Expand dropdown menu | bool | false |
 **Picker** | Picker type | [TDatePicker](Enum.md#tdatepicker) | Date |
-**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**Presets** | Presets | BaseCollection | - |
+**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
 
 ### Badge on the date
 

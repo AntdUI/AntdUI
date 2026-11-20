@@ -12,19 +12,21 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | Auto Size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
-||||
-**ForeColor** | Text color | Color`?` | `null` |
-**Fill** | Fill color | Color`?` | `null` |
-||||
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextAlign** | Text position | ContentAlignment | MiddleLeft |
-**UseMnemonic** | Mnemonic key | bool | true |
+||||
+**ForeColor** | Text color | Color`?` | `null` |
+||||
+**Fill** | Fill color | Color`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
 **Checked** | Checked state | bool | false |
-**CheckState** | Checked state | CheckState | Unchecked |
 **AutoCheck** | Auto check on click | bool | true |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+**CheckState** | Checked state | CheckState | Unchecked |
+**UseMnemonic** | Mnemonic key | bool | true |
+**HasFocus** | Whether focus exists | bool | false |
 ||||
 **RightToLeft** | Reverse | RightToLeft | No |
 

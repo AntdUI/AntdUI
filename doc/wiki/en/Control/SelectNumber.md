@@ -12,46 +12,53 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Value** | Current value | decimal | 0 |
-**Minimum** | Minimum value | decimal`?` | `null` |
-**Maximum** | Maximum value | decimal`?` | `null` |
-**Increment** | The amount to increase/decrease when clicking arrow keys | decimal | 1 |
-**DecimalPlaces** | Number of decimal places to display | int | 0 |
-**ThousandsSeparator** | Whether to show thousands separator | bool | false |
-**Hexadecimal** | Whether the value should be displayed in hexadecimal | bool | false |
-**ShowControl** | Show controller | bool | true |
-**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
-**InterceptArrowKeys** | Whether to continuously increase/decrease when arrow keys are pressed | bool | true |
-**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
-**ReadOnly** | Read only | bool | false |
 **Text** | Text | string ||
+**Value** | Current value | decimal | 0 |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
+**PrefixFore** | Prefix foreground | Color`?` | `null` |
+**SuffixFore** | Suffix foreground | Color`?` | `null` |
+||||
 **BackColor** | Background color | Color`?` | `null` |
 **BackExtend** | Background gradient color | string`?` | `null` |
-**BorderWidth** | Border width | float | 1F |
-**BorderColor** | Border color | Color`?` | `null` |
-**BorderHover** | Hover border color | Color`?` | `null` |
-**BorderActive** | Active border color | Color`?` | `null` |
-**Radius** | Rounded corners | int | 6 |
-**Round** | Rounded corner style | bool | false |
-**Status** | Set verification status | [TType](Enum.md#ttype) | None |
-**Variant** | Variant | [TVariant](Enum.md#tvariant) | Outlined |
+||||
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **IconRatio** | Icon Scale | float | 0.7F |
 **IconRatioRight** | Right icon ratio | float`?` | `null` |
-**IconGap** | Ratio of icon to text spacing | float | 0.25F |
+||||
+**ReadOnly** | Read only | bool | false |
+**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**JoinMode** | Join Mode | [TJoinMode](Enum.md#tjoinmode) | None |
+**ShowControl** | Show controller | bool | true |
+**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
+**BorderHover** | Hover border color | Color`?` | `null` |
+**BorderActive** | Active border color | Color`?` | `null` |
+||||
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 1F |
+**Radius** | Rounded corners | int | 6 |
+**Round** | Rounded corner style | bool | false |
+||||
+**InterceptArrowKeys** | Whether to continuously increase/decrease when arrow keys are pressed | bool | true |
+**Maximum** | Maximum value | decimal`?` | `null` |
+**Minimum** | Minimum value | decimal`?` | `null` |
 **PaddGap** | Border spacing ratio | float | 0.4F |
+||||
+**DecimalPlaces** | Number of decimal places to display | int | 0 |
+**HasPrefix** | Whether to include prefix | bool | `false` |
+**HasSuffix** | Whether to include suffix | bool | `false` |
+**Hexadecimal** | Whether the value should be displayed in hexadecimal | bool | false |
+**Increment** | The amount to increase/decrease when clicking arrow keys | decimal | 1 |
 **Prefix** | Prefix | Image`?` | `null` |
-**PrefixFore** | Prefix foreground | Color`?` | `null` |
 **PrefixSvg** | Prefix SVG | string`?` | `null` |
 **PrefixText** | Prefix text | string`?` | `null` |
-**HasPrefix** | Whether to include prefix | bool | `false` |
+**RightToLeft** | Reverse | RightToLeft | No |
+**Status** | Set verification status | [TType](Enum.md#ttype) | None |
 **Suffix** | Suffix | Image`?` | `null` |
-**SuffixFore** | Suffix foreground | Color`?` | `null` |
 **SuffixSvg** | Suffix SVG | string`?` | `null` |
 **SuffixText** | Suffix text | string`?` | `null` |
-**HasSuffix** | Whether to include suffix | bool | `false` |
-**JoinMode** | Join Mode | [TJoinMode](Enum.md#tjoinmode) | None |
-**RightToLeft** | Reverse | RightToLeft | No |
+**ThousandsSeparator** | Whether to show thousands separator | bool | false |
+**Variant** | Variant | [TVariant](Enum.md#tvariant) | Outlined |
 
 ### Events
 

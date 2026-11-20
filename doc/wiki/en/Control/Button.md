@@ -12,59 +12,65 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**OriginalBackColor** | Original background color | Color | Transparent |
-||||
-**AutoSize** | Auto Size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
-**DisplayStyle** | Specify to display image or text | [TButtonDisplayStyle](Enum.md#tbuttondisplaystyle) | Default |
+**Text** | Text | string`?` | `null` |
+🌏 **LocalizationText** | International Text | string`?` | `null` |
+**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
+**TextAlign** | Text position | ContentAlignment | MiddleCenter |
+**TextMultiLine** | Multiple lines | bool | false |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeHover** | Hover text color | Color`?` | `null` |
 **ForeActive** | Active text color | Color`?` | `null` |
+||||
 **BackColor** | Background color | Color`?` | `null` |
 **BackExtend** | Background gradient color | string`?` | `null` |
+**BackgroundImage** | Background image | Image`?` | `null` |
+**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
+**DefaultBack** | Default type background color | Color`?` | `null` |
+**OriginalBackColor** | Original background color | Color | Transparent |
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Active background color | Color`?` | `null` |
 ||||
-**DefaultBack** | Default type background color | Color`?` | `null` |
-**DefaultBorderColor** | Default type border color | Color`?` | `null` |
-||||
-**BackgroundImage** | Background image | Image`?` | `null` |
-**BackgroundImageLayout** | Background image layout | [TFit](Enum.md#tfit) | Fill |
-||||
-**BorderWidth** | Border width | float | 0F |
-||||
-**WaveSize** | Wave size `Click animation` | int | 4 |
-**Radius** | Rounded corners | int | 6 |
-**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
-**Type** | Type | [TTypeMini](Enum.md#ttypemini) | Default |
-**Ghost** | Ghost attribute `Transparent button background` | bool | false |
-**RespondRealAreas** | Response button real area | bool | false |
-**ShowArrow** | Display arrows | bool | false |
-**IsLink** | Arrow Link Style | bool | false |
-**UseMnemonic** | Mnemonic key `The first character with (&) will be used as the mnemonic key` | bool | true |
-||||
-**Text** | Text | string`?` | `null` |
-🌏 **LocalizationText** | International Text | string`?` | `null` |
-**TextAlign** | Text position | ContentAlignment | MiddleCenter |
-**VirtualWidth** | Virtual width | int`?` | `null` |
-**AutoEllipsis** | Text exceeds automatic processing | bool | false |
-**TextMultiLine** | Multiple lines | bool | false |
-**TextCenterHasIcon** | Text centered display(After including icons) | bool | false |
-||||
-**IconRatio** | Icon Scale | float | 0.7F |
-**IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `null` |
-**IconHover** | Hover icon | Image`?` | `null` |
-**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
-**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconGap** | Ratio of icon to text spacing | float | 0.25F |
 **IconPosition** | Location of button icon components | [TAlignMini](Enum.md#talignmini) | Left |
+**IconRatio** | Icon Scale | float | 0.7F |
 **IconSize** | Icon size `Default automatic size` | Size | 0 × 0 |
+**TextCenterHasIcon** | Text centered display(After including icons) | bool | false |
+**IconHover** | Hover icon | Image`?` | `null` |
+**IconHoverAnimation** | Hover icon animation duration | int | 200 |
+**IconHoverSvg** | Hover icon SVG | string`?` | `null` |
+||||
+**WaveColor** | Wave color | Color`?` | `null` |
+**WaveShadow** | Wave shadow | bool | false |
+**WaveShadowSize** | Wave shadow size | int`?` | `null` |
+**WaveSize** | Wave size `Click animation` | int | 4 |
+**WaveColorExtend** | Wave gradient color | string`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
+**AutoEllipsis** | Text exceeds automatic processing | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+**DisplayStyle** | Specify to display image or text | [TButtonDisplayStyle](Enum.md#tbuttondisplaystyle) | Default |
+**Ghost** | Ghost attribute `Transparent button background` | bool | false |
+**IsLink** | Arrow Link Style | bool | false |
+**RespondRealAreas** | Response button real area | bool | false |
+**ShowArrow** | Display arrows | bool | false |
+**UseMnemonic** | Mnemonic key `The first character with (&) will be used as the mnemonic key` | bool | true |
+||||
+**BorderWidth** | Border width | float | 0F |
+**Radius** | Rounded corners | int | 6 |
+**Shape** | Shape | [TShape](Enum.md#tshape) | Default |
+**DefaultBorderColor** | Default type border color | Color`?` | `null` |
+||||
+**ArrowProg** | Arrow angle | float | -1F |
+**VirtualWidth** | Virtual width | int`?` | `null` |
 ||||
 |**Switch**||
 **AutoToggle** | Auto toggle state on click | bool | false |
 **Toggle** | Toggle state | bool | false |
+**ToggleText** | Toggle text | string`?` | `null` |
+🌏 **LocalizationToggleText** | Toggle text | string`?` | `null` |
 **ToggleIcon** | Toggle icon | Image`?` | `null` |
 **ToggleIconSvg** | Toggle icon SVG | string`?` | `null` |
 **ToggleIconHover** | Toggle Hover icon | Image`?` | `null` |
@@ -81,6 +87,9 @@ Name | Description | Type | Default Value |
 ||||
 |**Loading**||
 **Loading** | Loading State `true Block clicks` | bool | false |
+**LoadingSpeedTime** | Loading speed (ms) | int | 1000 |
+**LoadingIcon** | Loading icon | Image`?` | `null` |
+**LoadingSvg** | Loading icon SVG | string`?` | `null` |
 **LoadingRespondClick** | Loading respond click | bool | false |
 **LoadingValue** | Loading progress `0F-1F` | float | 0.3F |
 **LoadingWaveValue** | Water wave progress `0F-1F` | float | 0F |
@@ -92,13 +101,23 @@ Name | Description | Type | Default Value |
 |**State**||
 **ExtraMouseDown** | Active state | bool | false |
 **ExtraMouseHover** | Hover state | bool | false |
+**HasFocus** | Whether focus exists | bool | false |
 ||||
 |**Combination**||
 **JoinMode** | Combination mode | [TJoinMode](Enum.md#tjoinmode) | None |
 **JoinLeft** | Connect left area | bool | false |
 **JoinRight** | Connect right area | bool | false |
 
-- Button type `Type` right`Ghost=true` `BorderWidth=2F`
-![ButtonStyle](ButtonStyle.png)
-- Rounded button `Shape=TShape.Round` right`ShowArrow=true` `IsLink=true`
-![ButtonStyleRound](ButtonStyleRound.png)
+### Methods
+
+Name | Description | Return Value | Parameters |
+:--|:--|:--|:--|
+**AnimationBlink** | Start blinking animation | void | int interval 间隔(毫秒), params Color[] colors 闪烁颜色 |
+**AnimationBlinkTransition** | Start blinking animation (color transition) | void | int interval 间隔(毫秒), params Color[] colors 闪烁颜色 |
+**StopAnimationBlink** | Stop blinking animation | void | |
+
+### Events
+
+Name | Description | Return Value | Parameters |
+:--|:--|:--|:--|
+**ToggleChanged** | Occurs when Toggle changes | void | |

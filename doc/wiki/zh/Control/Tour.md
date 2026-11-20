@@ -19,11 +19,13 @@ Tour 漫游式引导 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Form** | 所属窗口 | Form | - |
-**Scale** | 缩放 | float | 1.04F |
 **MaskClosable** | 点击蒙层是否允许关闭 | bool | true |
-**ClickNext** | 点击下一步 | bool | true |
+||||
+**Scale** | 缩放 | float | 1.04F |
 **StepCall** | 步骤回调 | Action<Result> | - |
+||||
+**ClickNext** | 点击下一步 | bool | true |
+**Form** | 所属窗口 | Form | - |
 **PopoverCall** | 气泡回调 | Action<Popover>`?` | `null` |
 
 #### Config 方法
@@ -61,9 +63,9 @@ Tour 漫游式引导 👚
 名称 | 描述 | 类型 |
 :--|:--|:--|
 **Form** | 所属窗口 | Form |
-**Tour** | 引导 | TourForm |
 **Index** | 第几步 | int |
 **Rect** | 显示区域 | Rectangle`?` |
+**Tour** | 引导 | TourForm |
 
 #### TourForm 接口
 

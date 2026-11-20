@@ -13,25 +13,32 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Target** | Target | Target | `Required` |
-**Form** | Belonging window (Obsolete, use Target) | Control`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+||||
+**Font** | Font | Font`?` | `null` |
+**Fore** | Custom foreground color | Color`?` | `null` |
+||||
+**Back** | Custom background color | Color`?` | `null` |
+||||
 **Icon** | Icon | [TType](Enum.md#ttype) | None |
 **IconCustom** | Custom Icon | IconInfo`?` | `null` |
-**Font** | Font | Font`?` | `null` |
-**Radius** | Rounded corners | int | 6 |
+||||
 **AutoClose** | Automatic shutdown time(s) `0 equals not closing` | int | 6 |
 **ClickClose** | Can I click to close it | bool | true |
-**TopMost** | Whether to top | bool | false |
-**Align** | Align | [TAlignFrom](Enum.md#talignfrom) | Top |
-**Padding** | Padding | Size | 12, 9 |
-**ShowInWindow** | Pop up in the window | bool`?` | `null` |
 **EnableSound** | Whether to enable sound | bool | false |
+**ShowInWindow** | Pop up in the window | bool`?` | `null` |
+||||
+**Radius** | Rounded corners | int | 6 |
+||||
+**Align** | Align | [TAlignFrom](Enum.md#talignfrom) | Top |
 **MaxWidth** | Max width | int`?` | `null` |
-**Back** | Custom background color | Color`?` | `null` |
-**Fore** | Custom foreground color | Color`?` | `null` |
+**Padding** | Padding | Size | 12, 9 |
+||||
 **Call** | Load callback | object`?` | `null` |
+**Form** | Belonging window (Obsolete, use Target) | Control`?` | `null` |
+**Target** | Target | Target | `Required` |
+**TopMost** | Whether to top | bool | false |
 
 #### Methods
 

@@ -12,24 +12,35 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | Auto Size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
-|||
-**Radius** | Rounded corners | int | 6 |
-|||
 **Text** | Text | string | `AntdUI` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**Fore** | Text color on the right side | Color`?` | `null` |
-**Color** | Background color on the right side | Color`?` | `null` |
-|||
-**Logo** | Logo | Image`?` | `null` |
-**LogoSvg** | Logo SVG | string`?` | `null` |
-|||
 **Label** | Left text | string`?` | `null` |
 🌏 **LocalizationLabel** | International Left text | string`?` | `null` |
+||||
+**Color** | Background color on the right side | Color`?` | `null` |
+**Fore** | Text color on the right side | Color`?` | `null` |
 **LabelFore** | Text color on the left side | Color`?` | `null` |
-**LabelColor** | Background color on the left side | Color`?` | `null` |
-**Bold** | Bold text on the left | bool | false |
-|||
+||||
+**Logo** | Logo | Image`?` | `null` |
+**LogoSvg** | Logo SVG | string`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
+||||
+**Radius** | Rounded corners | int | 6 |
+||||
 **ShadowOffsetX** | Shadow OffsetX | int | 0 |
 **ShadowOffsetY** | Shadow OffsetY | int | 0 |
+||||
+**Bold** | Bold text on the left | bool | false |
+**LabelColor** | Background color on the left side | Color`?` | `null` |
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||
+||||
+|||

@@ -14,19 +14,33 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**TextAlign** | Text alignment | [TAlignMini](Enum.md#talignmini) | Bottom |
+**TextPadding** | Text padding | Padding | 0, 0, 0, 0 |
+||||
 **Back** | Background color | Color | Transparent |
-**Radius** | Radius | int | 0 |
-**Round** | Round style | bool | false |
+||||
 **Image** | Image | Image`?` | `null` |
 **ImageFit** | Image fit | [TFit](Enum.md#tfit) | Cover |
+||||
+**ShowText** | Display Text | bool | false |
+||||
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 0F |
+**Radius** | Radius | int | 0 |
+**BorderStyle** | Border Style | [DashStyle](Enum.md#dashstyle) | Solid |
+**Round** | Round style | bool | false |
 
 #### Animation Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Vertical** | Is vertical | bool | false |
-**Speed** | Speed | int | 10 |
 **Duration** | Duration(ms) | int | 400 |
+**Speed** | Speed | int | 10 |
+||||
+**TiltMax** | Max 3D tilt angle | int | 15 |
+||||
+**Tilt** | Enable 3D tilt (follows mouse on hover) | bool | false |
+**Vertical** | Is vertical | bool | false |
 
 #### Shadow Properties
 
@@ -34,20 +48,22 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Shadow** | Shadow size | int | 0 |
 **ShadowColor** | Shadow color | Color`?` | `null` |
-**ShadowOpacity** | Shadow opacity | float | 0.3F |
 **ShadowOffsetX** | Shadow offset X | int | 0 |
 **ShadowOffsetY** | Shadow offset Y | int | 0 |
+**ShadowOpacity** | Shadow opacity | float | 0.3F |
 
 #### Hover Properties
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**EnableHover** | Enable hover interaction | bool | false |
 **HoverFore** | Hover foreground | Color`?` | `null` |
+||||
 **HoverBack** | Hover background | Color`?` | `null` |
+||||
+**EnableHover** | Enable hover interaction | bool | false |
 **HoverImage** | Hover image | Image`?` | `null` |
-**HoverImageSvg** | Hover image SVG | string`?` | `null` |
 **HoverImageRatio** | Hover image ratio | float | 0.4F |
+**HoverImageSvg** | Hover image SVG | string`?` | `null` |
 
 ### Methods
 

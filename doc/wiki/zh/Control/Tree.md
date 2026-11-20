@@ -13,34 +13,37 @@ Tree 树形控件 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Items** | 数据 `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **ForeActive** | 激活字体颜色 | Color`?` | `null` |
+||||
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
 ||||
-**Gap** | 间距 | int | 8 |
-**GapIndent** | 间距缩进 | int`?` | `null` |
-**Radius** | 圆角 | int | 6 |
-**Round** | 圆角样式 | bool | false |
+**DragHandleIconSize** | 拖拽手柄图标大小 | int | 14 |
 **IconRatio** | 图标比例 | float | 1F |
+||||
 **Checkable** | 节点前添加 Checkbox 复选框 | bool | false |
 **CheckStrictly** | Checkable 状态下节点选择完全受控 `父子节点选中状态不再关联` | bool | true |
-**BlockNode** | 节点占据一行 | bool | false |
-**Multiple** | 支持点选多个节点 | bool | false |
-||||
+**DragAutoExpandDelay** | 拖拽悬停自动展开延迟（ms） | int | 1000 |
 **Draggable** | 是否启用节点拖拽 | bool | true |
 **DragHandleVisible** | 是否显示拖拽手柄 | bool | true |
-**DragAutoExpandDelay** | 拖拽悬停自动展开延迟（ms） | int | 1000 |
-||||
-**Items** | 数据 `TreeItem[]` | [TreeItem[]](#treeitem) | [] |
+**Multiple** | 支持点选多个节点 | bool | false |
+**PauseLayout** | 暂停布局 | bool | false |
 **SelectItem** | 选择项 | [TreeItem](#treeitem)`?` | `null` |
-||||
-**Empty** | 是否显示空样式 | bool | true |
-**EmptyText** | 数据为空显示文字 | string`?` | `null` |
-**EmptyImage** | 数据为空显示图片 | Image`?` | `null` |
 **VirtualMode** | 虚拟模式（大数据量时仅渲染可见行） | bool | false |
 ||||
-**PauseLayout** | 暂停布局 | bool | false |
+**Radius** | 圆角 | int | 6 |
+**Round** | 圆角样式 | bool | false |
+||||
+**Gap** | 间距 | int | 8 |
+**GapIndent** | 间距缩进 | int`?` | `null` |
+||||
+**BlockNode** | 节点占据一行 | bool | false |
+**Empty** | 是否显示空样式 | bool | true |
+**EmptyImage** | 数据为空显示图片 | Image`?` | `null` |
+**EmptyText** | 数据为空显示文字 | string`?` | `null` |
 
 ### 事件
 
@@ -88,27 +91,46 @@ Tree 树形控件 👚
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
 **Name** | 名称 | string`?` | `null` |
-**Icon** | 图标 | Image`?` | `null` |
-**IconSvg** | 图标SVG | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string | `必填` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+||||
+**Fore** | 字体颜色 | Color`?` |`null`|
+**BadgeFore** | 徽标前景颜色 | Color`?` | `null`
+**ForeSub** | 子文本颜色 | Color`?` |`null`|
+||||
+**Back** | 背景颜色 | Color`?` |`null`|
+**BadgeBack** | 徽标背景颜色 | Color`?` | `null`
+||||
+**Icon** | 图标 | Image`?` | `null` |
+**IconSvg** | 图标SVG | string`?` | `null` |
+||||
+**Loading** | 加载状态 | bool | false |
+||||
+**Checked** | 选中状态 | bool | false |
+**Enabled** | 禁用状态 | bool | true |
+**Visible** | 是否显示 | bool | true |
+**BadgeMode** | 徽标模式（镂空） | bool | false
+**CanExpand** | 是否可以展开 | bool | `只读` |
+**Checkable** | 节点前添加 Checkbox 复选框 | bool | true |
+**CheckState** | 选中状态 | CheckState | `Unchecked` |
+**Select** | 激活状态 | bool | false |
+||||
+**BadgeBorderColor** | 徽标边框颜色 | Color`?` | `null`
+**BadgeBorderWidth** | 徽标边框宽度 | float`?` | `null`
+||||
+**BadgeAlign** | 徽标方向 | [TAlign](Enum.md#talign) | Right
+**BadgeOffsetX** | 徽标偏移X | int | 1
+**BadgeOffsetY** | 徽标偏移Y | int | 1
+**BadgeSize** | 徽标比例 | float | .6F
+**PARENTITEM** | 父级对象 | [TreeItem](#treeitem)`?` | `null` |
+||||
+**Badge** | 徽标内容 | string`?` | `null`
+**BadgeSvg** | 徽标SVG | string`?` | `null`
+**Expand** | 展开 | bool | true |
+**Sub** | 子集合 ♾️ | [TreeItem[]](#treeitem) | [] |
 **SubTitle** | 子标题 | string | `null` |
 🌏 **LocalizationSubTitle** | 国际化子标题 | string`?` | `null` |
-**Fore** | 字体颜色 | Color`?` |`null`|
-**ForeSub** | 子文本颜色 | Color`?` |`null`|
-**Back** | 背景颜色 | Color`?` |`null`|
-**Visible** | 是否显示 | bool | true |
-**Enabled** | 禁用状态 | bool | true |
-**Checkable** | 节点前添加 Checkbox 复选框 | bool | true |
-**Loading** | 加载状态 | bool | false |
-**Expand** | 展开 | bool | true |
-**CanExpand** | 是否可以展开 | bool | `只读` |
-**Checked** | 选中状态 | bool | false |
-**CheckState** | 选中状态 | CheckState | `Unchecked` |
-**Sub** | 子集合 ♾️ | [TreeItem[]](#treeitem) | [] |
-**Tag** | 用户定义数据 | object`?` | `null` |
-||||
-**PARENTITEM** | 父级对象 | [TreeItem](#treeitem)`?` | `null` |
 ### 枚举
 
 #### TreeDropMode

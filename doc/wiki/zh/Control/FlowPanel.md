@@ -10,8 +10,10 @@ FlowPanel 流动布局 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**AutoContainerBgTransparent** | 内部容器背景透明 | bool | false |
+||||
 **AutoScroll** | 是否显示滚动条 | bool | false |
+**PauseLayout** | 暂停布局 | bool | false |
+||||
 **Align** | 布局方向 | [TAlignFlow](Enum.md#talignflow) | LeftCenter |
 **Gap** | 间距 | int | 0 |
-**PauseLayout** | 暂停布局 | bool | false |
-**AutoContainerBgTransparent** | 内部容器背景透明 | bool | false |

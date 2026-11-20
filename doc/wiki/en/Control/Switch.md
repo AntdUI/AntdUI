@@ -13,20 +13,23 @@
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ForeColor** | Text color | Color`?` | `null` |
+||||
 **Fill** | Fill color | Color`?` | `null` |
 **FillHover** | Hover color | Color`?` | `null` |
 ||||
+**WaveSize** | Wave size `Click animation` | int | 4 |
+||||
+**Loading** | Loading | bool | false |
+||||
 **Checked** | Checked state | bool | false |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
 **CheckedText** | Text displayed when selected | string`?` | `null` |
 🌏 **LocalizationCheckedText** | International CheckedText | string`?` | `null` |
 **UnCheckedText** | Text displayed when not selected | string`?` | `null` |
 🌏 **LocalizationUnCheckedText** | International UnCheckedText | string`?` | `null` |
-**AutoCheck** | Click to automatically change the selected status | bool | true |
+**HasFocus** | Whether focus exists | bool | false |
 ||||
-**WaveSize** | Wave size `Click animation` | int | 4 |
 **Gap** | Distance between button and border | int | 2 |
-||||
-**Loading** | Loading | bool | false |
 
 ### Event
 

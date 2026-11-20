@@ -14,28 +14,31 @@ Panel 面板 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Back** | 背景颜色 | Color`?` | `null` |
-**Radius** | 圆角 | int | 6 |
-**RadiusAlign** | 圆角方向 | [TAlignRound](Enum.md#talignround) | ALL |
-**ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
-**ArrowSize** | 箭头大小 | int | 8 |
-||||
-**BorderWidth** | 边框宽度 | float | 0F |
-**BorderColor** | 边框颜色 | Color`?` | `null` |
-**BorderStyle** | 边框样式 | DashStyle | Solid |
-||||
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**AutoContainerBgTransparent** | 内部容器背景透明 | bool | false |
 **BackgroundImage** | 背景图片 | Image`?` | `null` |
 **BackgroundImageLayout** | 背景图片布局 | [TFit](Enum.md#tfit) | Fill |
 ||||
-**Shadow** | 阴影大小 | int | 0 |
-**ShadowColor** | 阴影颜色 | Color`?` | `null` |
-**ShadowOpacity** | 阴影透明度 | float | 0.1F |
-**ShadowOpacityHover** | 悬停阴影后透明度 | float | 0.3F |
 **ShadowOpacityAnimation** | 阴影透明度动画使能 | bool | false |
+||||
+**AutoScroll** | 是否显示滚动条 | bool | false |
+**ShadowOpacityHover** | 悬停阴影后透明度 | float | 0.3F |
+||||
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 0F |
+**Radius** | 圆角 | int | 6 |
+**BorderStyle** | 边框样式 | DashStyle | Solid |
+**RadiusAlign** | 圆角方向 | [TAlignRound](Enum.md#talignround) | ALL |
+||||
+**Shadow** | 阴影大小 | int | 0 |
+**ShadowAlign** | 阴影方向 | [TAlignMini](Enum.md#talignmini) | None |
+**ShadowColor** | 阴影颜色 | Color`?` | `null` |
+**ShadowDelay** | 阴影延迟毫秒 | int | 100 |
 **ShadowOffsetX** | 阴影偏移X | int | 0 |
 **ShadowOffsetY** | 阴影偏移Y | int | 0 |
-**ShadowAlign** | 阴影方向 | [TAlignMini](Enum.md#talignmini) | None |
-**ShadowDelay** | 阴影延迟毫秒 | int | 100 |
+**ShadowOpacity** | 阴影透明度 | float | 0.1F |
+||||
+**ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | None |
+**ArrowSize** | 箭头大小 | int | 8 |
 **InnerPadding** | 内边距 | Padding | 0, 0, 0, 0 |
 **padding** | 内边距 | Padding | 0, 0, 0, 0 | `已过时，使用 InnerPadding` |
-**AutoScroll** | 是否显示滚动条 | bool | false |
-**AutoContainerBgTransparent** | 内部容器背景透明 | bool | false |

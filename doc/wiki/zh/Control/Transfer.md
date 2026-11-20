@@ -13,38 +13,38 @@ Transfer 穿梭框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**SourceTitle** | 左侧列表标题 | string? | `null` |
-**TargetTitle** | 右侧列表标题 | string? | `null` |
-||||
-**ShowSelectAll** | 是否显示全选勾选框 | bool | true |
-**OneWay** | 是否单向模式（只能从左到右） | bool | false |
-**ShowSearch** | 是否显示搜索框 | bool | false |
-**ChangeToBottom** | 改变后到最下面 | bool | false |
-**DragSort** | 拖拽排序 | bool | false |
-||||
-**SearchPlaceholderSource** | 源列表搜索水印文本 | string? | `null` |
-**SearchPlaceholderTarget** | 目标列表搜索水印文本 | string? | `null` |
-🌏 **LocalizationSearchPlaceholderSource** | 源列表搜索水印文本国际化 | string? | `null` |
-🌏 **LocalizationSearchPlaceholderTarget** | 目标列表搜索水印文本国际化 | string? | `null` |
-||||
-**ItemHeight** | 列表项高度 | int? | `null` |
-**PanelRadius** | 列表框圆角 | int | 6 |
-**PanelBack** | 面板背景颜色 | Color`?` | `null` |
+**Items** | 数据 [TransferItem](#transferitem) | TransferItemCollection | [] |
 ||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
 **ForeActive** | 激活文字颜色 | Color`?` | `null` |
+||||
+**PanelBack** | 面板背景颜色 | Color`?` | `null` |
 **BackHover** | 悬停背景颜色 | Color`?` | `null` |
 **BackActive** | 激活背景颜色 | Color`?` | `null` |
-**ButtonForeColor** | 按钮文字颜色 | Color`?` | `null` |
-**ButtonBackColor** | 按钮背景颜色 | Color`?` | `null` |
+||||
+**DragSort** | 拖拽排序 | bool | false |
+**ShowSearch** | 是否显示搜索框 | bool | false |
+**ShowSelectAll** | 是否显示全选勾选框 | bool | true |
 **ButtonBackHover** | 按钮悬停背景颜色 | Color`?` | `null` |
 **ButtonBackActive** | 按钮激活背景颜色 | Color`?` | `null` |
-**ButtonBackDisable** | 按钮禁用背景颜色 | Color`?` | `null` |
 ||||
 **BorderColor** | 边框颜色 | Color`?` | `null` |
 **BorderWidth** | 边框宽度 | float | 0F |
 ||||
-**Items** | 数据 [TransferItem](#transferitem) | TransferItemCollection | [] |
+**ItemHeight** | 列表项高度 | int? | `null` |
+||||
+**ButtonBackColor** | 按钮背景颜色 | Color`?` | `null` |
+**ButtonForeColor** | 按钮文字颜色 | Color`?` | `null` |
+**ChangeToBottom** | 改变后到最下面 | bool | false |
+**OneWay** | 是否单向模式（只能从左到右） | bool | false |
+**PanelRadius** | 列表框圆角 | int | 6 |
+**SearchPlaceholderSource** | 源列表搜索水印文本 | string? | `null` |
+**SearchPlaceholderTarget** | 目标列表搜索水印文本 | string? | `null` |
+🌏 **LocalizationSearchPlaceholderSource** | 源列表搜索水印文本国际化 | string? | `null` |
+🌏 **LocalizationSearchPlaceholderTarget** | 目标列表搜索水印文本国际化 | string? | `null` |
+**SourceTitle** | 左侧列表标题 | string? | `null` |
+**TargetTitle** | 右侧列表标题 | string? | `null` |
+**ButtonBackDisable** | 按钮禁用背景颜色 | Color`?` | `null` |
 
 ### 方法
 
@@ -74,9 +74,13 @@ Transfer 穿梭框 👚
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
 **Name** | Name | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string | `必填` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **Value** | 值 | object? | `null` |
+||||
+**Enabled** | 禁用状态 | bool | true
+**Visible** | 是否显示 | bool | true
 **Selected** | 是否选中 | bool | false |
+||||
 **IsTarget** | 是否在目标列表 | bool | false |
-**Tag** | 用户定义数据 | object`?` | `null` |

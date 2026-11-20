@@ -13,21 +13,24 @@ DatePicker 日期选择框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**Value** | 控件当前日期 | DateTime`?` | `null` |
 **Format** | 格式化 | string | yyyy-MM-dd `HH:mm:ss 可显示时分秒选择框` |
 ||||
-**Value** | 控件当前日期 | DateTime`?` | `null` |
-**MinDate** | 最小日期 | DateTime`?` | `null` |
-**MaxDate** | 最大日期 | DateTime`?` | `null` |
-**Presets** | 预置 | BaseCollection | - |
-**BadgeAction** | 日期徽标回调 | Func<DateTime[], List<DateBadge>?>? | `null` |
+**ShowIcon** | 是否显示图标 | bool | true |
 ||||
+**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
+**ShowButtonToDay** | 显示今天 | bool | true |
+||||
+**MaxDate** | 最大日期 | DateTime`?` | `null` |
+**MinDate** | 最小日期 | DateTime`?` | `null` |
 **Placement** | 菜单弹出位置 | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | 下拉箭头是否显示 | bool | false |
-**ShowIcon** | 是否显示图标 | bool | true |
-**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
-**ShowButtonToDay** | 显示今天 | bool | true |
+||||
+**BadgeAction** | 日期徽标回调 | Func<DateTime[], List<DateBadge>?>? | `null` |
+**ExpandDrop** | 展开下拉菜单 | bool | false |
 **Picker** | 选择器类型 | [TDatePicker](Enum.md#tdatepicker) | Date |
-**EnabledValueTextChange** | 文本改变时是否更新Value值 | bool | false |
+**Presets** | 预置 | BaseCollection | - |
+**ValueTimeHorizontal** | 时间值水平对齐 | bool | false |
 
 ### 日期上的徽标
 

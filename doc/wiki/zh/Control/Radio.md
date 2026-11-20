@@ -13,17 +13,18 @@ Radio 单选框 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**AutoSize** | 自动大小 | bool | false |
-**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
-||||
-**ForeColor** | 文字颜色 | Color`?` | `null` |
-**Fill** | 填充颜色 | Color`?` | `null` |
-||||
 **Text** | 文本 | string`?` | `null` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
 **TextAlign** | 文本位置 | ContentAlignment | MiddleLeft |
+||||
+**ForeColor** | 文字颜色 | Color`?` | `null` |
+||||
+**Fill** | 填充颜色 | Color`?` | `null` |
+||||
+**AutoSize** | 自动大小 | bool | false |
 **Checked** | 选中状态 | bool | false |
 **AutoCheck** | 点击时自动改变选中状态 | bool | true |
+**AutoSizeMode** | 自动大小模式 | [TAutoSize](Enum.md#tautosize) | None |
 **UseMnemonic** | 支持助记键 | bool | true |
 **HasFocus** | 焦点状态 | bool | false |
 ||||

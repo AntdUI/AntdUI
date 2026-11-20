@@ -14,16 +14,19 @@ ImagePreview 图片预览 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Image** | 图片集合 | ImagePreviewItemCollection | `新集合` |
+**BtnIconSize** | 按钮图标大小 | int | 18 |
+||||
 **SelectIndex** | 当前选中的图片索引 | int | 0 |
-**Fit** | 图片适应方式 | [TFit](Enum.md#tfit) | `null` |
 **ShowBtn** | 是否显示按钮 | bool | true |
 **ShowDefaultBtn** | 是否显示默认按钮 | bool | true |
-**BtnSize** | 按钮大小 | Size | `42, 46` |
-**BtnIconSize** | 按钮图标大小 | int | 18 |
+||||
 **BtnLRSize** | 左右按钮大小 | int | 40 |
-**ContainerPadding** | 容器边距 | int | 24 |
 **BtnPadding** | 按钮边距 | Size | `12, 32` |
+**BtnSize** | 按钮大小 | Size | `42, 46` |
+**ContainerPadding** | 容器边距 | int | 24 |
+||||
 **CustomButton** | 自定义按钮集合 | ImagePreviewButtonCollection | `新集合` |
+**Fit** | 图片适应方式 | [TFit](Enum.md#tfit) | `null` |
 
 ### 方法
 
@@ -54,10 +57,12 @@ ImagePreview 图片预览 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
+||||
 **Img** | 图片 | Image`?` | `null` |
+||||
 **Call** | 异步加载图片的委托 | Func<int, ImagePreviewItem, Image>`?` | `null` |
 **CallProg** | 带进度的异步加载委托 | Func<int, ImagePreviewItem, Action<float, string?>, Image>`?` | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
 
 #### ImagePreviewButton
 
@@ -66,8 +71,9 @@ ImagePreview 图片预览 👚
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Name** | 按钮名称 | string | `null` |
-**IconSvg** | 图标SVG | string | `null` |
 **Tag** | 用户定义数据 | object`?` | `null` |
+||||
+**IconSvg** | 图标SVG | string | `null` |
 
 ### 示例
 

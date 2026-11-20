@@ -13,25 +13,31 @@ Collapse 折叠面板 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**AutoSize** | 自动大小 | bool | false |
+**Items** | 数据集合 | CollapseItemCollection | - |
+||||
 **ForeColor** | 文字颜色 | Color`?` | `null` |
+**FontExpand** | 展开后的标题字体 | Font`?` | `null` |
 **ForeActive** | 文字激活颜色 | Color`?` | `null` |
-**HeaderBg** | 折叠面板头部背景 | Color`?` | `null` |
-**HeaderPadding** | 折叠面板头部内边距 | Size | 16, 12 |
-**ContentPadding** | 折叠面板内容内边距 | Size | 16, 16 |
 ||||
-**BorderWidth** | 边框宽度 | float | 1F |
+**AnimationSpeed** | 展开/折叠的动画速度 | int | 100 |
+||||
+**AutoSize** | 自动大小 | bool | false |
+**EnableResizing** | 手动调整大小 | bool | false |
+||||
 **BorderColor** | 边框颜色 | Color`?` | `null` |
-||||
+**BorderWidth** | 边框宽度 | float | 1F |
 **Radius** | 圆角 | int | 6 |
+||||
+**ContentPadding** | 折叠面板内容内边距 | Size | 16, 16 |
 **Gap** | 间距 | int | 0 |
+**HeaderPadding** | 折叠面板头部内边距 | Size | 16, 12 |
+**ResizingLineColor** | 高度调整线的颜色 (默认按Primary) | Color`?` | `null` |
+**ResizingLineThickness** | 高度调整线的粗细 (设为0时，表示禁用) | float | 2 |
+||||
+**HeaderBg** | 折叠面板头部背景 | Color`?` | `null` |
+**TooltipConfig** | 超出文字提示配置 | TooltipConfig`?` | `null` |
 **Unique** | 只保持一个展开 | bool | false |
 **UniqueFull** | 一个展开铺满 | bool | false |
-**AnimationSpeed** | 展开/折叠的动画速度 | int | 100 |
-**FontExpand** | 展开后的标题字体 | Font`?` | `null` |
-**TooltipConfig** | 超出文字提示配置 | TooltipConfig`?` | `null` |
-||||
-**Items** | 数据集合 | CollapseItemCollection | - |
 
 ### 事件
 
@@ -49,8 +55,12 @@ Collapse 折叠面板 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Expand** | 是否展开 | bool | false |
-**Full** | 是否铺满剩下空间 | bool | false |
 **Text** | 文本 | string | "" |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+||||
+**Icon** | 图标 | Image`?` | `null`
+**IconSvg** | 图标SVG | string`?` | `null`
+||||
 **Buttons** | 按钮集合 | CollapseGroupButtonCollection | - |
+**Expand** | 是否展开 | bool | false |
+**Full** | 是否铺满剩下空间 | bool | false |

@@ -72,6 +72,52 @@ AntdUI.Style.LoadCustom(colorConfig);
 
 ---
 
+## .NET 10 跟随系统颜色模式
+
+> 🔴 仅 .NET 10 及以上可用
+
+从 .NET 10 起，WinForms 新增了系统颜色模式 API，可让应用跟随 Windows 的浅色 / 深色设置自动切换。`AntdUI.Config` 已与之打通：
+
+- 首次访问 `AntdUI.Config` 时，其**静态构造函数**会读取 `Application.ColorMode` 决定初始明暗：`Classic` → 浅色、`Dark` → 深色、`System` → 按系统当前值（`Application.SystemColorMode`）。
+- 之后设置 `Config.Mode` / `Config.IsDark` 时，会同步调用 `Application.SetColorMode`，让系统控件与 AntdUI 一起切换。
+
+### 使用方法
+
+**如果要跟随系统自动切换，务必在访问 `AntdUI.Config`（或任何 AntdUI 控件）之前**调用 `Application.SetColorMode(SystemColorMode.System)`：
+
+```csharp
+using System.Windows.Forms;
+
+internal static class Program
+{
+	[STAThread]
+	static void Main()
+	{
+		ApplicationConfiguration.Initialize();
+
+		// 🔴 必须在首次访问 AntdUI.Config 之前调用
+		Application.SetColorMode(SystemColorMode.System);
+
+		Application.Run(new MainForm());
+	}
+}
+```
+
+### 为什么必须在 Config 之前
+
+`Config` 的静态构造函数只在**首次访问**时执行一次，并在那一刻读取 `Application.ColorMode` 作为初值。若先访问了 `Config`（例如某控件在初始化时读取了 `Config.Dpi`），静态构造函数已按默认值完成初始化，之后再调用 `SetColorMode(SystemColorMode.System)` 就不会再影响 AntdUI 的初始主题。
+
+### 手动指定明暗
+
+如果不需要跟随系统，直接设置 `Config.Mode` 即可（会同步到系统）：
+
+```csharp
+AntdUI.Config.Mode = AntdUI.TMode.Dark;  // 同步调用 Application.SetColorMode(Dark)
+AntdUI.Config.IsDark = true;             // 等价写法
+```
+
+---
+
 ## 主题模式管理
 
 ### 1. 启用深色模式
@@ -176,7 +222,7 @@ var infoPalette = AntdUI.Style.Db.Info;       // 信息色彩体系
 | **HSLToColor** | HSL转颜色 | Color | HSL hsl, float alpha = 1 `透明度` |
 | **HSLToColor** | HSL转颜色 | Color | float hue `色相`, float saturation `饱和度`, float lightness `亮度`, float alpha = 1 `透明度` |
 ||||
-| **ToColor** | HEX转成RGB | Color | string hex |
+| **ToColor** | 字符串转颜色（HEX/rgb/rgba/hsl） | Color | string str `颜色字符串`，例如 `#1677FF`、`rgb(22, 119, 255)`、`hsl(0 100% 63%)` |
 | **ToHex** | RGB转成HEX | string | Color color |
 ||||
 | **rgba** | 转颜色 | Color | int r, int g, int b, float alpha = 1 `透明度` |

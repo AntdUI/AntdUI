@@ -12,24 +12,31 @@ ContextMenuStrip 右键菜单
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Target** | 所属目标 | Target | `必填` |
-**Control** | 所属控件 `已过时，使用 Target` | Form | `必填` |
 **Items** | 菜单内容 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
+**TextMultiline** | 多行文本 | bool | false |
+||||
 **Font** | 字体 | Font |`null`|
-**Radius** | 圆角 | int | 6 |
-**Gap** | 间距比例 | float | 0.286 |
-**IconRatio** | 图标比例 | float | 1.14 |
+||||
 **IconGap** | 图标间距 | float | 0.6 |
+**IconRatio** | 图标比例 | float | 1.14 |
+||||
 **CheckRatio** | 复选框比例 | float | 0.8 |
-**PaddRatio** | 内边距比例 | float[] | [0.72, 0.432] |
-**TopMost** | 是否置顶 | bool |false|
-**CallSleep** | 延迟回调 | int |0|
-**UFocus** | 是否抢占焦点 | bool |false|
-**Location** | 自定义坐标 | Point`?` |`null`|
-**Align** | 方向 | [TAlign](Enum.md#talign) | BR |
-**Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
 **OnClose** | 关闭回调 | Action | `null` |
+**UFocus** | 是否抢占焦点 | bool |false|
+||||
+**Radius** | 圆角 | int | 6 |
+||||
+**Align** | 方向 | [TAlign](Enum.md#talign) | BR |
+**Gap** | 间距比例 | float | 0.286 |
+**Location** | 自定义坐标 | Point`?` |`null`|
+**PaddRatio** | 内边距比例 | float[] | [0.72, 0.432] |
+||||
+**Call** | 点击回调 | Action<ContextMenuStripItem> | `必填` |
+**CallSleep** | 延迟回调 | int |0|
 **ColorScheme** | 色彩模式 | [TAMode](Enum.md#tamode) | Auto |
+**Control** | 所属控件 `已过时，使用 Target` | Form | `必填` |
+**Target** | 所属目标 | Target | `必填` |
+**TopMost** | 是否置顶 | bool |false|
 
 ### 数据
 
@@ -38,17 +45,25 @@ ContextMenuStrip 右键菜单
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string | `必填` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
-**SubText** | 子文本 | string`?` | `null` |
-🌏 **LocalizationSubText** | 国际化子文本 | string`?` | `null` |
+||||
 **Fore** | 文字颜色 | Color`?` | `null` |
+||||
+**Back** | 背景颜色 | Color`?` | `null` |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**BackHover** | 悬停背景颜色 | Color`?` | `null` |
+||||
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
-**Enabled** | 使能 | bool | true |
+||||
 **Checked** | 选中 | bool | false |
+**Enabled** | 使能 | bool | true |
+||||
 **Sub** | 子项 `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | `null` |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**SubText** | 子文本 | string`?` | `null` |
+🌏 **LocalizationSubText** | 国际化子文本 | string`?` | `null` |
 
 #### ContextMenuStripItemDivider
 
@@ -63,7 +78,9 @@ ContextMenuStrip 右键菜单
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Items** | 按钮集合 | ContextMenuStripItemButton[] | `null` |
+||||
 **FontRatio** | 字体比例 | float | 0.7 |
+||||
 **Square** | 是否正方形 | bool | false |
 
 #### ContextMenuStripItemButton
@@ -73,14 +90,21 @@ ContextMenuStrip 右键菜单
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Text** | 文本 | string | `必填` |
 🌏 **LocalizationText** | 国际化文本 | string`?` | `null` |
+||||
 **Fore** | 文字颜色 | Color`?` | `null` |
+||||
+**Back** | 背景颜色 | Color`?` | `null` |
+**BackExtend** | 背景渐变色 | string`?` | `null` |
+**BackHover** | 悬停背景颜色 | Color`?` | `null` |
+||||
 **Icon** | 图标 | Image`?` | `null` |
 **IconSvg** | 图标SVG | string`?` | `null` |
-**Enabled** | 使能 | bool | true |
+||||
 **Checked** | 选中 | bool | false |
-**Tag** | 用户定义数据 | object`?` | `null` |
+**Enabled** | 使能 | bool | true |
 
 ### 示例
 

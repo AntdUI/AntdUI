@@ -8,40 +8,39 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | Bind field name | string ||
 **Title** | Display text | string ||
 🌏 **LocalizationTitle** | International Display text | string`?` | `null` |
 ||||
+**ReadOnly** | Read only | bool |false|
 **Visible** | Is it displayed | bool|true|
+**DisplayFormat** | Display format | string`?` ||
+**DragSort** | Column can be dragged and dropped | bool |true|
+**Editable** | Column editable | bool |true|
+**SortMode** | Sort Mode | SortMode |NONE|
+||||
 **Align** | Align | ColumnAlign |ColumnAlign.Left|
 **ColAlign** | Header Align | ColumnAlign`?` | `null` |
-**Width** | Column Width | string`?` ||
+**Fixed** | Is the column fixed | bool |false|
+**KeyTree** | Tree Column | string`?` ||
+**LineBreak** | Automatic line wrapping | bool |false|
 **MaxWidth** | Maximum width of column | string`?` ||
 **MinWidth** | Column minimum width | string`?` ||
-||||
-**Fixed** | Is the column fixed | bool |false|
-**Ellipsis** | Exceeding the width will be automatically omitted | bool |false|
-**LineBreak** | Automatic line wrapping | bool |false|
-**ColBreak** | Automatic line wrapping in the header | bool |false|
+**SummaryItem** | Summary column options | SummaryItemOption`?` ||
+**Width** | Column Width | string`?` ||
 **Wrap** | Wrap child elements within cell | bool |false|
 **WrapCount** | Number of items per row, >0 wrap by count, <=0 wrap by width | int |0|
 **WrapGapX** | Horizontal gap mode within row | [TableWrapGap](#tablewrapgap) |Fixed|
 **WrapGapY** | Vertical gap mode between rows | [TableWrapGap](#tablewrapgap) |Fixed|
-**SortOrder** | Enable sorting | bool |false|
-**SortMode** | Sort Mode | SortMode |NONE|
-**ReadOnly** | Read only | bool |false|
-**Editable** | Column editable | bool |true|
-**DragSort** | Column can be dragged and dropped | bool |true|
-**KeyTree** | Tree Column | string`?` ||
 ||||
-**HasFilter** | Has filter | bool |false| (Read only)
-**Filter** | User filter options | FilterOption`?` ||
-**DisplayFormat** | Display format | string`?` ||
-**SummaryItem** | Summary column options | SummaryItemOption`?` ||
-||||
-**Style** | Column Style | CellStyleInfo`?` ||
+**ColBreak** | Automatic line wrapping in the header | bool |false|
 **ColStyle** | Title column style | CellStyleInfo`?` ||
+**Ellipsis** | Exceeding the width will be automatically omitted | bool |false|
+**Filter** | User filter options | FilterOption`?` ||
+**HasFilter** | Has filter | bool |false| (Read only)
+**Key** | Bind field name | string ||
 **Render** | SLOT | Func<object? `Current value`, object `Row metadata`, int `rowIndex`, object?>? | Return formatted data |
+**SortOrder** | Enable sorting | bool |false|
+**Style** | Column Style | CellStyleInfo`?` ||
 
 ### Methods
 
@@ -68,13 +67,12 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | Bind field name | string ||
-**AutoCheck** | Click to automatically change the selected status | bool | true |
-||||
 **Checked** | Checked state | bool | false |
+**AutoCheck** | Click to automatically change the selected status | bool | true |
 **CheckState** | Checked state | CheckState | Unchecked |
 ||||
 **Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
+**Key** | Bind field name | string ||
 
 #### ColumnRadio
 
@@ -82,10 +80,12 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | Bind field name | string ||
 **Title** | Display text | string ||
+||||
 **AutoCheck** | Click to automatically change the selected status | bool | true |
+||||
 **Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
+**Key** | Bind field name | string ||
 
 #### ColumnSwitch
 
@@ -93,10 +93,12 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Key** | Bind field name | string ||
 **Title** | Display text | string ||
+||||
 **AutoCheck** | Click to automatically change the selected status | bool | true |
+||||
 **Call** | Checkbox callback | Func<bool `Check value after change`, object? `Row metadata`, int `rowIndex`, int `columnIndex`, bool>`?` | Return to the final Select Value |
+**Key** | Bind field name | string ||
 
 #### ColumnSort
 

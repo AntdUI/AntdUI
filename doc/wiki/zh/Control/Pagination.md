@@ -13,25 +13,31 @@ Pagination 分页 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Current** | 当前页数 | int | 1 |
-**Total** | 数据总数 | int | 0 |
-**PageSize** | 每页条数 | int | 10 |
-**MaxPageTotal** | 最大显示总页数 | int | 0 |
-**PageTotal** | 总页数 | int | 1 `只读` |
+**TextDesc** | 主动显示内容 `设置非空后 ShowTotalChanged 失效` | string`?` | `null` |
+🌏 **LocalizationTextDesc** | 国际化主动显示内容 | string`?` | `null` |
 ||||
-**ShowSizeChanger** | 是否展示 `PageSize` 切换器 | bool | false |
-**SizeChangerWidth** | `SizeChanger` 宽度 | int | 0 `0 自动宽度` |
-**PageSizeOptions** | 指定每页可以显示多少条 `下拉选择` | int[]? | null |
+**ForeColor** | 文字颜色 | Color`?` | `null` |
 ||||
 **Fill** | 颜色 | Color`?` | `null` |
 ||||
-**Gap** | 间距 | int | 8 |
-**Radius** | 圆角 | int | 6 |
-**BorderWidth** | 边框宽度 | float | 1F |
+**ShowSizeChanger** | 是否展示 `PageSize` 切换器 | bool | false |
 ||||
-**TextDesc** | 主动显示内容 `设置非空后 ShowTotalChanged 失效` | string`?` | `null` |
-🌏 **LocalizationTextDesc** | 国际化主动显示内容 | string`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 1F |
+**Radius** | 圆角 | int | 6 |
+||||
+**Gap** | 间距 | int | 8 |
+**MaxPageTotal** | 最大显示总页数 | int | 0 |
+**PageSize** | 每页条数 | int | 10 |
+**PageSizeOptions** | 指定每页可以显示多少条 `下拉选择` | int[]? | null |
+**PageTotal** | 总页数 | int | 1 `只读` |
+**RecordsPerPageText** | 每页记录数文本，标签提醒文本 | string`?` | `null` |
+**SizeChangerTabStop** | 是否允许 PageSize 切换器通过 Tab 键获取焦点 | bool | true |
+**SizeChangerWidth** | `SizeChanger` 宽度 | int | 0 `0 自动宽度` |
+||||
+**Current** | 当前页数 | int | 1 |
 **RightToLeft** | 反向 | RightToLeft | No |
+**Total** | 数据总数 | int | 0 |
+**DropDownRadius** | 下拉圆角 | int`?` | `null` |
 
 ### 方法
 

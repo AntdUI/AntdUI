@@ -13,20 +13,22 @@ Calendar 日历 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-||||
-**Radius** | 圆角 | int | 6 |
-||||
-**Full** | 是否撑满 | bool | false |
-**ShowChinese** | 显示农历 | bool | false |
-**ShowButtonToDay** | 显示今天 | bool | true |
-||||
 **Value** | 控件当前日期 | DateTime | `DateTime.Now` |
-**MinDate** | 最小日期 | DateTime`?` | `null` |
-**MaxDate** | 最大日期 | DateTime`?` | `null` |
+||||
+**Fore** | 文字颜色 | Color`?` | `null` |
 ||||
 **Back** | 背景颜色 | Color`?` | `null` |
 **BackExtend** | 背景渐变色 | string`?` | `null` |
-**Fore** | 文字颜色 | Color`?` | `null` |
+||||
+**ShowButtonToDay** | 显示今天 | bool | true |
+**ShowChinese** | 显示农历 | bool | false |
+||||
+**Radius** | 圆角 | int | 6 |
+||||
+**MaxDate** | 最大日期 | DateTime`?` | `null` |
+**MinDate** | 最小日期 | DateTime`?` | `null` |
+||||
+**Full** | 是否撑满 | bool | false |
 
 ### 日期上的徽标
 

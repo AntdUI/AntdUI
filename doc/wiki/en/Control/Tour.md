@@ -18,11 +18,13 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | Form | Form | - |
-**Scale** | Scale | float | 1.04F |
 **MaskClosable** | Whether clicking the mask allows closing | bool | true |
-**ClickNext** | Click next | bool | true |
+||||
+**Scale** | Scale | float | 1.04F |
 **StepCall** | Step call back | Action<Result> | - |
+||||
+**ClickNext** | Click next | bool | true |
+**Form** | Form | Form | - |
 **PopoverCall** | Popover call back | Action<Popover>`?` | `null` |
 
 #### Config Methods
@@ -60,9 +62,9 @@ Name | Description | Parameters |
 Name | Description | Type |
 :--|:--|:--|
 **Form** | Form | Form |
-**Tour** | Tour | TourForm |
 **Index** | Step index | int |
 **Rect** | Display area | Rectangle`?` |
+**Tour** | Tour | TourForm |
 
 #### TourForm Interface
 

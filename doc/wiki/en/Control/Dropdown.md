@@ -12,19 +12,21 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | - |
+||||
+**SelectedValue** | Selected value | object`?` | `null` |
 **ListAutoWidth** | List automatic width | bool | true |
 **Trigger** | Trigger dropdown behavior | [Trigger](Enum.md#trigger) | Click |
-**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+||||
 **MaxCount** | Maximum of displayed items in the list | int | 4 |
-**DropDownRadius** | Pull down rounded corner | int`?` | `null` |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **DropDownPadding** | Pull down margin | Size | 12, 5 |
 **DropDownTextAlign** | Dropdown text alignment | [TAlign](Enum.md#talign) | Left |
+||||
 **ClickEnd** | Click to the end | bool | false |
 **Empty** | Drop down even if empty | bool | false |
-||||
-**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | - |
-**SelectedValue** | Selected value | object`?` | `null` |
+**DropDownRadius** | Pull down rounded corner | int`?` | `null` |
 
 ### Events
 

@@ -11,8 +11,10 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**AutoContainerBgTransparent** | Inner container background transparent | bool | false |
+||||
 **AutoScroll** | Display scrollbar or not | bool | false |
+**PauseLayout** | Pause Layout | bool | false |
+||||
 **Align** | Layout align | [TAlignFlow](Enum.md#talignflow) | LeftCenter |
 **Gap** | Gap | int | 0 |
-**PauseLayout** | Pause Layout | bool | false |
-**AutoContainerBgTransparent** | Inner container background transparent | bool | false |

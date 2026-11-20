@@ -15,19 +15,33 @@ Image3D 图片3D 👚
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
+**TextAlign** | 文本对齐方向 | [TAlignMini](Enum.md#talignmini) | Bottom |
+**TextPadding** | 文本边距 | Padding | 0, 0, 0, 0 |
+||||
 **Back** | 背景颜色 | Color | Transparent |
-**Radius** | 圆角 | int | 0 |
-**Round** | 圆角样式 | bool | false |
+||||
 **Image** | 图片 | Image`?` | `null` |
 **ImageFit** | 图片布局 | [TFit](Enum.md#tfit) | Cover |
+||||
+**ShowText** | 显示文本 | bool | false |
+||||
+**BorderColor** | 边框颜色 | Color`?` | `null` |
+**BorderWidth** | 边框宽度 | float | 0F |
+**Radius** | 圆角 | int | 0 |
+**BorderStyle** | 边框样式 | [DashStyle](Enum.md#dashstyle) | Solid |
+**Round** | 圆角样式 | bool | false |
 
 #### 动画属性
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Vertical** | 是否竖向 | bool | false |
-**Speed** | 速度 | int | 10 |
 **Duration** | 持续时间(毫秒) | int | 400 |
+**Speed** | 速度 | int | 10 |
+||||
+**TiltMax** | 3D倾斜最大角度 | int | 15 |
+||||
+**Tilt** | 启用3D倾斜（悬停时跟随鼠标） | bool | false |
+**Vertical** | 是否竖向 | bool | false |
 
 #### 阴影属性
 
@@ -35,20 +49,22 @@ Image3D 图片3D 👚
 :--|:--|:--|:--|
 **Shadow** | 阴影大小 | int | 0 |
 **ShadowColor** | 阴影颜色 | Color`?` | `null` |
-**ShadowOpacity** | 阴影透明度 | float | 0.3F |
 **ShadowOffsetX** | 阴影偏移X | int | 0 |
 **ShadowOffsetY** | 阴影偏移Y | int | 0 |
+**ShadowOpacity** | 阴影透明度 | float | 0.3F |
 
 #### 悬浮属性
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**EnableHover** | 启用悬浮交互 | bool | false |
 **HoverFore** | 悬浮前景 | Color`?` | `null` |
+||||
 **HoverBack** | 悬浮背景 | Color`?` | `null` |
+||||
+**EnableHover** | 启用悬浮交互 | bool | false |
 **HoverImage** | 悬浮图标 | Image`?` | `null` |
-**HoverImageSvg** | 悬浮图标SVG | string`?` | `null` |
 **HoverImageRatio** | 悬浮图标比例 | float | 0.4F |
+**HoverImageSvg** | 悬浮图标SVG | string`?` | `null` |
 
 ### 方法
 

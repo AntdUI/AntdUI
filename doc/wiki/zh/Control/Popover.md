@@ -12,19 +12,23 @@ Popover 气泡卡片
 
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
-**Control** | 所属控件 | Form | `必填` |
+**Tag** | 用户定义数据 | object`?` | `null` |
 **Title** | 标题 | string |`null`|
 **Content** | 控件/内容 | object |`必填`|
+||||
 **Font** | 字体 | Font |`null`|
+||||
 **AutoClose** |自动关闭时间（秒）`0等于不关闭` | int |0|
+**Focus** | 获取焦点 | bool | true |
+||||
 **Radius** | 圆角 | int | 6 |
+||||
 **ArrowAlign** | 箭头方向 | [TAlign](Enum.md#talign) | Bottom |
 **ArrowSize** | 箭头大小 | int | 8 |
 **Offset** | 偏移量 | Rectangle / RectangleF | `null` |
-**CustomPoint** | 自定义位置 | Rectangle`?` |`null`|
-**Focus** | 获取焦点 | bool | true |
-**Tag** | 用户定义数据 | object`?` | `null` |
 ||||
+**Control** | 所属控件 | Form | `必填` |
+**CustomPoint** | 自定义位置 | Rectangle`?` |`null`|
 **OnControlLoad** | 控件显示后回调 | `Action?` | `null` |
 
 ### Popover.TextRow
@@ -47,10 +51,11 @@ Popover 气泡卡片
 名称 | 描述 | 类型 | 默认值 |
 :--|:--|:--|:--|
 **Text** | 文字 | string | `必填` |
-**Gap** | 间距 `左右间距` | int | 0 |
 ||||
-**Fore** | 文字颜色 | Color`?` | `null` |
 **Font** | 字体 | Font`?` | `null` |
+**Fore** | 文字颜色 | Color`?` | `null` |
+||||
+**Gap** | 间距 `左右间距` | int | 0 |
 ||||
 **Call** | 点击回调 `设置后鼠标悬停可点击` | Action | `null` |
 

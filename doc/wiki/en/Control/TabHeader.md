@@ -12,35 +12,37 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Radius** | Rounded corners | int | 6 |
-**RadiusContent** | Content rounded corners | int | 4 |
-**OffsetY** | Y offset | int | 0 |
+**Items** | Data `TagTabItem[]` | [TagTabItem](#tagtabitem) | [] |
+||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeHover** | Hover text color | Color`?` | `null` |
 **ForeActive** | Activate text color | Color`?` | `null` |
+||||
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
 ||||
-**BorderWidth** | Border width | float | 0F |
-**BorderColor** | Border color | Color`?` | `null` |
-||||
-**TabIconRatio** | Icon ratio | float | 1.34F |
-**TabCloseRatio** | Close button ratio | float | 1.408F |
-**TabCloseIconRatio** | Close icon ratio | float | 0.74F |
-**TabGapRatio** | Margin ratio | float | 0.6F |
-**TabIconGapRatio** | Ratio of icon to text spacing | float | 0.74F |
-**TabAddIconRatio** | New button icon ratio | float | 1.18F |
-**TabAddGapRatio** | Add button margin ratio | float | 0.148F |
-**LeftGap** | Left margin | int | 0 |
-**RightGap** | Right margin | int | 0 |
-||||
-**DragSort** | Drag and drop sorting | bool | false |
-**ShowAdd** | Whether to show add | bool | false |
 **AddIconSvg** | New button Svg icon (default PlusOutlined) | string`?` | `null` |
+**TabAddIconRatio** | New button icon ratio | float | 1.18F |
+**TabCloseIconRatio** | Close icon ratio | float | 0.74F |
+**TabIconGapRatio** | Ratio of icon to text spacing | float | 0.74F |
+**TabIconRatio** | Icon ratio | float | 1.34F |
 ||||
-**Items** | Data `TagTabItem[]` | [TagTabItem](#tagtabitem) | [] |
 **SelectedIndex** | Selected index | int | 0 |
+**DragSort** | Drag and drop sorting | bool | false |
 **SelectedItem** | Selected item | [TagTabItem](#tagtabitem)`?` | `null` |
+**ShowAdd** | Whether to show add | bool | false |
+**TabCloseRatio** | Close button ratio | float | 1.408F |
+||||
+**BorderColor** | Border color | Color`?` | `null` |
+**BorderWidth** | Border width | float | 0F |
+**Radius** | Rounded corners | int | 6 |
+**RadiusContent** | Content rounded corners | int | 4 |
+||||
+**LeftGap** | Left margin | int | 0 |
+**OffsetY** | Y offset | int | 0 |
+**RightGap** | Right margin | int | 0 |
+**TabAddGapRatio** | Add button margin ratio | float | 0.148F |
+**TabGapRatio** | Margin ratio | float | 0.6F |
 
 ### Events
 
@@ -71,21 +73,33 @@ Name | Description | Return Value | Parameters |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
-**Icon** | Icon | Image`?` | `null` |
-**IconSvg** | Icon SVG | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**Visible** | Whether to display | bool | true |
-**Enabled** | Enabled state | bool | true |
+||||
+**BadgeFore** | Badge foreground color | Color`?` | `null` |
+||||
+**BadgeBack** | Badge background color | Color`?` | `null` |
+||||
+**Icon** | Icon | Image`?` | `null` |
+**IconSvg** | Icon SVG | string`?` | `null` |
+**LoadingIcon** | Loading icon | Image`?` | `null`
+||||
 **Loading** | Loading state | bool | false |
+**LoadingSvg** | Loading icon SVG | string`?` | `null`
+||||
+**Enabled** | Enabled state | bool | true |
+**Visible** | Whether to display | bool | true |
+**BadgeMode** | Badge mode (hollow) | bool | false |
 **ShowClose** | Whether to show close | bool | true |
-**Tag** | User defined data | object`?` | `null` |
+||||
+**BadgeBorderColor** | Badge border color | Color`?` | `null` |
+**BadgeBorderWidth** | Badge border width | float`?` | `null`
+||||
+**BadgeAlign** | Badge alignment | [TAlign](Enum.md#talign) | Right |
+**BadgeOffsetX** | Badge offset X | int | 1
+**BadgeOffsetY** | Badge offset Y | int | 1
+**BadgeSize** | Badge size ratio | float | 0.6F |
 ||||
 **Badge** | Badge content | string`?` | `null` |
 **BadgeSvg** | Badge SVG | string`?` | `null` |
-**BadgeAlign** | Badge alignment | [TAlign](Enum.md#talign) | Right |
-**BadgeSize** | Badge size ratio | float | 0.6F |
-**BadgeMode** | Badge mode (hollow) | bool | false |
-**BadgeFore** | Badge foreground color | Color`?` | `null` |
-**BadgeBack** | Badge background color | Color`?` | `null` |
-**BadgeBorderColor** | Badge border color | Color`?` | `null` |

@@ -8,24 +8,31 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Target** | Target | Target | `Required` |
-**Control** | Belonging Control `Obsolete, use Target` | Form | `Required` |
 **Items** | Menu content `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | [] |
+**TextMultiline** | Multiline text | bool | false |
+||||
 **Font** | Font | Font |`null`|
-**Radius** | Rounded corners | int | 6 |
-**Gap** | Gap ratio | float | 0.286 |
-**IconRatio** | Icon ratio | float | 1.14 |
+||||
 **IconGap** | Icon gap | float | 0.6 |
+**IconRatio** | Icon ratio | float | 1.14 |
+||||
 **CheckRatio** | Checkbox ratio | float | 0.8 |
-**PaddRatio** | Padding ratio | float[] | [0.72, 0.432] |
-**TopMost** | Topped | bool |false|
-**CallSleep** | Delay callback | int |0|
-**UFocus** | Whether to seize the focus | bool |false|
-**Location** | Custom coordinates | Point`?` |`null`|
-**Align** | Align | [TAlign](Enum.md#talign) | BR |
-**Call** | Click on callback | Action<ContextMenuStripItem> | `Required` |
 **OnClose** | Close callback | Action | `null` |
+**UFocus** | Whether to seize the focus | bool |false|
+||||
+**Radius** | Rounded corners | int | 6 |
+||||
+**Align** | Align | [TAlign](Enum.md#talign) | BR |
+**Gap** | Gap ratio | float | 0.286 |
+**Location** | Custom coordinates | Point`?` |`null`|
+**PaddRatio** | Padding ratio | float[] | [0.72, 0.432] |
+||||
+**Call** | Click on callback | Action<ContextMenuStripItem> | `Required` |
+**CallSleep** | Delay callback | int |0|
 **ColorScheme** | Color scheme | [TAMode](Enum.md#tamode) | Auto |
+**Control** | Belonging Control `Obsolete, use Target` | Form | `Required` |
+**Target** | Target | Target | `Required` |
+**TopMost** | Topped | bool |false|
 
 ### Data
 
@@ -34,17 +41,25 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
-**SubText** | Subtext | string`?` | `null` |
-🌏 **LocalizationSubText** | International Subtext | string`?` | `null` |
+||||
 **Fore** | Text color | Color`?` | `null` |
+||||
+**Back** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+||||
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `null` |
-**Enabled** | Enable | bool | true |
+||||
 **Checked** | Checked | bool | false |
+**Enabled** | Enable | bool | true |
+||||
 **Sub** | Sub item `IContextMenuStripItem[]` | [IContextMenuStripItem[]](#contextmenustripitem) | `null` |
-**Tag** | User defined data | object`?` | `null` |
+**SubText** | Subtext | string`?` | `null` |
+🌏 **LocalizationSubText** | International Subtext | string`?` | `null` |
 
 #### ContextMenuStripItemDivider
 
@@ -59,7 +74,9 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Items** | Button collection | ContextMenuStripItemButton[] | `null` |
+||||
 **FontRatio** | Font ratio | float | 0.7 |
+||||
 **Square** | Whether square | bool | false |
 
 #### ContextMenuStripItemButton
@@ -69,14 +86,21 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
+||||
 **Fore** | Text color | Color`?` | `null` |
+||||
+**Back** | Background color | Color`?` | `null` |
+**BackExtend** | Background gradient color | string`?` | `null` |
+**BackHover** | Hover background color | Color`?` | `null` |
+||||
 **Icon** | Icon | Image`?` | `null` |
 **IconSvg** | Icon SVG | string`?` | `null` |
-**Enabled** | Enable | bool | true |
+||||
 **Checked** | Checked | bool | false |
-**Tag** | User defined data | object`?` | `null` |
+**Enabled** | Enable | bool | true |
 
 ### Example
 

@@ -227,7 +227,7 @@ namespace AntdUI
                     case Colour.BorderColor: return "#424242".ToColor();
                     case Colour.BorderSecondary: return "#303030".ToColor();
 
-                    case Colour.BorderColorDisable: return Color.FromArgb(66, 66, 66);
+                    case Colour.BorderColorDisable: return "#424242".ToColor();
 
                     case Colour.Split: return rgba(253, 253, 253, 0.12F);//30.6
 
@@ -308,7 +308,7 @@ namespace AntdUI
                     case Colour.BorderColor: return "#D9D9D9".ToColor();
                     case Colour.BorderSecondary: return "#F0F0F0".ToColor();
 
-                    case Colour.BorderColorDisable: return Color.FromArgb(217, 217, 217);
+                    case Colour.BorderColorDisable: return "#D9D9D9".ToColor();
 
                     case Colour.Split: return rgba(5, 5, 5, 0.06F);//15.3
 

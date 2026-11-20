@@ -12,21 +12,28 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**AutoSize** | Auto Size | bool | false |
-**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
-|||
-**ForeColor** | Text color | Color`?` | `null` |
-**Fill** | Fill color | Color`?` | `null` |
-|||
 **Text** | Text | string`?` | `null` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **TextAlign** | Text position | ContentAlignment | MiddleLeft |
+||||
+**ForeColor** | Text color | Color`?` | `null` |
+||||
+**Fill** | Fill color | Color`?` | `null` |
+||||
+**AutoSize** | Auto Size | bool | false |
 **Checked** | Checked state | bool | false |
 **AutoCheck** | Click to automatically change the selected status | bool | true |
+**AutoSizeMode** | Auto size mode | [TAutoSize](Enum.md#tautosize) | None |
 **UseMnemonic** | Support mnemonic key | bool | true |
 **HasFocus** | Focus state | bool | false | `Read only` |
-|||
+||||
 **RightToLeft** | Reverse | RightToLeft | No |
+||||
+|||
+||||
+|||
+||||
+|||
 
 ### Event
 

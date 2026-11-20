@@ -23,23 +23,28 @@ Preview.open(new Preview.Config(this, list, (index, item) => GetImage(item)));
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Form** | Belonging window | Form | `Required` |
-**Content** | Content | `IList<Image>` / `IList<object>` | `Required` |
-**ContentCount** | Content count | int | `Required` |
-**SelectIndex** | Current selected index | int | 0 |
-**Fit** | Image fit | [TFit](Enum.md#tfit)`?` | `null` |
-**Keyboard** | Support keyboard esc to close | bool | true |
 **Tag** | User defined data | object`?` | `null` |
-**OnSelectIndexChanged** | SelectIndex changed callback | Func<int, bool>`?` | `null` |
+**Content** | Content | `IList<Image>` / `IList<object>` | `Required` |
 ||||
+**BtnIconSize** | Button icon size | int | 18 |
+||||
+**Loop** | Whether to loop when switching (takes effect with more than one image) | bool | false |
+**MaskClosable** | Whether clicking the blank area closes the preview | bool | true |
+**OnSelectIndexChanged** | SelectIndex changed callback | Func<int, bool>`?` | `null` |
+**SelectIndex** | Current selected index | int | 0 |
 **ShowBtn** | Show button or not | bool | true |
 **ShowDefaultBtn** | Show default button or not | bool | true |
-**BtnSize** | Button size | Size | 42, 46 |
-**BtnIconSize** | Button icon size | int | 18 |
+||||
 **BtnLRSize** | Left/right button size | int | 40 |
-**ContainerPadding** | Container padding | int | 24 |
 **BtnPadding** | Button padding | Size | 12, 32 |
+**BtnSize** | Button size | Size | 42, 46 |
+**ContainerPadding** | Container padding | int | 24 |
+||||
 **Btns** | Custom button | [Btn[]](#btn) | `null` |
+**ContentCount** | Content count | int | `Required` |
+**Fit** | Image fit | [TFit](Enum.md#tfit)`?` | `null` |
+**Form** | Belonging window | Form | `Required` |
+**Keyboard** | Support keyboard esc to close | bool | true |
 **OnBtns** | Custom button callback | Action<string, BtnEvent>`?` | `null` |
 
 ### Btn
@@ -49,8 +54,9 @@ Name | Description | Type | Default Value |
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **Name** | Button name | string | `Required` |
-**IconSvg** | Icon SVG | string | `Required` |
 **Tag** | User defined data | object`?` | `null` |
+||||
+**IconSvg** | Icon SVG | string | `Required` |
 
 ### BtnEvent
 
@@ -58,6 +64,22 @@ Name | Description | Type | Default Value |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Index** | Data index | int | |
-**Data** | Metadata | object`?` | |
 **Tag** | Btn's Tag | object`?` | |
+||||
+**Data** | Metadata | object`?` | |
+**Index** | Data index | int | |
+
+### ImageTextContent
+
+> Image with text content
+
+Name | Description | Type | Default Value |
+:--|:--|:--|:--|
+**Text** | Display text | string`?` | `null` |
+**TextAlign** | Text alignment | ContentAlignment | TopCenter |
+**TextPadding** | Text padding | Padding | 0 |
+||||
+**Font** | Text font | Font`?` | `null` |
+**ForeColor** | Text color | Color`?` | `null` |
+||||
+**Image** | Image | Image | `Required` |

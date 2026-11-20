@@ -73,17 +73,11 @@ namespace Demo.Controls
             }
         }
 
-        private void Select1_SelectedIndexChanged(object sender, AntdUI.IntEventArgs e)
+        private void select1_SelectedIndexChanged(object sender, AntdUI.IntEventArgs e)
         {
             var value = select1.Items[e.Value];
-            if (value is "Click")
-            {
-                menu2.Trigger = AntdUI.Trigger.Click;
-            }
-            else
-            {
-                menu2.Trigger = AntdUI.Trigger.Hover;
-            }
+            if (value is "Click") menu2.Trigger = AntdUI.Trigger.Click;
+            else menu2.Trigger = AntdUI.Trigger.Hover;
         }
     }
 }

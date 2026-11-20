@@ -12,26 +12,29 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**Format** | Format | string | yyyy-MM-dd `HH:mm:ss Display hour minute second selection box` |
-||||
 **Value** | Current date | DateTime[]`?` | `null` |
-**MinDate** | Min date | DateTime`?` | `null` |
-**MaxDate** | Max date | DateTime`?` | `null` |
-**Presets** | Presets | BaseCollection | - |
-**BadgeAction** | Date badge callback | Func<DateTime[], List<DateBadge>?>? | `null` |
-||||
-**PlaceholderStart** | Displayed watermark text S | string`?` | `null` |
-**LocalizationPlaceholderStart** | Displayed watermark text S (Internationalization) | string`?` | `null` |
-**PlaceholderEnd** | Displayed watermark text E | string`?` | `null` |
+**Format** | Format | string | yyyy-MM-dd `HH:mm:ss Display hour minute second selection box` |
 **LocalizationPlaceholderEnd** | Displayed watermark text E (Internationalization) | string`?` | `null` |
-**SwapSvg** | Exchange icon SVG | string`?` | `null` |
+**LocalizationPlaceholderStart** | Displayed watermark text S (Internationalization) | string`?` | `null` |
+||||
+**ShowIcon** | Display icon or not | bool | true |
+||||
+**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**InteractiveReset** | Interactive reset (whether to start time selection every time) | bool | true |
+||||
+**MaxDate** | Max date | DateTime`?` | `null` |
+**MinDate** | Min date | DateTime`?` | `null` |
 **Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | true |
-**ShowIcon** | Display icon or not | bool | true |
-**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
-**InteractiveReset** | Interactive reset (whether to start time selection every time) | bool | true |
+||||
+**BadgeAction** | Date badge callback | Func<DateTime[], List<DateBadge>?>? | `null` |
+**ExpandDrop** | Expand dropdown menu | bool | false |
 **Picker** | Picker type | [TDatePicker](Enum.md#tdatepicker) | Date |
-**EnabledValueTextChange** | Whether to update Value when text changes | bool | false |
+**PlaceholderEnd** | Displayed watermark text E | string`?` | `null` |
+**PlaceholderStart** | Displayed watermark text S | string`?` | `null` |
+**Presets** | Presets | BaseCollection | - |
+**SwapSvg** | Exchange icon SVG | string`?` | `null` |
+**ValueTimeHorizontal** | Horizontal alignment of time item | bool | false |
 
 ### Events
 

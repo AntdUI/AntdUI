@@ -12,28 +12,36 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**List** | Is it a list style `Like Dropdown` | bool | false |
+**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | `null` |
+**AutoText** | Auto set text | bool | true |
+||||
+**AutoPrefixSvg** | Auto set dropdown prefix | bool | false |
+**CloseIcon** | Display close icon | bool | false |
+**ShowIcon** | Show icon | bool | true |
+||||
+**SelectedIndex** | Select Index | int | -1 |
+**SelectedValue** | Select Value | object`?` | `null` |
 **ListAutoWidth** | List automatic width | bool | false |
-**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
+**DropDownEmptyClose** | Dropdown empty close | bool | false |
+||||
 **MaxCount** | Maximum of displayed items in the list | int | 4 |
-**DropDownRadius** | Pull down rounded corner | int`?` | `null` |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
+**ArrowKeyDropDown** | Whether the Down arrow opens the drop-down | bool | true |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **DropDownPadding** | Pull down margin | Size | 12, 5 |
 **DropDownTextAlign** | Dropdown text alignment | [TAlign](Enum.md#talign) | Left |
+||||
 **ClickEnd** | Click to the end `No nodes to click` | bool | false |
-**ClickSwitchDropdown** | Click to switch dropdown menu | bool | true |
-**CloseIcon** | Display close icon | bool | false |
 **Empty** | Empty still dropdown | bool | false |
-**AutoPrefixSvg** | Auto set dropdown prefix | bool | false |
-**AutoText** | Auto set text | bool | true |
-**WheelModifyEnabled** | Mouse wheel modify value | bool | true |
-**DropDownEmptyClose** | Dropdown empty close | bool | false |
+**Expand** | Whether the arrow is expanded (UI) | bool | false |
+**ExpandDrop** | Expand dropdown menu | bool | false |
+**List** | Is it a list style `Like Dropdown` | bool | false |
+**ClickSwitchDropdown** | Click to switch dropdown menu | bool | true |
+**DropDownRadius** | Pull down rounded corner | int`?` | `null` |
 **EnterDropDown** | Allow enter key to trigger dropdown | bool | true |
-**ShowIcon** | Show icon | bool | true |
+||||
 |||
-**Items** | Data [More Styles](../DropdownStyles.md) | BaseCollection | `null` |
-**SelectedIndex** | Select Index | int | -1 |
-**SelectedValue** | Select Value | object`?` | `null` |
 
 ### Events
 
@@ -63,20 +71,22 @@ Name | Description | Return Value | Parameters |
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
+**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
+||||
+**SelectedValue** | Select Value | object[] | [] |
 **AutoHeight** | Automatic height | bool | false |
-**Gap** | Gap | int | 2 |
-**List** | Is it a list style `Like Dropdown` | bool | false |
+**CanDelete** | Can it be deleted | bool | true |
+**CheckMode** | Checkbox mode | bool | false |
 **ListAutoWidth** | List automatic width | bool | true |
-**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
-**MaxCount** | Maximum of displayed items in the list | int | 4 |
+||||
+**Gap** | Gap | int | 2 |
 **MaxChoiceCount** | Maximum selected quantity | int | 0 |
+**MaxCount** | Maximum of displayed items in the list | int | 4 |
+**Placement** | Menu pop-up location | [TAlignFrom](Enum.md#talignfrom) | BL |
 **DropDownArrow** | Is the dropdown arrow displayed | bool | false |
 **DropDownPadding** | Pull down margin | Size | 12, 5 |
-**CheckMode** | Checkbox mode | bool | false |
-**CanDelete** | Can it be deleted | bool | true |
 ||||
-**Items** | Data [More Styles](../DropdownStyles.md) | object[] | [] |
-**SelectedValue** | Select Value | object[] | [] |
+**List** | Is it a list style `Like Dropdown` | bool | false |
 
 ### Method
 

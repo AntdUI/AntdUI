@@ -12,38 +12,38 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-**SourceTitle** | Left List Title | string? | `null` |
-**TargetTitle** | Right List Title | string? | `null` |
-||||
-**ShowSelectAll** | Display all check box | bool | true |
-**OneWay** | Is it unidirectional mode (only from left to right) | bool | false |
-**ShowSearch** | Whether to show search box | bool | false |
-**ChangeToBottom** | Change to bottom | bool | false |
-**DragSort** | Drag sort | bool | false |
-||||
-**SearchPlaceholderSource** | Source list search placeholder text | string? | `null` |
-**SearchPlaceholderTarget** | Target list search placeholder text | string? | `null` |
-🌏 **LocalizationSearchPlaceholderSource** | Source list search placeholder text localization | string? | `null` |
-🌏 **LocalizationSearchPlaceholderTarget** | Target list search placeholder text localization | string? | `null` |
-||||
-**ItemHeight** | List item height | int? | `null` |
-**PanelRadius** | List box rounded corners | int | 6 |
-**PanelBack** | Panel background color | Color`?` | `null` |
+**Items** | Data [TransferItem](#transferitem) | TransferItemCollection | [] |
 ||||
 **ForeColor** | Text color | Color`?` | `null` |
 **ForeActive** | Active text color | Color`?` | `null` |
+||||
+**PanelBack** | Panel background color | Color`?` | `null` |
 **BackHover** | Hover background color | Color`?` | `null` |
 **BackActive** | Activate background color | Color`?` | `null` |
-**ButtonForeColor** | Button text color | Color`?` | `null` |
-**ButtonBackColor** | Button background color | Color`?` | `null` |
+||||
+**DragSort** | Drag sort | bool | false |
+**ShowSearch** | Whether to show search box | bool | false |
+**ShowSelectAll** | Display all check box | bool | true |
 **ButtonBackHover** | Button hover background color | Color`?` | `null` |
 **ButtonBackActive** | Button activation background color | Color`?` | `null` |
-**ButtonBackDisable** | Button to disable background color | Color`?` | `null` |
 ||||
 **BorderColor** | Border color | Color`?` | `null` |
 **BorderWidth** | Border width | float | 0F |
 ||||
-**Items** | Data [TransferItem](#transferitem) | TransferItemCollection | [] |
+**ItemHeight** | List item height | int? | `null` |
+||||
+**ButtonBackColor** | Button background color | Color`?` | `null` |
+**ButtonForeColor** | Button text color | Color`?` | `null` |
+**ChangeToBottom** | Change to bottom | bool | false |
+**OneWay** | Is it unidirectional mode (only from left to right) | bool | false |
+**PanelRadius** | List box rounded corners | int | 6 |
+**SearchPlaceholderSource** | Source list search placeholder text | string? | `null` |
+**SearchPlaceholderTarget** | Target list search placeholder text | string? | `null` |
+🌏 **LocalizationSearchPlaceholderSource** | Source list search placeholder text localization | string? | `null` |
+🌏 **LocalizationSearchPlaceholderTarget** | Target list search placeholder text localization | string? | `null` |
+**SourceTitle** | Left List Title | string? | `null` |
+**TargetTitle** | Right List Title | string? | `null` |
+**ButtonBackDisable** | Button to disable background color | Color`?` | `null` |
 
 ### Events
 
@@ -73,9 +73,13 @@ Name | Description | Type | Default Value |
 :--|:--|:--|:--|
 **ID** | ID | string`?` | `null` |
 **Name** | Name | string`?` | `null` |
+**Tag** | User defined data | object`?` | `null` |
 **Text** | Text | string | `Required` |
 🌏 **LocalizationText** | International Text | string`?` | `null` |
 **Value** | Value | object? | `null` |
+||||
+**Enabled** | Enable | bool | true
+**Visible** | Is it displayed | bool | true
 **Selected** | Selected or not | bool | false |
+||||
 **IsTarget** | Is it on the target list | bool | false |
-**Tag** | User defined data | object`?` | `null` |

@@ -12,20 +12,22 @@
 
 Name | Description | Type | Default Value |
 :--|:--|:--|:--|
-||||
-**Radius** | Rounded corners | int | 6 |
-||||
-**Full** | Whether to fill | bool | false |
-**ShowChinese** | Show lunar calendar | bool | false |
-**ShowButtonToDay** | Show today | bool | true |
-||||
 **Value** | Current date | DateTime | `DateTime.Now` |
-**MinDate** | Min date | DateTime`?` | `null` |
-**MaxDate** | Max date | DateTime`?` | `null` |
+||||
+**Fore** | Text color | Color`?` | `null` |
 ||||
 **Back** | Background color | Color`?` | `null` |
 **BackExtend** | Background gradient color | string`?` | `null` |
-**Fore** | Text color | Color`?` | `null` |
+||||
+**ShowButtonToDay** | Show today | bool | true |
+**ShowChinese** | Show lunar calendar | bool | false |
+||||
+**Radius** | Rounded corners | int | 6 |
+||||
+**MaxDate** | Max date | DateTime`?` | `null` |
+**MinDate** | Min date | DateTime`?` | `null` |
+||||
+**Full** | Whether to fill | bool | false |
 
 ### Badge on the date
 
