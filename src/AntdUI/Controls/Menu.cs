@@ -281,7 +281,7 @@ namespace AntdUI
                 if (align == value) return;
                 align = value;
                 ChangeList(true);
-                OnPropertyChanged(nameof(Align));
+                OnPropertyChanged(nameof(HorizontalAlign));
             }
         }
 

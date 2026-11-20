@@ -175,6 +175,81 @@ namespace AntdUI
                 OnPropertyChanged(nameof(TitleFontRatio));
             }
         }
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                ChangeList(true);
+                Invalidate();
+                OnPropertyChanged(nameof(IconRatio));
+            }
+        }
+
+        int iconGap = 4;
+        /// <summary>
+        /// 图标与文本间隔
+        /// </summary>
+        [Description("图标与文本间隔"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
+        public int IconGap
+        {
+            get => iconGap;
+            set
+            {
+                if (iconGap == value) return;
+                iconGap = value;
+                ChangeList(true);
+                Invalidate();
+                OnPropertyChanged(nameof(IconGap));
+            }
+        }
+
+        Image? titleIcon;
+        /// <summary>
+        /// 标题图标
+        /// </summary>
+        [Description("标题图标"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public Image? TitleIcon
+        {
+            get => titleIcon;
+            set
+            {
+                if (titleIcon == value) return;
+                titleIcon = value;
+                ChangeList(true);
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(TitleIcon));
+            }
+        }
+
+        string? titleSvg;
+        /// <summary>
+        /// 标题图标SVG
+        /// </summary>
+        [Description("标题图标SVG"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public string? TitleIconSvg
+        {
+            get => titleSvg;
+            set
+            {
+                if (titleSvg == value) return;
+                titleSvg = value;
+                ChangeList(true);
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(TitleIconSvg));
+            }
+        }
+        /// <summary>
+        /// 是否包含图标
+        /// </summary>
+        public bool HasIcon => titleSvg != null || titleIcon != null;
 
         #endregion
 
@@ -195,7 +270,32 @@ namespace AntdUI
             }
             set => items = value.BindData(this);
         }
-
+        /// <summary>
+        /// 获取描述项
+        /// </summary>
+        /// <param name="index">索引</param>
+        /// <returns></returns>
+        public DescriptionsItem? this[int index]
+        {
+            get
+            {
+                if (index < 0 || index > Items.Count - 1) return null;
+                return Items[index];
+            }
+        }
+        /// <summary>
+        /// 获取描述项
+        /// </summary>
+        /// <param name="fieldKey">Label 或 Name 或 ID</param>
+        /// <returns></returns>
+        public DescriptionsItem? this[string fieldKey]
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(fieldKey)) return null;
+                return Items.Find(di=> di != null && di.Label== fieldKey || di.ID == fieldKey || di.Name == fieldKey);
+            }
+        }
         #endregion
 
         #region 布局
@@ -640,7 +740,7 @@ namespace AntdUI
                     int tw = rect.Width > 0 && rect.Width < 100000 ? rect.Width - pad_h * 2 : 9999;
                     if (tw < 10) tw = 10;
                     var size_title = g.MeasureText(title_str, font_title, tw);
-                    result.RectTitle = new Rectangle(rect.X + pad_h, use_y, size_title.Width, size_title.Height);
+                    result.RectTitle = new Rectangle(rect.X + pad_h, use_y + Padding.Top, rect.Width, size_title.Height);
                     use_y += size_title.Height + (int)Math.Round(unit * 0.8F);
                 }
             }
@@ -993,7 +1093,17 @@ namespace AntdUI
                 {
                     using (var brush = new SolidBrush(enabled ? (titleFore ?? Colour.TextBase.Get(ColorScheme, nameof(Descriptions), Name)) : Colour.TextQuaternary.Get(ColorScheme, nameof(Descriptions), Name)))
                     {
-                        g.DrawText(Title, font_title, brush, layout.RectTitle, textAl | WrapFlags());
+                        var rect = layout.RectTitle;
+                        if (HasIcon)
+                        {
+                            int icon_size = (int)(font_title.Height * iconratio);
+                            var rect_l = new Rectangle(rect.X, rect.Y + (rect.Height - icon_size) / 2, icon_size, icon_size);
+                            if (rect_l.Y < 0) rect_l.Y = 0;
+                            PaintTitleIcon(g, rect_l, brush.Color);
+                            rect.X += icon_size + iconGap;
+                            rect.Width -= icon_size + iconGap;
+                        }
+                        g.DrawText(Title, font_title, brush, rect, textAl | WrapFlags());
                     }
                 }
             }
@@ -1123,7 +1233,11 @@ namespace AntdUI
 
             base.OnDraw(e);
         }
-
+        void PaintTitleIcon(Canvas g, Rectangle rect, Color color)
+        {
+            if (titleIcon != null) g.Image(titleIcon, rect);
+            else if (titleSvg != null) g.Svg(titleSvg, rect, color);
+        }
         void PaintBack(DrawEventArgs e)
         {
             if (back.HasValue || backExtend != null)
