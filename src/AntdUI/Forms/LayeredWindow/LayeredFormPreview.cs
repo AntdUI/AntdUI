@@ -434,50 +434,54 @@ namespace AntdUI
 
                 if (Tag is Preview.ImageTextContent content && content.Text != null)
                 {
+                    // 文本边距（适配DPI）
+                    int paddingLeft = (int)(content.TextPadding.Left * Dpi), paddingTop = (int)(content.TextPadding.Top * Dpi),
+                        paddingRight = (int)(content.TextPadding.Right * Dpi), paddingBottom = (int)(content.TextPadding.Bottom * Dpi);
+                    int textWidth = Math.Max(1, TargetRect.Width - paddingLeft - paddingRight),
+                        textHeight = Math.Max(1, TargetRect.Height - paddingTop - paddingBottom);
                     // 测量文本大小
                     var size = g.MeasureText(content.Text, content.Font ?? FontMe);
                     using (var brush = new SolidBrush(content.ForeColor ?? Colour.Text.Get(name)))
                     {
                         Rectangle textRect;
-                        int width = TargetRect.Width, height = size.Height;
-                        if (size.Width > TargetRect.Width)
+                        int width = textWidth, height = size.Height;
+                        if (size.Width > textWidth)
                         {
                             // 重新测量换行后的文本所需区域
-                            size = g.MeasureText(content.Text, content.Font ?? FontMe, TargetRect.Width);
+                            size = g.MeasureText(content.Text, content.Font ?? FontMe, textWidth);
 
                             //重新测量后重新赋值矩形高度
-                            height = Math.Min(size.Height, TargetRect.Height);
-                            width = TargetRect.Width;
+                            height = Math.Min(size.Height, textHeight);
                         }
                         var format = Helper.SetAlignment(content.TextAlign);
                         switch (content.TextAlign)
                         {
                             case ContentAlignment.TopLeft:
-                                textRect = new Rectangle(0, 0, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop, width, height);
                                 break;
                             case ContentAlignment.TopCenter:
-                                textRect = new Rectangle(0, 0, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop, width, height);
                                 break;
                             case ContentAlignment.TopRight:
-                                textRect = new Rectangle(0, 0, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop, width, height);
                                 break;
                             case ContentAlignment.MiddleLeft:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight / 2, width, height);
                                 break;
                             case ContentAlignment.MiddleCenter:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight / 2, width, height);
                                 break;
                             case ContentAlignment.MiddleRight:
-                                textRect = new Rectangle(0, TargetRect.Height / 2, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight / 2, width, height);
                                 break;
                             case ContentAlignment.BottomLeft:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight - height, width, height);
                                 break;
                             case ContentAlignment.BottomCenter:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight - height, width, height);
                                 break;
                             case ContentAlignment.BottomRight:
-                                textRect = new Rectangle(0, TargetRect.Height - height, width, height);
+                                textRect = new Rectangle(paddingLeft, paddingTop + textHeight - height, width, height);
                                 break;
                             default:
                                 throw new Exception("什么鬼，你怎么可能进入这个异常");
@@ -605,8 +609,8 @@ namespace AntdUI
         #region 鼠标
 
         bool hoverClose = false, hoverLeft = false, hoverRight = false;
-        bool enabledLeft => SelectIndex > 0;
-        bool enabledRight => SelectIndex < PageSize - 1;
+        bool enabledLeft => (config.Loop && PageSize > 1) || SelectIndex > 0;
+        bool enabledRight => (config.Loop && PageSize > 1) || SelectIndex < PageSize - 1;
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (Img != null)
@@ -870,6 +874,7 @@ namespace AntdUI
                 if (enabledLeft && rect_left.Contains(e.X, e.Y))
                 {
                     int newIndex = SelectIndex - 1;
+                    if (config.Loop && newIndex < 0) newIndex = PageSize - 1;
                     if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
                     else
                     {
@@ -883,6 +888,7 @@ namespace AntdUI
                 if (enabledRight && rect_right.Contains(e.X, e.Y))
                 {
                     int newIndex = SelectIndex + 1;
+                    if (config.Loop && newIndex >= PageSize) newIndex = 0;
                     if (config.OnSelectIndexChanged == null) SelectIndex = newIndex;
                     else
                     {
@@ -894,7 +900,7 @@ namespace AntdUI
                     return;
                 }
             }
-            if (!rect_img_dpi.Contains(e.X, e.Y))
+            if (config.MaskClosable && !rect_img_dpi.Contains(e.X, e.Y))
             {
                 PlayGIF = false;
                 IClose();

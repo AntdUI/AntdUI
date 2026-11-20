@@ -1422,6 +1422,23 @@ namespace AntdUI
         }
 
         FormatFlags SL = FormatFlags.Left | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis | FormatFlags.HotkeyPrefixShow;
+        FormatFlags SLR = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.NoWrapEllipsis;
+
+        Font? fontRight;
+        Font? fontRightBase;
+        /// <summary>
+        /// 右侧快捷键字体（比主文本略小，与右键菜单子文本样式一致）
+        /// </summary>
+        Font FontRight(Font font)
+        {
+            if (fontRight == null || fontRightBase?.Equals(font) != true)
+            {
+                fontRight?.Dispose();
+                fontRightBase = font;
+                fontRight = new Font(font.FontFamily, font.Size * .8F, font.Style);
+            }
+            return fontRight;
+        }
 
         /// <summary>
         /// 测量文本（助记键不占宽度）
@@ -1429,8 +1446,7 @@ namespace AntdUI
         int MeasureTextWidth(Canvas g, MenuItem it)
         {
             var font = it.Font ?? Font;
-            if (useMnemonic) return g.MeasureText(it.Text, font, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width;
-            return g.MeasureText(it.Text, font).Width;
+            return useMnemonic ? g.MeasureText(it.Text + it.RightText, font, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width : g.MeasureText(it.Text + it.RightText, font).Width;
         }
         void PaintTextIcon(Canvas g, MenuItem it, Color fore, float radius, bool focusMode = true)
         {
@@ -1456,6 +1472,13 @@ namespace AntdUI
                         }
                     }
                     else g.DrawText(it.Text, it.Font ?? Font, brush, it.txt_rect, SL);
+                    if (it.RightText != null)
+                    {
+                        using (var brush_right = new SolidBrush(Colour.TextSecondary.GetSymbol(ColorScheme, "subFore", nameof(Menu), Name)))
+                        {
+                            g.DrawText(it.RightText, FontRight(it.Font ?? Font), brush_right, it.txt_rect, SLR);
+                        }
+                    }
                 }
                 if (focusMode && focusItem == null) PaintFocus(g, it, fore, radius);
             }
@@ -2529,6 +2552,8 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            fontRight?.Dispose();
+            fontRight = null;
             ScrollBar.Dispose();
             base.Dispose(disposing);
         }
@@ -2695,6 +2720,25 @@ namespace AntdUI
 
         [Description("子文本"), Category("国际化"), DefaultValue(null)]
         public string? LocalizationSubText { get; set; }
+
+        string? textRight;
+        /// <summary>
+        /// 右侧文本（快捷键）
+        /// </summary>
+        [Description("右侧文本（快捷键）"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null), Localizable(true)]
+        public string? RightText
+        {
+            get => Localization.GetLangI(LocalizationRightText, textRight, new string?[] { "{id}", ID });
+            set
+            {
+                if (textRight == value) return;
+                textRight = value;
+                Invalidates();
+            }
+        }
+
+        [Description("右侧文本"), Category("国际化"), DefaultValue(null)]
+        public string? LocalizationRightText { get; set; }
 
         /// <summary>
         /// 自定义字体
@@ -3432,6 +3476,13 @@ namespace AntdUI
         {
             textSub = value;
             LocalizationSubText = localization;
+            return this;
+        }
+
+        public MenuItem SetRightText(string? value, string? localization = null)
+        {
+            textRight = value;
+            LocalizationRightText = localization;
             return this;
         }
 

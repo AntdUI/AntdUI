@@ -165,6 +165,13 @@ namespace AntdUI
         public override string name => nameof(AntdUI.Menu);
         string cname;
 
+        protected override void Dispose(bool disposing)
+        {
+            FontRight?.Dispose();
+            FontRight = null;
+            base.Dispose(disposing);
+        }
+
         public ILayeredForm? SubForm() => subForm;
         LayeredFormMenuDown? subForm;
         public override bool EnableSafetyTriangleZone => true;
@@ -296,6 +303,11 @@ namespace AntdUI
         #region 渲染
 
         FormatFlags sf = FormatFlags.Left | FormatFlags.VerticalCenter;
+        FormatFlags sfr = FormatFlags.Right | FormatFlags.VerticalCenter | FormatFlags.EllipsisCharacter;
+        /// <summary>
+        /// 右侧快捷键字体（与右键菜单子文本样式一致，比主文本略小）
+        /// </summary>
+        Font? FontRight;
         public override void PrintBg(Canvas g, Rectangle rect, GraphicsPath path)
         {
             using (var brush = new SolidBrush(backColor ?? Colour.BgElevated.Get(ColorScheme, name, cname)))
@@ -426,6 +438,15 @@ namespace AntdUI
                 }
                 PaintIcon(g, it, brush.Color);
             }
+            if (FontRight != null && it.Val.RightText != null)
+            {
+                using (var brush_right = new SolidBrush(it.Val.Enabled
+                    ? Colour.TextSecondary.GetSymbol(ColorScheme, "subFore", name, cname)
+                    : Colour.TextQuaternary.GetSymbol(ColorScheme, "foreDisabled", name, cname)))
+                {
+                    g.DrawText(it.Val.RightText, FontRight, brush_right, it.RectText, sfr);
+                }
+            }
             if (it.has_sub) PaintArrow(g, it, brush.Color);
         }
         void PaintIcon(Canvas g, OMenuItem it, Color fore)
@@ -452,6 +473,13 @@ namespace AntdUI
         List<IMenuItem> LoadLayout(Canvas g, IList<MenuItem> items, Point point)
         {
             var text_height = g.MeasureString(Config.NullText, FontMe).Height;
+
+            bool has_rightText = false;
+            foreach (var it in items)
+            {
+                if (it.RightText != null) { has_rightText = true; break; }
+            }
+            if (has_rightText) FontRight = new Font(FontMe.FontFamily, FontMe.Size * .8F);
 
             int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
             icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,
@@ -524,7 +552,7 @@ namespace AntdUI
             int tmp = 0;
             foreach (var it in items)
             {
-                int tmp2 = useMnemonic ? g.MeasureText(it.Text, FontMe, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width : g.MeasureText(it.Text, FontMe).Width;
+                int tmp2 = useMnemonic ? g.MeasureText(it.Text + it.RightText, FontMe, 0, FormatFlags.Center | FormatFlags.HotkeyPrefixShow).Width : g.MeasureText(it.Text + it.RightText, FontMe).Width;
                 if (it.HasIcon) tmp2 += icon_size + icon_gap;
                 if (it.items != null && it.items.Count > 0) tmp2 += icon_size + icon_gap;
 

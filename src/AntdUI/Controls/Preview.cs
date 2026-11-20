@@ -129,6 +129,16 @@ namespace AntdUI
             public bool Keyboard { get; set; } = true;
 
             /// <summary>
+            /// 点击空白处是否允许关闭
+            /// </summary>
+            public bool MaskClosable { get; set; } = true;
+
+            /// <summary>
+            /// 是否允许循环切换（超过1张图时生效）
+            /// </summary>
+            public bool Loop { get; set; }
+
+            /// <summary>
             /// 用户定义数据
             /// </summary>
             public object? Tag { get; set; }
@@ -212,6 +222,16 @@ namespace AntdUI
             public Config SetKeyboard(bool value = false)
             {
                 Keyboard = value;
+                return this;
+            }
+            public Config SetMaskClosable(bool value = false)
+            {
+                MaskClosable = value;
+                return this;
+            }
+            public Config SetLoop(bool value = false)
+            {
+                Loop = value;
                 return this;
             }
 
@@ -385,6 +405,11 @@ namespace AntdUI
             /// 文本位置
             /// </summary>
             public ContentAlignment TextAlign { get; set; } = ContentAlignment.TopCenter;
+
+            /// <summary>
+            /// 文本边距
+            /// </summary>
+            public Padding TextPadding { get; set; } = new Padding(0);
         }
     }
 }
