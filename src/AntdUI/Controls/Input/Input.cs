@@ -1009,10 +1009,16 @@ namespace AntdUI
         public bool AcceptsTab { get; set; }
 
         /// <summary>
-        /// 多行编辑是否允许输入退出键
+        /// 是否允许输入退出键
         /// </summary>
-        [Description("多行编辑是否允许输入退出键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        [Description("是否允许输入退出键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
         public bool AcceptsEscape { get; set; }
+
+        /// <summary>
+        /// 是否允许输入回车键
+        /// </summary>
+        [Description("是否允许输入回车键"), Category(nameof(CategoryAttribute.Behavior)), DefaultValue(false)]
+        public bool AcceptsEnter { get; set; }
 
         /// <summary>
         /// 失去焦点时是否隐藏选定内容

@@ -275,7 +275,7 @@ namespace AntdUI
                                 {
                                     cellSelect!.value = cellSelect.COLUMN[r_value];
                                     SetValue(cell, r_value);
-                                    if (multiline) LoadLayout();
+                                    LoadLayout();
                                 }
                                 else
                                 {
@@ -327,7 +327,7 @@ namespace AntdUI
                                 {
                                     cellText.SetValue(o);
                                     SetValue(cell, o);
-                                    if (multiline) LoadLayout();
+                                    LoadLayout();
                                 }
                                 OnCellEditComplete(it.RECORD, i_row, i_col, column);
                             }
@@ -703,6 +703,7 @@ namespace AntdUI
             }
             if (AddEditInput(input, input.Text, call, region, column))
             {
+                input.AcceptsEnter = true;
                 input.KeyPress += InputEdit_KeyPress;
                 // 行级编辑由 EnterEditMode 在全部创建完成后统一聚焦首框，创建过程中不逐个转移焦点
                 if (!rowEditing) input.Focus();

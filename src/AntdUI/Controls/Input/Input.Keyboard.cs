@@ -24,6 +24,8 @@ namespace AntdUI
                         return Multiline && AcceptsTab && ((keyData & Keys.Control) == 0);
                     case Keys.Escape:
                         return AcceptsEscape;
+                    case Keys.Enter:
+                        return AcceptsEnter;
                     case Keys.Left:
                     case Keys.Right:
                     case Keys.Up:

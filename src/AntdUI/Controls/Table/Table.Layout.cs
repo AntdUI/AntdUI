@@ -749,13 +749,14 @@ namespace AntdUI
         {
             int use_width = rect.Width;
             float max_width = 0;
+            // 只记录“宽度已锁定”的列（显式设置宽度 / 拖拽后的宽度），其余列（auto）在 Fill 模式下参与剩余宽度分配
             var col_width_tmp = new Dictionary<int, int>(col_width.Count);
             foreach (var it in read_width)
             {
                 int columnWidth = GetColumnWidth(it.Key, rect.Width, use_width, null, it.Value, col_width, check_size, sort_size, gap2, out var is_use);
                 if (is_use) use_width -= columnWidth;
                 max_width += columnWidth;
-                col_width_tmp.Add(it.Key, columnWidth);
+                if (tmpcol_width.ContainsKey(it.Key) || col_width.ContainsKey(it.Key)) col_width_tmp.Add(it.Key, columnWidth);
             }
 
             Dictionary<int, int> width_cell;
@@ -775,18 +776,15 @@ namespace AntdUI
                     if (rect_read.Width > sum_width)
                     {
                         int tmpw = rect_read.Width - ex_width;
+                        //宽度锁定的列保持原值，其余列按比例分配剩余宽度
                         int fill_width = 0;
-                        foreach (var it in col_width_tmp) fill_width += it.Value;
-                        sum_width -= fill_width;
-                        int tw = tmpw - fill_width;
-                        //填充
-                        var percentage = new Dictionary<int, int>(width_cell.Count);
+                        var auto_columns = new List<int>(width_cell.Count);
                         foreach (var it in width_cell)
                         {
-                            if (col_width_tmp.TryGetValue(it.Key, out _)) percentage.Add(it.Key, it.Value);
-                            else percentage.Add(it.Key, (int)Math.Round(tw * (it.Value * 1.0 / sum_width)));
+                            if (col_width_tmp.TryGetValue(it.Key, out var locked)) fill_width += locked;
+                            else auto_columns.Add(it.Key);
                         }
-                        width_cell = percentage;
+                        DistributeProportionalWidths(tmpw - fill_width, auto_columns, width_cell, read_width, width_cell);
                     }
                     return width_cell;
                 }
@@ -925,6 +923,79 @@ namespace AntdUI
 
                 for (int i = 0; i < active.Count; i++)
                     result[active[i]] = width + (i < remainder ? 1 : 0);
+
+                break;
+            }
+        }
+
+        /// <summary>
+        /// 按当前宽度比例分配可用宽度（遵守 MinWidth / MaxWidth）
+        /// </summary>
+        /// <param name="availableWidth">可分配的总宽度</param>
+        /// <param name="columns">参与分配的列</param>
+        /// <param name="current">当前宽度（同时作为比例权重）</param>
+        /// <param name="readWidth">列的宽度信息</param>
+        /// <param name="result">结果</param>
+        void DistributeProportionalWidths(int availableWidth, List<int> columns, Dictionary<int, int> current, Dictionary<int, AutoWidth> readWidth, Dictionary<int, int> result)
+        {
+            if (columns.Count == 0 || availableWidth <= 0) return;
+
+            var active = new List<int>(columns);
+            var weights = new Dictionary<int, int>(columns.Count);
+            int weight = 0;
+            foreach (var index in columns)
+            {
+                weights.Add(index, current[index]);
+                weight += current[index];
+            }
+
+            int remainingWidth = availableWidth;
+            while (active.Count > 0)
+            {
+                bool constrained = false;
+
+                for (int i = active.Count - 1; i >= 0; i--)
+                {
+                    int index = active[i];
+                    int indexWeight = weights[index];
+                    var info = readWidth[index];
+                    int width = weight > 0 ? (int)Math.Round(remainingWidth * (indexWeight * 1.0 / weight)) : remainingWidth / active.Count;
+
+                    int? limit = null;
+                    if (info.MaxWidth.HasValue && width > info.MaxWidth.Value) limit = info.MaxWidth.Value;
+                    else if (info.MinWidth.HasValue && width < info.MinWidth.Value) limit = info.MinWidth.Value;
+
+                    if (limit.HasValue)
+                    {
+                        result[index] = limit.Value;
+                        remainingWidth -= limit.Value;
+                        weight -= indexWeight;
+                        active.RemoveAt(i);
+                        constrained = true;
+                    }
+                }
+
+                if (constrained) continue;
+
+                int assigned = 0;
+                for (int i = 0; i < active.Count; i++)
+                {
+                    int index = active[i];
+                    int width = weight > 0 ? (int)Math.Round(remainingWidth * (weights[index] * 1.0 / weight)) : remainingWidth / active.Count;
+                    result[index] = width;
+                    assigned += width;
+                }
+                //补偿舍入误差，避免留下空缝
+                int diff = remainingWidth - assigned;
+                if (diff != 0)
+                {
+                    int index = active[active.Count - 1];
+                    var info = readWidth[index];
+                    int width = result[index] + diff;
+                    if (info.MaxWidth.HasValue && width > info.MaxWidth.Value) width = info.MaxWidth.Value;
+                    if (info.MinWidth.HasValue && width < info.MinWidth.Value) width = info.MinWidth.Value;
+                    result[index] = width;
+                }
 
                 break;
             }
