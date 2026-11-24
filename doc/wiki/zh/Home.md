@@ -2,7 +2,7 @@
 
 > 基于 [dotnet Winforms](https://github.com/dotnet/winforms) 开发的界面库
 
-中文・[English](../en/Home.md)・[更新日志](UpdateLog.md)
+中文・[English](../en/Home.md)・[繁體](../zh-TW/Home.md)・[更新日志](UpdateLog.md)
 
 ## 🎯 指南
 
