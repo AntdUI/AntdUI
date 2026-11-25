@@ -42,6 +42,18 @@ namespace AntdUI
         public Control? PARENT;
         public Func<Keys, bool>? KeyCall;
 
+        /// <summary>
+        /// 所属多层级浮层会话（由 Helper.Mask / Drawer / Popover / Modal 统一创建）。
+        /// 所有 Z 序、焦点托管、动画世代号闸门都由会话集中处理，浮层自身不再 Activate()。
+        /// </summary>
+        internal LayeredWindowSession? Session;
+
+        /// <summary>当前会话世代号；无会话时恒为 0。</summary>
+        public int Generation => Session == null ? 0 : Session.Generation;
+
+        /// <summary>世代号闸门：无会话时保持旧行为（返回 true），不影响其它浮层。</summary>
+        public bool CanReveal(int gen) => Session == null || Session.CanReveal(gen);
+
         MessageHandler? messageHandler;
         public virtual void LoadMessage()
         {
@@ -203,6 +215,15 @@ namespace AntdUI
                 else return Win32.RenderResult.Skip;
             }
         }
+        /// <summary>
+        /// 揭示式渲染：全尺寸位图只生成一次，每帧仅改变目标区域 rect 与源裁剪起点 src。
+        /// 用于 Drawer 动画，避免每帧 new Bitmap 重画白底/圆角/阴影。
+        /// </summary>
+        public Win32.RenderResult Print(Bitmap bmp, Rectangle rect, Point src)
+        {
+            if (CanRender(out var handle)) return Render(handle, alpha, bmp, rect, src);
+            else return Win32.RenderResult.Skip;
+        }
         public Win32.RenderResult PrintCache(bool fore = false)
         {
             if (CanRender(out var handle))
@@ -219,6 +240,14 @@ namespace AntdUI
 
         public bool RenderCache = false;
         IntPtr hBitmap, oldBits;
+
+        /// <summary>位图内容变化时强制下次 Print 重新选入 HBITMAP（供 Drawer 全尺寸位图缓存使用）。</summary>
+        public void ResetRenderCache()
+        {
+            Win32.Render.Dispose(memDc, ref hBitmap, ref oldBits);
+            RenderCache = false;
+        }
+
         Win32.RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect)
         {
             if (InvokeRequired)
@@ -235,6 +264,24 @@ namespace AntdUI
             if (RenderCache) return Win32.Render.SetBits(memDc, rect, handle, alpha);
             RenderCache = true;
             return Win32.Render.SetBits(memDc, bmp, rect, handle, alpha, out hBitmap, out oldBits);
+        }
+        /// <summary>揭示式渲染的底层提交：源位图只选入一次，后续每帧仅更新 pptDst / pSize / pptSrc / alpha。</summary>
+        Win32.RenderResult Render(IntPtr handle, byte alpha, Bitmap bmp, Rectangle rect, Point src)
+        {
+            if (InvokeRequired)
+            {
+                try
+                {
+                    if (IsDisposed || Disposing) return Win32.RenderResult.Skip;
+                    if (RenderCache) return Invoke(() => Win32.Render.SetBits(memDc, rect, src, handle, alpha));
+                    RenderCache = true;
+                    return Invoke(() => Win32.Render.SetBits(memDc, bmp, rect, src, handle, alpha, out hBitmap, out oldBits));
+                }
+                catch { return Win32.RenderResult.Error; }
+            }
+            if (RenderCache) return Win32.Render.SetBits(memDc, rect, src, handle, alpha);
+            RenderCache = true;
+            return Win32.Render.SetBits(memDc, bmp, rect, src, handle, alpha, out hBitmap, out oldBits);
         }
         Win32.RenderResult Render(IntPtr handle, byte alpha, Rectangle rect)
         {
@@ -774,7 +821,7 @@ namespace AntdUI
         public void SetTopMost(Target? target, IntPtr hand, bool top = false) => SetTopMostCore(target.FindPARENT(), hand, top);
 
         LayeredFormPopover? popover;
-        void SetTopMostCore(Form? form, IntPtr hand, bool top = false)
+        internal void SetTopMostCore(Form? form, IntPtr hand, bool top = false)
         {
             if (top)
             {

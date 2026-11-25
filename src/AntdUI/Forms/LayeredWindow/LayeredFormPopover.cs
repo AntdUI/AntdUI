@@ -23,7 +23,14 @@ namespace AntdUI
         {
             config = _config;
             CloseMode = CloseMode.Click;
-            SetTopMost(config.Control, Handle);
+            var owner = config.Control.FindPARENT();
+            SetTopMostCore(owner, Handle);
+            if (owner != null)
+            {
+                bool topMost = owner.TopMost || (owner is ILayeredForm layeredOwner && layeredOwner.topMost);
+                Session = LayeredWindowSession.Create(owner, topMost);
+                Session.Attach(this, LayeredRole.Panel);
+            }
             SetDpi(config.Control);
             SetFont(config.Font ?? config.Control.Font);
             Font = FontMe;
@@ -184,7 +191,15 @@ namespace AntdUI
         {
             if (IsHandleCreated)
             {
-                if (config.Content is Control control) BeginInvoke(() => LoadContent(control));
+                if (config.Content is Control control)
+                {
+                    // 世代号闸门：淡入动画被打断时，撤不回的 BeginInvoke 不会再把真控件显示出来
+                    var gen = Generation;
+                    BeginInvoke(() =>
+                    {
+                        if (CanReveal(gen)) LoadContent(control);
+                    });
+                }
                 else base.LoadOK();
             }
             else base.LoadOK();
@@ -210,10 +225,12 @@ namespace AntdUI
                 FormBorderStyle = FormBorderStyle.None,
                 Bounds = new Rectangle(flocation, fsize),
                 MaximumSize = fsize,
-                MinimumSize = fsize
+                MinimumSize = fsize,
+                Session = Session
             };
             control.Disposed += Control_Disposed;
             form.Show(this);
+            Session?.Stack();
             PARENT = form;
             parent = control.FindPARENT();
             config.OnControlLoad?.Invoke();
@@ -281,6 +298,8 @@ namespace AntdUI
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            // 关闭动画开始即递增世代号并采样前台，不再依赖 owner.Activate() 补救
+            Session?.BeginClose();
             if (config.Content is Control control)
             {
                 if (config.OnClosing != null)
@@ -302,6 +321,8 @@ namespace AntdUI
 
         protected override void Dispose(bool disposing)
         {
+            // 兜底采样：直接 Dispose 未经过 OnFormClosing 时也要标记会话进入 Closing
+            Session?.BeginClose();
             tempContent?.Dispose();
             tempContent = null;
             if (parent != null) parent.VisibleChanged -= Parent_VisibleChanged;

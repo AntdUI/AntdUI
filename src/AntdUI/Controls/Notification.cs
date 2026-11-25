@@ -22,6 +22,8 @@ namespace AntdUI
         /// </summary>
         public static int? MaxCount { get; set; }
 
+        #region 窗口
+
         /// <summary>
         /// 成功通知
         /// </summary>
@@ -77,61 +79,60 @@ namespace AntdUI
         /// <param name="autoClose">自动关闭时间（秒）0等于不关闭</param>
         public static void open(Form form, string title, string text, TAlignFrom align = TAlignFrom.TR, Font? font = null, int? autoClose = null) => open(new Config(form, title, text, TType.None, align, font, autoClose));
 
+        #endregion
+
         /// <summary>
         /// Notification 通知提醒框
         /// </summary>
         /// <param name="config">配置</param>
-        public static void open(this Config config) => MsgQueue.Add(config);
+        public static void open(this Config config)
+        {
+            if (!config.Target.IsCreated(out var invoke, out var obj)) return;
+            if (obj == null) return;
+            obj.Invoke(new Action(() =>
+            {
+                string? idkey = null;
+                if (config.ID != null)
+                {
+                    idkey = "N:" + config.ID;
+                    // 同 ID：替换消息内容（高度变化联动刷新所有方向队列 Y）
+                    if (ILayeredFormAnimate.id_map.TryGetValue(idkey, out var exist) && exist is NotificationFrm frm && !frm.closing)
+                    {
+                        frm.Update(config);
+                        return;
+                    }
+                }
+                var from = new NotificationFrm(config, idkey);
+                from.IInit();
+                if (config.TopMost) from.Show();
+                else config.Target.Show(from);
+            }));
+        }
 
         /// <summary>
         /// 关闭全部
         /// </summary>
-        public static void close_all()
-        {
-            var close_list = new System.Collections.Generic.List<NotificationFrm>(10);
-            foreach (var it in ILayeredFormAnimate.list)
-            {
-                foreach (var item in it.Value)
-                {
-                    if (item is NotificationFrm notification) close_list.Add(notification);
-                }
-            }
-            if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.CloseMe();
-        }
+        public static void close_all() => ILayeredFormAnimate.CloseAll(nameof(Notification));
 
         /// <summary>
         /// 关闭指定id
         /// </summary>
-        public static void close_id(string id)
-        {
-            if (ILayeredFormAnimate.list.Count > 0 || MsgQueue.queue.Count > 0)
-            {
-                bool isadd = true;
-                var close_list = new System.Collections.Generic.List<NotificationFrm>();
-                foreach (var it in ILayeredFormAnimate.list)
-                {
-                    foreach (var item in it.Value)
-                    {
-                        if (item is NotificationFrm notification && notification.config.ID == id)
-                        {
-                            close_list.Add(notification);
-                            isadd = false;
-                        }
-                    }
-                }
-                if (isadd) MsgQueue.volley.Add("N" + id);
-                if (close_list.Count == 0) return;
-                foreach (var it in close_list) it.CloseMe();
-            }
-        }
+        public static void close_id(string id) => ILayeredFormAnimate.CloseId("N:" + id);
 
         /// <summary>
-        /// 判断通知ID是否存在队列
+        /// 判断通知ID是否显示中
         /// </summary>
         /// <param name="id">ID</param>
         /// <param name="time_expand">是否延长时间</param>
-        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("N" + id, time_expand);
+        public static bool contains(string id, bool time_expand = false)
+        {
+            if (ILayeredFormAnimate.id_map.TryGetValue("N:" + id, out var form))
+            {
+                if (time_expand) form.expand_requested = true;
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// 配置
@@ -626,11 +627,13 @@ namespace AntdUI
     {
         Font font_title;
         internal Notification.Config config;
+
         int shadow_size = 0;
         public NotificationFrm(Notification.Config _config, string? id)
         {
             config = _config;
-            Tag = id;
+            id_key = id;
+            if (id_key != null) ILayeredFormAnimate.id_map[id_key] = this;
             SetTopMost(config.Target, Handle, config.TopMost);
             SetDpi(config.Target);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
@@ -641,31 +644,14 @@ namespace AntdUI
             close_button = new ITaskOpacity(name, this);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            config.OnClose?.Invoke();
-            config.OnClose = null;
-            close_button.Dispose();
-            shadow_temp?.Dispose();
-            shadow_temp = null;
-            base.Dispose(disposing);
-        }
-
         public override string name => nameof(Notification);
         internal override TAlignFrom Align => config.Align;
-        internal override bool ActiveAnimation => false;
+        internal override int? MaxCount => Notification.MaxCount;
 
-        public bool IInit()
+        public void IInit()
         {
-            if (SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByNotification)) return true;
-            if (config.AutoClose > 0)
-            {
-                ITask.Run(() =>
-                {
-                    Sleep(config.AutoClose);
-                    CloseMe();
-                });
-            }
+            SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByNotification);
+            if (config.AutoClose > 0) StartAutoClose(config.AutoClose);
             // 播放声音
             if (config.EnableSound)
             {
@@ -679,8 +665,38 @@ namespace AntdUI
                 };
                 SystemSoundHelper.PlaySound(soundType);
             }
-            PlayAnimation();
-            return false;
+            PlayShow();
+        }
+
+        #region 更新
+
+        /// <summary>
+        /// 同 ID 弹出：替换内容（高度变化联动刷新所有方向队列 Y）
+        /// </summary>
+        internal void Update(Notification.Config _config)
+        {
+            config = _config;
+            var oldw = TargetRect.Width;
+            DisposeAnimation();
+            config.Target.SetFontConfig(config.Font, this);
+            font_title = config.FontTitle ?? FontMe.GetFont(1.14F, config.FontStyleTitle);
+            this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
+            SetPositionX(oldw);
+            gen++;
+            group?.Relayout();
+            Print(true);
+        }
+
+        #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            config.OnClose?.Invoke();
+            config.OnClose = null;
+            close_button.Dispose();
+            shadow_temp?.Dispose();
+            shadow_temp = null;
+            base.Dispose(disposing);
         }
 
         #region 渲染
@@ -694,13 +710,14 @@ namespace AntdUI
             Bitmap rbmp = new Bitmap(rect.Width, rect.Height);
             using (var g = Graphics.FromImage(rbmp).High(Dpi))
             {
-                using (var path = DrawShadow(g, rect, rect_read, out int radius))
+                var radius = (int)(config.Radius * Dpi);
+                using (var path = DrawShadow(g, rect, rect_read, out int r))
                 {
                     g.Fill(config.Back ?? Colour.BgElevated.Get(name), path);
-                    if (radius > -1)
+                    if (r > -1)
                     {
                         int bor = (int)(Dpi), bor2 = bor * 2;
-                        using (var path2 = new Rectangle(rect_read.X + bor, rect_read.Y + bor, rect_read.Width - bor2, rect_read.Height - bor2).RoundPath(radius))
+                        using (var path2 = new Rectangle(rect_read.X + bor, rect_read.Y + bor, rect_read.Width - bor2, rect_read.Height - bor2).RoundPath(r))
                         {
                             g.Draw(Colour.BorderColor.Get(name), bor, path2);
                         }
@@ -802,11 +819,13 @@ namespace AntdUI
             var size_desc = g.MeasureText(config.Text, FontMe, t_max_width);
             int width_title = (config.CloseIcon ? size_title.Width + close_size + sp : size_title.Width), width_desc = size_desc.Width;
             int max_width = width_desc > width_title ? width_desc : width_title;
+
+            int h;
             if (config.Icon == TType.None && config.IconCustom == null)
             {
                 rect_title = new Rectangle(shadow + paddingx, shadow + paddingy, max_width, size_title.Height);
 
-                int h = size_title.Height;
+                h = size_title.Height;
 
                 if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);
 
@@ -825,7 +844,7 @@ namespace AntdUI
                 rect_icon = new Rectangle(shadow + paddingx, shadow + paddingy, icon_size, icon_size);
                 rect_title = new Rectangle(rect_icon.X + rect_icon.Width + icon_sp, shadow + paddingy, max_width, icon_size);
 
-                int h = icon_size;
+                h = icon_size;
 
                 rect_txt = new Rectangle(rect_title.X, rect_title.Bottom + sp, rect_title.Width, size_desc.Height);
                 if (config.CloseIcon) rect_close = new Rectangle(rect_title.Right - close_size, rect_title.Y, close_size, close_size);

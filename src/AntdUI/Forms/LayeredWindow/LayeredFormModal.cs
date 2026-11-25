@@ -14,6 +14,9 @@ namespace AntdUI
 {
     internal class LayeredFormModal : Window, IEventListener, LayeredFormAsynLoad
     {
+        /// <summary>所属多层级浮层会话（由 ShowDialogMask / FormMask 统一创建并绑定）。</summary>
+        internal LayeredWindowSession? Session;
+
         internal Modal.Config config;
         Panel? panel_main;
         private readonly List<Button> navigationButtons = new List<Button>();
@@ -471,21 +474,7 @@ namespace AntdUI
             }
             if (config.Content is Control control) control.Dispose();
             Dispose();
-
-            if (config.ManualActivateParent)
-            {
-                // 在抽屉关闭后恢复主窗体的激活/置前
-                try
-                {
-                    var owner = config.Target.Parent();
-                    if (owner != null && owner.IsHandleCreated && owner.Visible)
-                    {
-                        if (owner.InvokeRequired) owner.BeginInvoke(new Action(() => owner.Activate()));
-                        else owner.Activate();
-                    }
-                }
-                catch { }
-            }
+            Session?.BeginClose();
         }
 
         DateTime old_now;

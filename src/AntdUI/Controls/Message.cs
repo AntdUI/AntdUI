@@ -152,57 +152,54 @@ namespace AntdUI
         /// Message 全局提示
         /// </summary>
         /// <param name="config">配置</param>
-        public static void open(this Config config) => MsgQueue.Add(config);
+        public static void open(this Config config)
+        {
+            if (!config.Target.IsCreated(out var invoke, out var obj)) return;
+            if (obj == null) return;
+            obj.Invoke(new Action(() =>
+            {
+                string? idkey = null;
+                if (config.ID != null)
+                {
+                    idkey = "M:" + config.ID;
+                    // 同 ID：替换消息内容（高度变化联动刷新所有方向队列 Y）
+                    if (ILayeredFormAnimate.id_map.TryGetValue(idkey, out var exist) && exist is MessageFrm frm && !frm.closing)
+                    {
+                        frm.Update(config);
+                        return;
+                    }
+                }
+                var from = new MessageFrm(config, idkey);
+                from.IInit();
+                if (config.TopMost) from.Show();
+                else config.Target.Show(from);
+            }));
+        }
 
         /// <summary>
         /// 关闭全部
         /// </summary>
-        public static void close_all()
-        {
-            var close_list = new System.Collections.Generic.List<MessageFrm>(10);
-            foreach (var it in ILayeredFormAnimate.list)
-            {
-                foreach (var item in it.Value)
-                {
-                    if (item is MessageFrm message) close_list.Add(message);
-                }
-            }
-            if (close_list.Count == 0) return;
-            foreach (var it in close_list) it.CloseMe();
-        }
+        public static void close_all() => ILayeredFormAnimate.CloseAll(nameof(Message));
 
         /// <summary>
         /// 关闭指定id
         /// </summary>
-        public static void close_id(string id)
-        {
-            if (ILayeredFormAnimate.list.Count > 0 || MsgQueue.queue.Count > 0)
-            {
-                bool isadd = true;
-                var close_list = new System.Collections.Generic.List<MessageFrm>();
-                foreach (var it in ILayeredFormAnimate.list)
-                {
-                    foreach (var item in it.Value)
-                    {
-                        if (item is MessageFrm message && message.config.ID == id)
-                        {
-                            close_list.Add(message);
-                            isadd = false;
-                        }
-                    }
-                }
-                if (isadd) MsgQueue.volley.Add("M" + id);
-                if (close_list.Count == 0) return;
-                foreach (var it in close_list) it.CloseMe();
-            }
-        }
+        public static void close_id(string id) => ILayeredFormAnimate.CloseId("M:" + id);
 
         /// <summary>
-        /// 判断提示ID是否存在队列
+        /// 判断提示ID是否显示中
         /// </summary>
         /// <param name="id">ID</param>
         /// <param name="time_expand">是否延长时间</param>
-        public static bool contains(string id, bool time_expand = false) => MsgQueue.contains("M" + id, time_expand);
+        public static bool contains(string id, bool time_expand = false)
+        {
+            if (ILayeredFormAnimate.id_map.TryGetValue("M:" + id, out var form))
+            {
+                if (time_expand) form.expand_requested = true;
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// 配置
@@ -610,7 +607,8 @@ namespace AntdUI
         public MessageFrm(Message.Config _config, string? id)
         {
             config = _config;
-            Tag = id;
+            id_key = id;
+            if (id_key != null) id_map[id_key] = this;
             SetTopMost(config.Target, Handle, config.TopMost);
             SetDpi(config.Target);
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
@@ -622,14 +620,18 @@ namespace AntdUI
 
         public override string name => nameof(Message);
         internal override TAlignFrom Align => config.Align;
-        internal override bool ActiveAnimation => false;
+        internal override int? MaxCount => Message.MaxCount;
 
         bool loading = false, loadingend = true;
         int AnimationLoadingValue = -1;
         AnimationTask? ThreadLoading;
-        public bool IInit()
+
+        /// <summary>
+        /// 初始化并立即显示（无队列）
+        /// </summary>
+        public void IInit()
         {
-            if (SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByMessage)) return true;
+            SetPosition(config.Target, config.ShowInWindow ?? Config.ShowInWindowByMessage);
             loadingend = false;
             ITask.Run(() =>
             {
@@ -664,11 +666,7 @@ namespace AntdUI
             }, () =>
             {
                 loadingend = true;
-                if (config.AutoClose > 0)
-                {
-                    Sleep(config.AutoClose);
-                    CloseMe();
-                }
+                if (config.AutoClose > 0) StartAutoClose(config.AutoClose);
             });
             // 播放声音
             if (config.EnableSound)
@@ -683,13 +681,27 @@ namespace AntdUI
                 };
                 SystemSoundHelper.PlaySound(soundType);
             }
-            PlayAnimation();
-            return false;
+            PlayShow();
         }
 
-        public override void RunLoading()
+        /// <summary>
+        /// 替换消息内容（高度变化后联动刷新所有方向队列 Y）
+        /// </summary>
+        internal void Update(Message.Config _config)
         {
-            base.RunLoading();
+            config = _config;
+            var oldw = TargetRect.Width;
+            DisposeAnimation();
+            this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
+            SetPositionX(oldw);
+            gen++;
+            group?.Relayout();
+            Print(true);
+        }
+
+        internal override void AfterShow()
+        {
+            base.AfterShow();
             if (loading)
             {
                 if (loadingend) return;
@@ -714,7 +726,9 @@ namespace AntdUI
             {
                 DisposeAnimation();
                 this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
-                SetPositionCenter(oldw);
+                SetPositionX(oldw);
+                group?.Relayout();
+                Print(true);
                 return false;
             }
             else return true;

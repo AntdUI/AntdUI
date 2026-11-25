@@ -448,6 +448,7 @@ namespace AntdUI
                 }
             }
             if (it.has_sub) PaintArrow(g, it, brush.Color);
+            it.Val.PaintBadge(FontMe, it.Rect, g, ColorScheme, name);
         }
         void PaintIcon(Canvas g, OMenuItem it, Color fore)
         {

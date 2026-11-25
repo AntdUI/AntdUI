@@ -40,6 +40,18 @@ namespace AntdUI
                 var r = SetBits(memDc, rect, intPtr, alpha);
                 return r;
             }
+            /// <summary>揭示式渲染：首次选入全尺寸位图，并指定源裁剪起点。</summary>
+            public static RenderResult SetBits(IntPtr memDc, Bitmap? bmp, Rectangle rect, Point src, IntPtr intPtr, byte alpha, out IntPtr hBitmap, out IntPtr oldBits)
+            {
+                if (bmp == null || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.DontCare)
+                {
+                    hBitmap = oldBits = IntPtr.Zero;
+                    return RenderResult.Invalid;
+                }
+                hBitmap = bmp.GetHbitmap(Color.FromArgb(0));
+                oldBits = SelectObject(memDc, hBitmap);
+                return SetBits(memDc, rect, src, intPtr, alpha);
+            }
             public static bool Dispose(IntPtr memDc, ref IntPtr hBitmap, ref IntPtr oldBits)
             {
                 if (hBitmap == IntPtr.Zero) return false;
@@ -48,11 +60,18 @@ namespace AntdUI
                 hBitmap = IntPtr.Zero;
                 return true;
             }
+            /// <summary>旧重载：源裁剪起点恒为 (0,0)，行为保持不变。</summary>
             public static RenderResult SetBits(IntPtr memDc, Rectangle rect, IntPtr intPtr, byte alpha)
+                => SetBitsCore(memDc, rect.X, rect.Y, rect.Width, rect.Height, 0, 0, intPtr, alpha);
+
+            /// <summary>揭示式渲染：只改 pptDst / pSize / pptSrc / alpha 四个整数，不重新生成位图。</summary>
+            public static RenderResult SetBits(IntPtr memDc, Rectangle rect, Point src, IntPtr intPtr, byte alpha) => SetBitsCore(memDc, rect.X, rect.Y, rect.Width, rect.Height, src.X, src.Y, intPtr, alpha);
+
+            static RenderResult SetBitsCore(IntPtr memDc, int x, int y, int w, int h, int srcX, int srcY, IntPtr intPtr, byte alpha)
             {
                 try
                 {
-                    var srcLoc = new Win32Point(0, 0);
+                    var srcLoc = new Win32Point(srcX, srcY);
                     var blendFunc = new BLENDFUNCTION
                     {
                         BlendOp = AC_SRC_OVER,
@@ -60,8 +79,8 @@ namespace AntdUI
                         AlphaFormat = AC_SRC_ALPHA,
                         BlendFlags = 0
                     };
-                    var topLoc = new Win32Point(rect.X, rect.Y);
-                    var topSize = new Win32Size(rect.Width, rect.Height);
+                    var topLoc = new Win32Point(x, y);
+                    var topSize = new Win32Size(w, h);
                     UpdateLayeredWindow(intPtr, screenDC, ref topLoc, ref topSize, memDc, ref srcLoc, 0, ref blendFunc, ULW_ALPHA);
                 }
                 catch { return RenderResult.Error; }

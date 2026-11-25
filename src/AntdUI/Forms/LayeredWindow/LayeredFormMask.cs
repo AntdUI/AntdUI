@@ -21,7 +21,6 @@ namespace AntdUI
         public LayeredFormMask(Form _owner) : base(240)
         {
             owner = _owner;
-            TopMost = _owner.TopMost;
             SetDpi(_owner);
             HasBor = owner.FormFrame(out Radius, out Bor);
             if (owner is Window window)
@@ -41,7 +40,6 @@ namespace AntdUI
             owner = _owner;
             control = _control;
             SetDpi(_owner, _control);
-            TopMost = _owner.TopMost;
             var point = _control.PointToScreen(Point.Empty);
             SetSize(_control.Size);
             SetLocation(point);
@@ -194,12 +192,12 @@ namespace AntdUI
         public override void IClosing()
         {
             base.IClosing();
-            if (owner.InvokeRequired) owner.BeginInvoke(new Action(() => owner.Activate()));
-            else owner.Activate();
+            Session?.BeginClose();
         }
 
         protected override void Dispose(bool disposing)
         {
+            Session?.BeginClose();
             if (list == null) owner.VisibleChanged -= Parent_VisibleChanged;
             else
             {

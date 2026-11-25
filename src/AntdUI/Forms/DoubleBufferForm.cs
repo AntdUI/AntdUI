@@ -31,6 +31,15 @@ namespace AntdUI
             ShowInTaskbar = false;
         }
 
+        /// <summary>所属多层级浮层会话；句柄创建后自动注册为 Content 层并触发一次 Z 序重排。</summary>
+        internal LayeredWindowSession? Session;
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            Session?.Attach(this, LayeredRole.Content);
+        }
+
         #region 无焦点窗体
 
         protected override bool ShowWithoutActivation => UFocus;

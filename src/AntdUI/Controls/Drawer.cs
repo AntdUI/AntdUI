@@ -46,24 +46,35 @@ namespace AntdUI
                 if (config.Form.InvokeRequired) return ITask.Invoke(config.Form, new Func<Form?>(() => open(config)));
                 if (config.Mask)
                 {
-                    var mask = new LayeredFormMask(config.Form);
+                    // 统一会话：Mask（底）→ Drawer 面板（中）→ DoubleBufferForm（顶）
+                    var session = LayeredWindowSession.Create(config.Form, config.Form.TopMost);
+                    var mask = new LayeredFormMask(config.Form) { Session = session };
+                    session.Attach(mask, LayeredRole.Mask);
                     mask.Show(config.Form);
-                    var frm = new LayeredFormDrawer(config, mask);
+                    var frm = new LayeredFormDrawer(config, mask, session);
+                    session.Attach(frm, LayeredRole.Panel);
                     ITask.Run(() =>
                     {
                         if (config.DisplayDelay > 0) System.Threading.Thread.Sleep(config.DisplayDelay);
-                        if (frm.isclose) return;
+                        if (frm.isclose) { frm.Abort(); return; }
                         config.Form.BeginInvoke(new Action(() =>
                         {
+                            // 二次校验：延迟期间可能已被打断（世代号已递增）
+                            if (frm.isclose) { frm.Abort(); return; }
                             frm.Show(mask);
+                            session.MarkOpen();
                         }));
                     });
                     return frm;
                 }
                 else
                 {
-                    var frm = new LayeredFormDrawer(config);
+                    var session = LayeredWindowSession.Create(config.Form, config.Form.TopMost);
+                    var frm = new LayeredFormDrawer(config, null, session);
+                    frm.Session = session;
+                    session.Attach(frm, LayeredRole.Panel);
                     frm.Show(config.Form);
+                    session.MarkOpen();
                     return frm;
                 }
             }
@@ -94,25 +105,38 @@ namespace AntdUI
                     {
                         if (config.Mask)
                         {
+                            var session = LayeredWindowSession.Create(config.Form, config.Form.TopMost);
                             var mask = ITask.Invoke(config.Form, new Func<LayeredFormMask>(() =>
                             {
-                                var mask = new LayeredFormMask(config.Form);
-                                mask.Show(config.Form);
-                                return mask;
+                                var m = new LayeredFormMask(config.Form);
+                                m.Session = session;
+                                session.Attach(m, LayeredRole.Mask);
+                                m.Show(config.Form);
+                                return m;
                             }));
-                            var frm = ITask.Invoke(config.Form, new Func<LayeredFormDrawer>(() => new LayeredFormDrawer(config, mask!)));
+                            var frm = ITask.Invoke(config.Form, new Func<LayeredFormDrawer>(() =>
+                            {
+                                var f = new LayeredFormDrawer(config, mask!, session);
+                                session.Attach(f, LayeredRole.Panel);
+                                return f;
+                            }));
                             if (config.DisplayDelay > 0) System.Threading.Thread.Sleep(config.DisplayDelay);
-                            if (frm!.isclose) return config;
+                            if (frm!.isclose) { frm.Abort(); resetEvent.Set(); return config; }
                             config.Form.BeginInvoke(new Action(() =>
                             {
+                                if (frm.isclose) { frm.Abort(); resetEvent.Set(); return; }
                                 frm.Show(mask);
+                                session.MarkOpen();
                                 frm.FormClosed += (a, b) => resetEvent.Set();
                             }));
                         }
                         else
                         {
-                            var frm = new LayeredFormDrawer(config);
+                            var session = LayeredWindowSession.Create(config.Form, config.Form.TopMost);
+                            var frm = new LayeredFormDrawer(config, null, session);
+                            session.Attach(frm, LayeredRole.Panel);
                             frm.Show(config.Form);
+                            session.MarkOpen();
                             frm.FormClosed += (a, b) => resetEvent.Set();
                         }
                         resetEvent.Wait();
@@ -204,7 +228,7 @@ namespace AntdUI
             /// <summary>
             /// 显示延迟
             /// </summary>
-            public int DisplayDelay { get; set; } = 100;
+            public int DisplayDelay { get; set; }
 
             #region 设置
 

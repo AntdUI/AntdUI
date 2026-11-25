@@ -254,11 +254,6 @@ namespace AntdUI
         public static int NoticeWindowOffsetXY { get; set; }
 
         /// <summary>
-        /// 通知满溢关闭
-        /// </summary>
-        public static bool NoticeOverflowClose { get; set; }
-
-        /// <summary>
         /// 文本呈现的质量
         /// </summary>
         public static System.Drawing.Text.TextRenderingHint? TextRenderingHint { get; set; }
