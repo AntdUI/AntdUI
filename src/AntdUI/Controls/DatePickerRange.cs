@@ -142,6 +142,12 @@ namespace AntdUI
             }
         }
 
+        public string[]? ValueToStrings()
+        {
+            if (_value == null) return null;
+            else return new string[] { _value[0].ToString(Format), _value[1].ToString(Format) };
+        }
+
         void SetText(DateTime[]? value)
         {
             if (value == null) Text = string.Empty;

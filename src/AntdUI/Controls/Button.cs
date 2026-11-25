@@ -2234,6 +2234,7 @@ namespace AntdUI
             {
                 return this.GDI(g =>
                 {
+                    Size result;
                     var text = toggle ? (ToggleText ?? Text) : Text;
                     var font_size = MeasureText(g, text, out int txt_height);
                     int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Dpi), wave2 = wave;
@@ -2241,7 +2242,7 @@ namespace AntdUI
                     if (Shape == TShape.Circle || string.IsNullOrEmpty(text) || displayStyle == TButtonDisplayStyle.Image)
                     {
                         int s = height + wave + gap;
-                        return new Size(s, s);
+                        result = new Size(s, s);
                     }
                     else
                     {
@@ -2252,24 +2253,25 @@ namespace AntdUI
                         {
                             int sp = (int)(txt_height * icongap);
                             int y = gap + wave, x = y + wave2 + (icon_size + sp) * 2;
-                            if (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom) return new Size(font_size.Width + y, font_size.Height + x);
-                            else return new Size(font_size.Width + x, height + y);
+                            if (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom) result = new Size(font_size.Width + y, font_size.Height + x);
+                            else result = new Size(font_size.Width + x, height + y);
                         }
                         else if (has_icon)
                         {
                             int sp = (int)(txt_height * icongap);
                             int y = gap + wave, x = y + wave2 + icon_size + sp;
-                            if (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom) return new Size(font_size.Width + y, font_size.Height + x);
-                            else return new Size(font_size.Width + x, height + y);
+                            if (IconPosition == TAlignMini.Top || IconPosition == TAlignMini.Bottom) result = new Size(font_size.Width + y, font_size.Height + x);
+                            else result = new Size(font_size.Width + x, height + y);
                         }
                         else if (showArrow)
                         {
                             int sp = (int)(txt_height * icongap);
                             int y = gap + wave, x = y + wave2 + icon_size + sp;
-                            return new Size(font_size.Width + x, height + y);
+                            result = new Size(font_size.Width + x, height + y);
                         }
-                        return new Size(font_size.Width + gap + wave + wave2, height + gap + wave);
+                        else result = new Size(font_size.Width + gap + wave + wave2, height + gap + wave);
                     }
+                    return result.DeflateSize(Padding);
                 });
             }
         }

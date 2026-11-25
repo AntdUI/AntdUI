@@ -63,6 +63,8 @@ namespace AntdUI
             }
         }
 
+        public string? ValueToString() => _value.HasValue ? _value.Value.ToString(Format) : null;
+
         void SetText(DateTime? value) => Text = value.HasValue ? value.Value.ToString(Format) : string.Empty;
 
         /// <summary>

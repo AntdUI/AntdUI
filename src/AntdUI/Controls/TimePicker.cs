@@ -49,6 +49,8 @@ namespace AntdUI
             }
         }
 
+        public string? ValueToString() => _value.HasValue ? new DateTime(1997, 1, 1, _value.Value.Hours, _value.Value.Minutes, _value.Value.Seconds).ToString(Format) : null;
+
         void SetText(TimeSpan? value) => Text = value.HasValue ? new DateTime(1997, 1, 1, value.Value.Hours, value.Value.Minutes, value.Value.Seconds).ToString(Format) : string.Empty;
 
         /// <summary>

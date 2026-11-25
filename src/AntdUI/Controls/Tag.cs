@@ -163,6 +163,91 @@ namespace AntdUI
             }
         }
 
+        TShape shape = TShape.Default;
+        /// <summary>
+        /// 形状
+        /// </summary>
+        [Description("形状"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(TShape.Default)]
+        public TShape Shape
+        {
+            get => shape;
+            set
+            {
+                if (shape == value) return;
+                shape = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(Shape));
+            }
+        }
+
+        int? virtualWidth;
+        /// <summary>
+        /// 虚拟宽度
+        /// </summary>
+        [Description("虚拟宽度"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
+        public int? VirtualWidth
+        {
+            get => virtualWidth;
+            set
+            {
+                if (virtualWidth == value) return;
+                virtualWidth = value;
+                Invalidate();
+                OnPropertyChanged(nameof(VirtualWidth));
+            }
+        }
+
+        bool textCenterHasIcon = false;
+        /// <summary>
+        /// 文本居中显示(包含图标后)
+        /// </summary>
+        [Description("文本居中显示(包含图标后)"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
+        public bool TextCenterHasIcon
+        {
+            get => textCenterHasIcon;
+            set
+            {
+                if (textCenterHasIcon == value) return;
+                textCenterHasIcon = value;
+                if (HasImage) Invalidate();
+                OnPropertyChanged(nameof(TextCenterHasIcon));
+            }
+        }
+
+        float iconratio = .7F;
+        /// <summary>
+        /// 图标比例
+        /// </summary>
+        [Description("图标比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.7F)]
+        public float IconRatio
+        {
+            get => iconratio;
+            set
+            {
+                if (iconratio == value) return;
+                iconratio = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(IconRatio));
+            }
+        }
+
+        float icongap = .25F;
+        /// <summary>
+        /// 图标与文字间距比例
+        /// </summary>
+        [Description("图标与文字间距比例"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(.25F)]
+        public float IconGap
+        {
+            get => icongap;
+            set
+            {
+                if (icongap == value) return;
+                icongap = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(IconGap));
+            }
+        }
+
         bool closeIcon = false;
         /// <summary>
         /// 是否显示关闭图标
@@ -331,8 +416,9 @@ namespace AntdUI
         {
             var g = e.Canvas;
             var rect_read = ReadRectangle;
-            if (backImage != null) g.Image(rect_read, backImage, backFit, radius, false);
-            float _radius = radius * Dpi;
+            if (rect_read.Width == 0 || rect_read.Height == 0) return;
+            float _radius = GetRadius(rect_read);
+            if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
             Color _fore, _back, _bor;
             switch (type)
             {
@@ -370,8 +456,7 @@ namespace AntdUI
             }
             if (fore.HasValue) _fore = fore.Value;
             if (back.HasValue) _back = back.Value;
-            if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, false);
-            using (var path = rect_read.RoundPath(_radius))
+            using (var path = ((RectangleF)rect_read).RoundPath(_radius, shape))
             {
                 #region 绘制背景
 
@@ -391,6 +476,7 @@ namespace AntdUI
         internal void PaintText(Canvas g, string? text, Color color, Rectangle rect_read)
         {
             var font_size = g.MeasureText(text ?? Config.NullText, Font);
+            if (virtualWidth.HasValue) font_size.Width = virtualWidth.Value;
             if (text == null)
             {
                 if (PaintImageNoText(g, color, font_size, rect_read))
@@ -408,20 +494,63 @@ namespace AntdUI
             }
             else
             {
-                bool right = RightToLeft == RightToLeft.Yes;
-                var rect = ReadRectangle.IconRect(font_size.Height, HasImage, closeIcon, right, false);
-                rect_close = rect.r;
-                if (closeIcon)
+                // 与 Button 对齐：按图标比例/间距计算文本、图标、关闭图标的区域
+                int txt_height = g.MeasureText(Config.NullText, Font).Height;
+                var iconPosition = RightToLeft == RightToLeft.Yes ? TAlignMini.Right : TAlignMini.Left;
+                Rectangle rect_text, rectClose = Rectangle.Empty;
+                if (HasImage && closeIcon)
                 {
-                    if (hover_close.Animation) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name).A, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name)), .8F);
-                    else if (hover_close.Switch) g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
-                    else g.PaintIconCore(rect.r, SvgDb.IcoErrorGhost, Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
+                    rect_text = Button.RectAlignLR(g, txt_height, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l, out var rect_r);
+                    rectClose = rect_r;
+                    PaintImage(g, color, rect_l);
                 }
-                PaintImage(g, color, rect.l);
+                else if (HasImage)
+                {
+                    rect_text = Button.RectAlignL(g, txt_height, textMultiLine, textCenterHasIcon, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_l);
+                    PaintImage(g, color, rect_l);
+                }
+                else if (closeIcon)
+                {
+                    rect_text = Button.RectAlignR(g, txt_height, textMultiLine, Font, iconPosition, iconratio, icongap, font_size, rect_read, out var rect_r);
+                    rectClose = rect_r;
+                }
+                else
+                {
+                    int sps = (int)(txt_height * .4F), sps2 = sps * 2;
+                    rect_text = new Rectangle(rect_read.X + sps, rect_read.Y + sps, rect_read.Width - sps2, rect_read.Height - sps2);
+                }
+                rect_close = rectClose;
+                PaintTextAlign(rect_read, ref rect_text);
+                if (closeIcon) PaintClose(g, rectClose);
                 using (var brush = new SolidBrush(color))
                 {
-                    g.DrawText(text, Font, brush, rect.text, sf);
+                    g.DrawText(text, Font, brush, rect_text, sf);
                 }
+            }
+        }
+
+        void PaintClose(Canvas g, Rectangle rect)
+        {
+            if (hover_close.Animation) g.PaintIconCore(rect, SvgDb.IcoErrorGhost, Helper.ToColor(hover_close.Value + Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name).A, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name)), .8F);
+            else if (hover_close.Switch) g.PaintIconCore(rect, SvgDb.IcoErrorGhost, Colour.Text.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
+            else g.PaintIconCore(rect, SvgDb.IcoErrorGhost, Colour.TextQuaternary.Get(ColorScheme, nameof(AntdUI.Tag), Name), .8F);
+        }
+
+        void PaintTextAlign(Rectangle rect_read, ref Rectangle rect_text)
+        {
+            switch (textAlign)
+            {
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.MiddleRight:
+                    rect_text.Y = rect_read.Y;
+                    rect_text.Height = rect_read.Height;
+                    break;
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.TopRight:
+                case ContentAlignment.TopCenter:
+                    rect_text.Height = rect_read.Height - rect_text.Y;
+                    break;
             }
         }
 
@@ -494,17 +623,18 @@ namespace AntdUI
 
         #endregion
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding, Dpi, borderWidth / 2F).ReadRect(0, shape, TJoinMode.None, false, false);
 
         public override GraphicsPath RenderRegion
         {
             get
             {
                 var rect_read = ReadRectangle;
-                float _radius = radius * Dpi;
-                return rect_read.RoundPath(_radius);
+                return ((RectangleF)rect_read).RoundPath(GetRadius(rect_read), shape);
             }
         }
+
+        float GetRadius(Rectangle rect_read) => (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Dpi;
 
         #endregion
 
@@ -587,6 +717,13 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        protected override void OnPaddingChanged(EventArgs e)
+        {
+            BeforeAutoSize();
+            Invalidate();
+            base.OnPaddingChanged(e);
+        }
+
         public override Size GetPreferredSize(Size proposedSize)
         {
             switch (autoSize)
@@ -605,10 +742,21 @@ namespace AntdUI
                 return this.GDI(g =>
                 {
                     var font_size = g.MeasureText(Text ?? Config.NullText, Font);
+                    if (virtualWidth.HasValue) font_size.Width = virtualWidth.Value;
+                    int txt_height = g.MeasureText(Config.NullText, Font).Height;
+                    int icon_size = (int)(txt_height * iconratio), sp = (int)(txt_height * icongap);
                     int count = 0;
                     if (HasImage) count++;
                     if (closeIcon) count++;
-                    return new Size(font_size.Width + (int)(14F * Dpi) + (font_size.Height * count), font_size.Height + (int)(8F * Dpi));
+                    int width = font_size.Width + (int)(14F * Dpi) + (icon_size + sp) * count;
+                    int height = Math.Max(font_size.Height, icon_size) + (int)(8F * Dpi);
+                    if (shape == TShape.Circle)
+                    {
+                        int s = Math.Max(width, height);
+                        width = height = s;
+                    }
+                    // 与 Button / Label 保持一致：自动大小时把 Padding 边距计算在内
+                    return new Size(width, height).DeflateSize(Padding);
                 });
             }
         }
