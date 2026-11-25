@@ -2,7 +2,7 @@
 
 > Interface library based on [dotnet Winforms](https://github.com/dotnet/winforms)
 
-[中文](../zh/Home.md)・English・[UpdateLog](UpdateLog.md)
+[中文](../zh/Home.md)・English・[繁體](../zh-TW/Home.md)・[UpdateLog](UpdateLog.md)
 
 ## 🎯 Guide
 
