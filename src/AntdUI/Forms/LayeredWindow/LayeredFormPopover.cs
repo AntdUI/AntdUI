@@ -52,7 +52,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+                        using (var fontTitle = FontMe.GetFontBold())
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle, cw);
                             h = sizeTitle.Height + sp + ch;
@@ -93,7 +93,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+                        using (var fontTitle = FontMe.GetFontBold())
                         {
                             var sizeTitle = g.MeasureString(config.Title, fontTitle);
 
@@ -139,7 +139,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+                        using (var fontTitle = FontMe.GetFontBold())
                         {
                             Size sizeTitle = g.MeasureText(config.Title, fontTitle), sizeContent = g.MeasureText(content, FontMe);
                             int w = sizeContent.Width > sizeTitle.Width ? sizeContent.Width : sizeTitle.Width, h = sizeTitle.Height + sp + sizeContent.Height;
@@ -359,7 +359,7 @@ namespace AntdUI
             {
                 using (var brush = new SolidBrush(config.Fore ?? Colour.Text.Get(config.ColorScheme, name)))
                 {
-                    using (var fontTitle = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+                    using (var fontTitle = FontMe.GetFontBold())
                     {
                         g.DrawText(config.Title, fontTitle, brush, rectTitle, stringLeft);
                     }

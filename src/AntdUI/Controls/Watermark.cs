@@ -429,7 +429,7 @@ namespace AntdUI
             {
                 int contentHeight = h, subContentHeight = 0, spacing = (int)(4 * Dpi); // 主内容和副内容之间的间距
                                                                                        // 如果有副内容，计算实际需要的空间
-                using (var subFont = new Font(Font.FontFamily, Font.Size * config.SubFontSize, Font.Style))
+                using (var subFont = Font.GetFont(config.SubFontSize))
                 {
                     Size mainSize = g.MeasureText(config.Content, font, w, config.TextAlign), subSize = g.MeasureText(config.SubContent, subFont, w, config.TextAlign);
 

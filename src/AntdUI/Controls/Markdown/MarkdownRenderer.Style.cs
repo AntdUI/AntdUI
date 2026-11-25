@@ -758,29 +758,20 @@ namespace AntdUI
         {
             if (font_ok) return;
             font_ok = true;
-            var family = Font.FontFamily;
-            float size = Font.Size;
-            fontBold = new Font(family, size, FontStyle.Bold);
-            fontItalic = new Font(family, size, FontStyle.Italic);
-            fontBoldItalic = new Font(family, size, FontStyle.Bold | FontStyle.Italic);
-            fontSub = new Font(family, size * 0.75F);
-            fontSup = new Font(family, size * 0.75F);
-            fontH1 = new Font(family, size * 2F, FontStyle.Bold);
-            fontH2 = new Font(family, size * 1.5F, FontStyle.Bold);
-            fontH3 = new Font(family, size * 1.25F, FontStyle.Bold);
-            fontH4 = new Font(family, size * 1.1F, FontStyle.Bold);
-            fontH5 = new Font(family, size, FontStyle.Bold);
-            fontH6 = new Font(family, size * 0.92F, FontStyle.Bold);
-            if (codeFont != null)
-            {
-                fontCode = (Font)codeFont.Clone();
-                fontCodeBold = new Font(codeFont, codeFont.Style | FontStyle.Bold);
-            }
-            else
-            {
-                fontCode = new Font(FontFamily.GenericMonospace, size * 0.85F);
-                fontCodeBold = new Font(FontFamily.GenericMonospace, size * 0.85F, FontStyle.Bold);
-            }
+            fontBold = new Font(Font, FontStyle.Bold);
+            fontItalic = new Font(Font, FontStyle.Italic);
+            fontBoldItalic = new Font(Font, FontStyle.Bold | FontStyle.Italic);
+            fontSub = Font.GetFont(0.75F);
+            fontSup = Font.GetFont(0.75F);
+            fontH1 = Font.GetFontBold(2F);
+            fontH2 = Font.GetFontBold(1.5F);
+            fontH3 = Font.GetFontBold(1.25F);
+            fontH4 = Font.GetFontBold(1.1F);
+            fontH5 = new Font(Font, FontStyle.Bold);
+            fontH6 = Font.GetFontBold(0.92F);
+            if (codeFont != null) fontCode = (Font)codeFont.Clone();
+            else fontCode = Font.GetFont(0.85F, FontFamily.GenericMonospace);
+            fontCodeBold = new Font(fontCode, FontStyle.Bold);
         }
 
         void DisposeFont()

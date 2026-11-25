@@ -317,7 +317,7 @@ namespace AntdUI
         {
             if (bold)
             {
-                using (var fontb = new Font(font, FontStyle.Bold))
+                using (var fontb = font.GetFontBold())
                 {
                     PaintFore(g, text, fontb, color, rect);
                 }

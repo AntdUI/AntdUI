@@ -713,7 +713,7 @@ namespace AntdUI
 
             if (UseTitleFont)
             {
-                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
+                using (var fontTitle = Font.GetFont(1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
                     IPaint(g, e.Rect, rect, MeasureString(g, Text, Font), iconratio ?? 1.36F, fontTitle, fore, forebase, foreSecondary, fillSecondary);
                 }
@@ -799,7 +799,7 @@ namespace AntdUI
             var size = MeasureString(g, Text ?? Config.NullText, Font);
             if (UseTitleFont)
             {
-                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
+                using (var fontTitle = Font.GetFont(1.44F, UseTextBold ? FontStyle.Bold : Font.Style))
                 {
                     var sizeTitle = g.MeasureText(Text, fontTitle);
                     rect.X += IPaintS(g, rect, size, iconratio ?? 1.36F) / 2;

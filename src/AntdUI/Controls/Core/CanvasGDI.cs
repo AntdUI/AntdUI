@@ -822,7 +822,7 @@ namespace AntdUI.Core
                     else Svg(svg, rect_ico);
                     return false;
                 }
-                tmp_font ??= new Font(Config.EmojiFont, font.Size);
+                tmp_font ??= font.GetFont(Config.EmojiFont);
                 String(it.txt, tmp_font, brush, rect_ico, FormatFlags.Center | FormatFlags.NoWrap);
                 return false;
             }

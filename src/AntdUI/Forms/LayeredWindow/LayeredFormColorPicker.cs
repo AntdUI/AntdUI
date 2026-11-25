@@ -38,7 +38,7 @@ namespace AntdUI
             else
             {
                 Dfont = true;
-                SetFont(new Font(control.Font.FontFamily, control.Font.Size * control.DropDownFontRatio));
+                SetFont(control.Font.GetFont(control.DropDownFontRatio));
             }
             mode = control.Mode;
             if (control.Trigger == Trigger.Hover) CloseMode = CloseMode.Leave;
@@ -71,7 +71,7 @@ namespace AntdUI
             if (config.FontRatio != 1F && config.Font == null)
             {
                 Dfont = true;
-                SetFont(new Font(Font.FontFamily, Font.Size * config.FontRatio));
+                SetFont(Font.GetFont(config.FontRatio));
             }
             mode = config.Mode;
             color_alpha = Value = ValueDefault = config.Value ?? Style.Db.Primary;

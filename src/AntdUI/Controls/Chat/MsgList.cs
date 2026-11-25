@@ -115,8 +115,8 @@ namespace AntdUI.Chat
             var g = e.Canvas;
             int sy = ScrollBar.Value, radius = (int)Math.Ceiling(IconRadius * Dpi);
             g.TranslateTransform(0, -sy);
-            using (var font_text = new Font(Font.FontFamily, Font.Size * .9F))
-            using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
+            using (var font_text = Font.GetFontBold(.9F))
+            using (var font_time = Font.GetFontBold(.82F))
             {
                 foreach (var it in items) PaintItem(g, it, e.Rect, sy, font_text, font_time, radius);
             }
@@ -383,7 +383,7 @@ namespace AntdUI.Chat
                     desc_height = (int)Math.Round(item_height * .157),
                     image_size = item_height - gap * 2;
 
-                using (var font_time = new Font(Font.FontFamily, Font.Size * .82F))
+                using (var font_time = Font.GetFontBold(.82F))
                 {
                     foreach (MsgItem it in items)
                     {

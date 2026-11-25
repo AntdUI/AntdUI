@@ -479,7 +479,7 @@ namespace AntdUI
             {
                 if (it.RightText != null) { has_rightText = true; break; }
             }
-            if (has_rightText) FontRight = new Font(FontMe.FontFamily, FontMe.Size * .8F);
+            if (has_rightText) FontRight = FontMe.GetFont(.8F);
 
             int sp = (int)Dpi, padd = (int)(text_height * .18F), padd2 = padd * 2, gap_x = (int)(DPadding.Width * Dpi), gap_y = (int)(DPadding.Height * Dpi),
             icon_size = (int)(text_height * IconRatio), icon_gap = (int)(text_height * IconGap), item_height = text_height + gap_y * 2, icon_xy = (item_height - icon_size) / 2,

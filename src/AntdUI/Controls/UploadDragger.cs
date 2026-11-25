@@ -369,7 +369,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
+                        using (var font_desc = Font.GetFont(.875F))
                         {
                             var size_desc = g.MeasureText(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;
@@ -402,7 +402,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var font_desc = new Font(Font.FontFamily, Font.Size * .875F))
+                        using (var font_desc = Font.GetFont(.875F))
                         {
                             var size_desc = g.MeasureText(TextDesc, font_desc, rect.Width - gap2);
                             int th = sp + gap + icon_size + size.Height + size_desc.Height, y = rect.Y + (rect.Height - th) / 2;

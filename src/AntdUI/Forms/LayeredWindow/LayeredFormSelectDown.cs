@@ -501,7 +501,7 @@ namespace AntdUI
         {
             if (font_real == null)
             {
-                using (var font = new Font(FontMe, FontStyle.Bold))
+                using (var font = FontMe.GetFontBold())
                 {
                     DrawTextIconSelectCore(g, it, fore, foreSub, font);
                 }
@@ -596,7 +596,7 @@ namespace AntdUI
                 int maxw, maxwr;
                 if (autoWidth)
                 {
-                    using (var font = new Font(FontMe, FontStyle.Bold))
+                    using (var font = FontMe.GetFontBold())
                     {
                         maxw = ItemMaxWidth(g, font, items, text_height, icon_size, icon_gap, gap_x);
                         maxwr = maxw + gap_x2;
@@ -722,7 +722,7 @@ namespace AntdUI
         }
         void ItemMaxWidth2(Canvas g, IList<object> items)
         {
-            using (var font = new Font(FontMe, FontStyle.Bold))
+            using (var font = FontMe.GetFontBold())
             {
                 foreach (var item in items)
                 {

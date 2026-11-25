@@ -286,7 +286,7 @@ namespace AntdUI
                 {
                     int gap = (int)(Gap * Dpi), split = (!milestoneMode ? 1 : milestoneTimelineThickness) * (int)Dpi;
                     var _splits = new List<RectangleF>(items!.Count);
-                    using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
+                    using (var font_description = Font.GetFont(0.875F))
                     {
                         int gap2 = gap * 2;
                         int i = 0, ri = 0, count = 0;
@@ -454,7 +454,7 @@ namespace AntdUI
             using (var brush_fore2 = new SolidBrush(Colour.TextTertiary.Get(ColorScheme, nameof(Steps), Name)))
             using (var brush_fore3 = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Steps), Name)))
             using (var brush_bg2 = new SolidBrush(Colour.FillSecondary.Get(ColorScheme, nameof(Steps), Name)))
-            using (var font_description = new Font(Font.FontFamily, Font.Size * 0.875F))
+            using (var font_description = Font.GetFont(0.875F))
             {
                 using (var brush_split = new SolidBrush(Colour.Split.Get(ColorScheme, nameof(Steps), Name)))
                 {
@@ -571,7 +571,7 @@ namespace AntdUI
                         }
                         if (PaintIcon(g, it, !milestoneMode ? ccolor : it.ForeColor ?? Color.White, i == current))
                         {
-                            using (var font_Id = new Font(Font.FontFamily, Font.Size * 1.5F))
+                            using (var font_Id = Font.GetFont(1.5F))
                             {
                                 if (i == current)
                                 {

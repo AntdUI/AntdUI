@@ -211,7 +211,7 @@ namespace AntdUI
                 Padding = new Padding(paddingx, paddingy, paddingx, paddingy);
                 if (panel_main != null) panel_main.Height = butt_h;
 
-                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
+                using (var fontTitle = Font.GetFontBold(1.14F))
                 {
                     int icon_size = g.MeasureString(Config.NullText, fontTitle).Height;
                     if (config.Content is Control control)
@@ -546,7 +546,7 @@ namespace AntdUI
             }
             using (var brush = new SolidBrush(Colour.Text.Get(config.ColorScheme, nameof(AntdUI.Modal))))
             {
-                using (var fontTitle = new Font(Font.FontFamily, Font.Size * 1.14F, FontStyle.Bold))
+                using (var fontTitle = Font.GetFontBold(1.14F))
                 {
                     g.DrawText(config.Title, fontTitle, brush, rectTitle, stringLeft);
                 }

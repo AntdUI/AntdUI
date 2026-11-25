@@ -570,7 +570,7 @@ namespace AntdUI
         void PrintYear(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = Font.GetFontBold())
             {
                 if (hover_year.Animation) g.String(year_str, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_year_l);
                 else if (hover_year.Switch) g.String(year_str, font, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name), rect_year_l);
@@ -621,7 +621,7 @@ namespace AntdUI
         void PrintMonth(Canvas g, Rectangle rect_read, int radius, List<Calendari> datas)
         {
             var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = Font.GetFontBold())
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
                 if (hover_year.Animation) g.String(yearStr, font, color_fore.BlendColors(hover_year.Value, Colour.Primary.Get(ColorScheme, nameof(Calendar), Name)), rect_month_l);
@@ -677,7 +677,7 @@ namespace AntdUI
         {
             if (rect_day_s == null) return;
             var color_fore = fore ?? Colour.TextBase.Get(ColorScheme, nameof(Calendar), Name);
-            using (var font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+            using (var font = Font.GetFontBold())
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
 
@@ -718,7 +718,7 @@ namespace AntdUI
                 {
                     if (chinese)
                     {
-                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
+                        using (var font4 = Font.GetFontBold(.76F))
                         {
                             using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Calendar), Name)))
                             {
@@ -744,7 +744,7 @@ namespace AntdUI
                 {
                     if (chinese)
                     {
-                        using (var font4 = new Font(Font.FontFamily, Font.Size * .76F, Font.Style))
+                        using (var font4 = Font.GetFontBold(.76F))
                         {
                             using (var brush_fore_c = new SolidBrush(Colour.TextSecondary.Get(ColorScheme, nameof(Calendar), Name)))
                             {

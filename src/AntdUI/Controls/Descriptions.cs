@@ -735,7 +735,7 @@ namespace AntdUI
             string? title_str = Title;
             if (!string.IsNullOrEmpty(title_str))
             {
-                using (var font_title = new Font(Font.FontFamily, Font.Size * titleFontRatio, Font.Style | FontStyle.Bold))
+                using (var font_title = Font.GetFontAddBold(titleFontRatio))
                 {
                     int tw = rect.Width > 0 && rect.Width < 100000 ? rect.Width - pad_h * 2 : 9999;
                     if (tw < 10) tw = 10;
@@ -1089,7 +1089,7 @@ namespace AntdUI
 
             if (layout.RectTitle.Width > 0)
             {
-                using (var font_title = new Font(Font.FontFamily, Font.Size * titleFontRatio, Font.Style | FontStyle.Bold))
+                using (var font_title = Font.GetFontAddBold(titleFontRatio))
                 {
                     using (var brush = new SolidBrush(enabled ? (titleFore ?? Colour.TextBase.Get(ColorScheme, nameof(Descriptions), Name)) : Colour.TextQuaternary.Get(ColorScheme, nameof(Descriptions), Name)))
                     {

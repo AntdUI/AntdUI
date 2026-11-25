@@ -1323,7 +1323,7 @@ namespace AntdUI
             if (badegConfig.BadgeSvg != null)
             {
                 int hasx = (int)(badegConfig.BadgeOffsetX * g.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * g.Dpi);
-                using (var font = new Font(Font.FontFamily, Font.Size * badegConfig.BadgeSize))
+                using (var font = Font.GetFont(badegConfig.BadgeSize))
                 {
                     var size_badge = g.MeasureString(Config.NullText, font).Height;
                     var rect_badge = PaintBadge(Rect, badegConfig.BadgeAlign, hasx, hasy, size_badge, size_badge);
@@ -1337,7 +1337,7 @@ namespace AntdUI
                 var rect = Rect;
                 float borsize = g.Dpi;
                 if (badegConfig.BadgeBorderWidth.HasValue) borsize = badegConfig.BadgeBorderWidth.Value * g.Dpi;
-                using (var font = new Font(Font.FontFamily, Font.Size * badegConfig.BadgeSize))
+                using (var font = Font.GetFont(badegConfig.BadgeSize))
                 {
                     int hasx = (int)(badegConfig.BadgeOffsetX * g.Dpi), hasy = (int)(badegConfig.BadgeOffsetY * g.Dpi);
                     if (string.IsNullOrWhiteSpace(badegConfig.Badge))
@@ -1395,7 +1395,7 @@ namespace AntdUI
         {
             var color = badge.Fill ?? control.BadgeBack ?? Colour.Error.Get(control.ColorScheme, nameof(Badge), control.Name);
             float Dpi = control.Dpi, borsize = Dpi;
-            using (var font = new Font(control.Font.FontFamily, control.Font.Size * badge.Size))
+            using (var font = control.Font.GetFont(badge.Size))
             {
                 int hasx = (int)(badge.OffsetX * Dpi), hasy = (int)(badge.OffsetY * Dpi);
                 if (string.IsNullOrWhiteSpace(badge.Content))

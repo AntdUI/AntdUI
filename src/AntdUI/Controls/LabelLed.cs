@@ -603,7 +603,7 @@ namespace AntdUI
                     {
                         if (GraphemeSplitter.IsEmoji(ntype, txt))
                         {
-                            if (fontEmoji == null) fontEmoji = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
+                            if (fontEmoji == null) fontEmoji = Font.GetFont(EmojiFont ?? Config.EmojiFont);
                             using (var bmp = new Bitmap(size, size))
                             {
                                 using (var g = Graphics.FromImage(bmp).HighLay(Dpi))

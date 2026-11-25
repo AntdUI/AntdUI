@@ -25,7 +25,7 @@ namespace AntdUI
             }
             if (columnfont == null)
             {
-                using (var column_font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold))
+                using (var column_font = Font.GetFontBold())
                 {
                     PaintTable(g, rows.List, e.Rect, e.Rect.PaddingRect(Padding, Dpi, borderWidth / 2F), column_font);
                 }

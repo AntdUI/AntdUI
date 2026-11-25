@@ -486,7 +486,7 @@ namespace AntdUI
                     }
                     else
                     {
-                        using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
+                        using (var font_title = Font.GetFont(1.14F))
                         {
                             var size_title = g.MeasureText(TextTitle, font_title);
                             int icon_size = (int)(size_title.Height * 1.2F), gap = (int)(icon_size * .5F);
@@ -567,7 +567,7 @@ namespace AntdUI
                         }
                         else
                         {
-                            using (var font_title = new Font(Font.FontFamily, Font.Size * 1.14F, Font.Style))
+                            using (var font_title = Font.GetFont(1.14F))
                             {
                                 int icon_size = (int)(sizeT.Height * (iconratio ?? 1.2F)), gap = (int)(icon_size * (icongap ?? .5F));
 

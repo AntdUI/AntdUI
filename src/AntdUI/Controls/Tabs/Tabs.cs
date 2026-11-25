@@ -624,7 +624,7 @@ namespace AntdUI
                 var color = page.BadgeBack ?? Colour.Error.Get(ColorScheme, nameof(Tabs), Name);
                 using (var brush_fore = new SolidBrush(Colour.ErrorColor.Get(ColorScheme, nameof(Tabs), Name)))
                 {
-                    using (var font = new Font(Font.FontFamily, Font.Size * page.BadgeSize))
+                    using (var font = Font.GetFont(page.BadgeSize))
                     {
                         if (string.IsNullOrEmpty(page.Badge) || page.Badge == "" || page.Badge == " ")
                         {

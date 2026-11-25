@@ -1280,7 +1280,7 @@ namespace AntdUI
                     else targetStyle &= ~FontStyle.Bold;
 
                     // 仅当样式确实变化时才创建新字体，减少无意义的对象开销
-                    if (targetStyle != baseFont.Style) createdFont = new Font(baseFont.FontFamily, baseFont.Size, targetStyle);
+                    if (targetStyle != baseFont.Style) createdFont = new Font(baseFont.FontFamily, baseFont.Size, targetStyle, baseFont.Unit);
                 }
 
                 using var _ = createdFont; // 自动释放创建的字体，null不影响

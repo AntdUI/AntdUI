@@ -176,7 +176,7 @@ namespace AntdUI
             {
                 icon = new Bitmap(size, size);
                 icon_active = new Bitmap(size, size);
-                using (var font = new Font(Font.FontFamily, size, Font.Style))
+                using (var font = new Font(Font.FontFamily, size, Font.Style, GraphicsUnit.Pixel))
                 {
                     var font_size = g.MeasureString(character, font);
                     int bmp_size = (font_size.Width > font_size.Height ? font_size.Width : font_size.Height);

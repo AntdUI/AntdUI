@@ -255,7 +255,7 @@ namespace AntdUI
         void PrintYear(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+            using (var font = FontMe.GetFontBold())
             {
                 g.String(year_str, font, color_fore, rect_year2.Rect);
             }
@@ -304,7 +304,7 @@ namespace AntdUI
         void PrintMonth(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+            using (var font = FontMe.GetFontBold())
             {
                 string yearStr = _Date.ToString(YearFormat, Culture);
                 if (rect_year2.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year2.Rect);
@@ -355,7 +355,7 @@ namespace AntdUI
         void PrintDay(Canvas g, GraphicsState state, Rectangle rect_read, List<ItemCalendari> datas)
         {
             var color_fore = Colour.TextBase.Get(ColorScheme, name, cname);
-            using (var font = new Font(FontMe.FontFamily, FontMe.Size, FontStyle.Bold))
+            using (var font = FontMe.GetFontBold())
             {
                 string yearStr = _Date.ToString(YearFormat, Culture), monthStr = _Date.ToString(MonthFormat, Culture);
                 if (rect_year.Hover) g.String(yearStr, font, Colour.Primary.Get(ColorScheme, name, cname), rect_year.Rect, s_f_L);

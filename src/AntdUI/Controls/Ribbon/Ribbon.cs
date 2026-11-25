@@ -309,7 +309,7 @@ namespace AntdUI
             if (f_tab_bold == null) f_tab_bold = new Font(Font.FontFamily, 8F, FontStyle.Bold);
             // Group-title font: bold, one point larger than the ribbon's base font so the label row
             // reads as a section heading rather than a fine-print footnote.
-            if (f_group == null) f_group = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
+            if (f_group == null) f_group = Font.GetFontBold();
             if (f_large == null) f_large = new Font(Font.FontFamily, 7.5F, FontStyle.Regular);
             if (f_small == null) f_small = new Font(Font.FontFamily, 8F, FontStyle.Regular);
         }

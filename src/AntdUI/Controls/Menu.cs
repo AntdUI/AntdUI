@@ -1435,7 +1435,7 @@ namespace AntdUI
             {
                 fontRight?.Dispose();
                 fontRightBase = font;
-                fontRight = new Font(font.FontFamily, font.Size * .8F, font.Style);
+                fontRight = font.GetFont(.8F);
             }
             return fontRight;
         }

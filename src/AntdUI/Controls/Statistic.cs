@@ -250,7 +250,7 @@ namespace AntdUI
             var rect = ClientRectangle.PaddingRectNoDpi(Padding, bor / 2F);
             var size = g.MeasureString(Config.NullText, Font);
             int gap = (int)(size.Height * 0.18F), gap2 = gap * 2, gapbig = gap * gap;
-            using (var font = new Font(Font.FontFamily.Name, Font.Size * 2.2F))
+            using (var font = Font.GetFont(2.2F))
             {
                 var text = this.GetLangI(LocalizationText, Text);
                 Size size_text = g.MeasureString(text, Font), size_value = g.MeasureString(Value, font);

@@ -353,7 +353,7 @@ namespace AntdUI
                 else if (IsRTL) PaintTextRTL(g, tmp, fore, _fore);
                 else if (HasEmoji)
                 {
-                    using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
+                    using (var font = Font.GetFont(EmojiFont ?? Config.EmojiFont))
                     {
                         foreach (var it in tmp)
                         {
@@ -386,7 +386,7 @@ namespace AntdUI
                     var it = tmp[i];
                     if (it.emoji)
                     {
-                        if (emojiFont == null) emojiFont = new Font(EmojiFont ?? Config.EmojiFont, Font.Size);
+                        if (emojiFont == null) emojiFont = Font.GetFont(EmojiFont ?? Config.EmojiFont);
                         if (SvgDb.Emoji.TryGetValue(it.text, out var svg)) g.Svg(svg, it.rect, fore_color);
                         else StringEmoji(g, it.text, emojiFont, it, fore);
                         i++;

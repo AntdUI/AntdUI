@@ -231,7 +231,7 @@ namespace AntdUI
                     }
                     else if (it is ContextMenuStripItemDivider divider) list.Add(new InRect(divider).SetContinue());
                 }
-                if (has_subText) FontSub = new Font(FontMe.FontFamily, FontMe.Size * .8F);
+                if (has_subText) FontSub = FontMe.GetFont(.8F);
 
                 #endregion
 
@@ -491,7 +491,7 @@ namespace AntdUI
                     }
                     else if (it.Tag is ContextMenuStripItemButtons item_buttons)
                     {
-                        using (var font_mini = new Font(FontMe.FontFamily, FontMe.Size * item_buttons.FontRatio))
+                        using (var font_mini = FontMe.GetFont(item_buttons.FontRatio))
                         {
                             foreach (var btn in it.RectBtns!)
                             {

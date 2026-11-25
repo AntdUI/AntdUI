@@ -360,7 +360,7 @@ namespace AntdUI.Chat
             PaintTextSelected(g, text);
             if (text.HasEmoji)
             {
-                using (var font = new Font(EmojiFont ?? Config.EmojiFont, Font.Size))
+                using (var font = Font.GetFont(EmojiFont ?? Config.EmojiFont))
                 {
                     foreach (var it in text.cache_font)
                     {

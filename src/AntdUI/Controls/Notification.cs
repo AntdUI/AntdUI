@@ -636,7 +636,7 @@ namespace AntdUI
             if (Config.ShadowEnabled) shadow_size = (int)(Config.ShadowSize * Dpi);
             config.Target.SetFontConfig(config.Font, this);
             config.Target.SetIcon(this);
-            font_title = config.FontTitle ?? new Font(FontMe.FontFamily, FontMe.Size * 1.14F, config.FontStyleTitle ?? FontMe.Style);
+            font_title = config.FontTitle ?? FontMe.GetFont(1.14F, config.FontStyleTitle);
             this.GDI(g => SetSize(RenderMeasure(g, shadow_size)));
             close_button = new ITaskOpacity(name, this);
         }

@@ -214,5 +214,62 @@ namespace AntdUI
         public static float GetDpi(uint dpiX, uint dpiY) => Math.Max(dpiX, dpiY) / 96F;
         public static float GetDpi(int dpiX, int dpiY) => Math.Max(dpiX, dpiY) / 96F;
         public static float GetDpi(float dpiX, float dpiY) => Math.Max(dpiX, dpiY) / 96F;
+
+        /// <summary>
+        /// 获取缩放字体
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="ratio">缩放比例</param>
+        public static Font GetFont(this Font font, float ratio) => new Font(font.FontFamily, font.Size * ratio, font.Style, font.Unit);
+
+        /// <summary>
+        /// 获取缩放字体
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="ratio">缩放比例</param>
+        /// <param name="fontStyle">字体样式</param>
+        public static Font GetFont(this Font font, float ratio, FontStyle? fontStyle) => new Font(font.FontFamily, font.Size * ratio, fontStyle ?? font.Style, font.Unit);
+
+        /// <summary>
+        /// 获取缩放字体
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="family">字体族</param>
+        public static Font GetFont(this Font font, string family) => new Font(family, font.Size, font.Style, font.Unit);
+
+        /// <summary>
+        /// 获取缩放字体
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="family">字体族</param>
+        public static Font GetFont(this Font font, FontFamily family) => new Font(family, font.Size, font.Style, font.Unit);
+
+        /// <summary>
+        /// 获取缩放字体
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="ratio">缩放比例</param>
+        /// <param name="family">字体族</param>
+        public static Font GetFont(this Font font, float ratio, FontFamily family) => new Font(family, font.Size * ratio, font.Style, font.Unit);
+
+        /// <summary>
+        /// 获取字体（粗体）
+        /// </summary>
+        /// <param name="font">基字体</param>
+        public static Font GetFontBold(this Font font) => new Font(font, FontStyle.Bold);
+
+        /// <summary>
+        /// 获取缩放字体（粗体）
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="ratio">缩放比例</param>
+        public static Font GetFontBold(this Font font, float ratio) => new Font(font.FontFamily, font.Size * ratio, FontStyle.Bold, font.Unit);
+
+        /// <summary>
+        /// 获取缩放字体（附加粗体）
+        /// </summary>
+        /// <param name="font">基字体</param>
+        /// <param name="ratio">缩放比例</param>
+        public static Font GetFontAddBold(this Font font, float ratio) => new Font(font.FontFamily, font.Size * ratio, font.Style | FontStyle.Bold, font.Unit);
     }
 }
