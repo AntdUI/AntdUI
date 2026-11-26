@@ -68,6 +68,8 @@ Input 输入框 👚
 **Round** | 圆角样式 | bool | false |
 ||||
 **AcceptsTab** | 多行编辑是否允许输入制表符 | bool | false |
+**AcceptsEscape** | 是否允许输入退出键 | bool | false |
+**AcceptsEnter** | 是否允许输入回车键 | bool | false |
 **AdapterSystemMnemonic** | 适配系统助记词 | bool | false |
 **LineHeight** | 多行行高 | int | 0 |
 **Lines** | 多行文本集合 | string[] | 
@@ -79,7 +81,6 @@ Input 输入框 👚
 **SuffixWidth** | 后缀宽度 | int`?` | `null` |
 **WordWrap** | 自动换行 | bool | true |
 ||||
-**AcceptsEscape** | 多行编辑是否允许输入退出键 | bool | false |
 **CaretColor** | 光标颜色 | Color`?` | `null` |
 **CaretSpeed** | 光标速度 | int | 1000 |
 **HandShortcutKeys** | 处理快捷键 `已过时` | bool | true |

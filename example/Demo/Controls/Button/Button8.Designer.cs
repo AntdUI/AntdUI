@@ -31,6 +31,8 @@ namespace Demo.Controls
             b1 = new AntdUI.Button();
             b2 = new AntdUI.Button();
             b3 = new AntdUI.Button();
+            vpanel = new FlowLayoutPanel();
+            vpanel.SuspendLayout();
             SuspendLayout();
             // 
             // b1
@@ -42,6 +44,7 @@ namespace Demo.Controls
             b1.IconHoverSvg = "SmileFilled";
             b1.IconSvg = "SmileOutlined";
             b1.Location = new Point(0, 0);
+            b1.Margin = new Padding(0);
             b1.Name = "b1";
             b1.Size = new Size(36, 36);
             b1.TabIndex = 1;
@@ -57,6 +60,7 @@ namespace Demo.Controls
             b2.IconHoverSvg = "SmileFilled";
             b2.IconSvg = "SmileOutlined";
             b2.Location = new Point(36, 0);
+            b2.Margin = new Padding(0);
             b2.Name = "b2";
             b2.Size = new Size(36, 36);
             b2.TabIndex = 2;
@@ -72,22 +76,33 @@ namespace Demo.Controls
             b3.Dock = DockStyle.Left;
             b3.IconSvg = "StarOutlined";
             b3.Location = new Point(72, 0);
+            b3.Margin = new Padding(0);
             b3.Name = "b3";
             b3.Size = new Size(36, 36);
             b3.TabIndex = 3;
             b3.ToggleIconSvg = "StarFilled";
             b3.ToggleType = AntdUI.TTypeMini.Warn;
             // 
+            // vpanel
+            // 
+            vpanel.AutoScroll = true;
+            vpanel.Controls.Add(b1);
+            vpanel.Controls.Add(b2);
+            vpanel.Controls.Add(b3);
+            vpanel.Dock = DockStyle.Fill;
+            vpanel.Location = new Point(0, 0);
+            vpanel.Name = "vpanel";
+            vpanel.Size = new Size(700, 40);
+            vpanel.TabIndex = 0;
+            // 
             // Button8
             // 
-            AutoScroll = true;
-            Controls.Add(b3);
-            Controls.Add(b2);
-            Controls.Add(b1);
+            Controls.Add(vpanel);
             Name = "Button8";
-            Size = new Size(612, 60);
+            Size = new Size(700, 40);
+            vpanel.ResumeLayout(false);
+            vpanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -95,5 +110,6 @@ namespace Demo.Controls
         private AntdUI.Button b1;
         private AntdUI.Button b2;
         private AntdUI.Button b3;
+        private FlowLayoutPanel vpanel;
     }
 }

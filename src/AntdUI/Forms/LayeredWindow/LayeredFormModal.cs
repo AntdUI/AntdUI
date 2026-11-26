@@ -64,7 +64,6 @@ namespace AntdUI
                     Location = new Point(304, 0),
                     Name = "btn_ok",
                     Size = new Size(64, butt_h),
-                    WaveSize = 4,
                     TabIndex = 0,
                     Type = config.OkType,
                     Text = config.OkText
@@ -84,7 +83,6 @@ namespace AntdUI
                         Location = new Point(240, 0),
                         Name = "btn_no",
                         Size = new Size(64, butt_h),
-                        WaveSize = 4,
                         TabIndex = 1,
                         Text = config.CancelText
                     };
@@ -113,7 +111,6 @@ namespace AntdUI
                             AutoSizeMode = TAutoSize.Width,
                             Dock = DockStyle.Right,
                             Size = new Size(64, butt_h),
-                            WaveSize = 4,
                             Name = btn.Name,
                             Text = btn.Text,
                             Type = btn.Type,

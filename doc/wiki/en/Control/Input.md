@@ -67,6 +67,8 @@ Name | Description | Type | Default Value |
 **Round** | Rounded corner style | bool | false |
 ||||
 **AcceptsTab** | Does multi line editing allow the input of tab characters | bool | false |
+**AcceptsEscape** | Whether allows input of Escape key | bool | false |
+**AcceptsEnter** | Whether allows input of Enter key | bool | false |
 **AdapterSystemMnemonic** | Adapt to system mnemonics | bool | false |
 **LineHeight** | Multi row height | int | 0 |
 **Lines** | Multi-line text collection | string[] | 
@@ -78,7 +80,6 @@ Name | Description | Type | Default Value |
 **SuffixWidth** | Suffix width | int`?` | `null` |
 **WordWrap** | Auto wrap | bool | true |
 ||||
-**AcceptsEscape** | Whether multi-line editing allows input of Escape key | bool | false |
 **CaretColor** | Caret color | Color`?` | `null` |
 **CaretSpeed** | Caret speed | int | 1000 |
 **HandShortcutKeys** | Handle shortcut keys `Obsolete` | bool | true |

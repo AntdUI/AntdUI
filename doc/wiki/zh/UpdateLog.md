@@ -1,5 +1,17 @@
 [首页](Home.md)・[更新日志](UpdateLog.md)・[配置](Config.md)・[主题](Theme.md)
 
+### `2.4.21` 2026-11-26
+
+- ➕ Tag 对齐 Button 大部分属性
+- ➕ DatePicker/TimePicker 新增 ValueToString 方法
+- ➕ Input 新增 AcceptsEnter
+- ✍️ 优化 Drawer/Popover/Modal 的 Z 层级
+- ✍️ 修复 Menu 下拉弹出徽标遗漏
+- ✍️ 修复 Table 最后一列固定列宽不正确
+- ✍️ 修复 Table 编辑不刷新
+- ✍️ 统一字体单位
+- 🧹 重构 Message/Notification
+
 ### `2.4.20` 2026-11-20
 
 > 🎉 NET 11.0

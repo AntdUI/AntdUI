@@ -33,14 +33,16 @@ namespace Demo.Controls
             b4 = new AntdUI.Button();
             b5 = new AntdUI.Button();
             b6 = new AntdUI.Button();
+            vpanel = new FlowLayoutPanel();
+            vpanel.SuspendLayout();
             SuspendLayout();
             // 
             // b1
             // 
             b1.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b1.BorderWidth = 1F;
-            b1.Dock = DockStyle.Left;
             b1.Location = new Point(0, 0);
+            b1.Margin = new Padding(0);
             b1.Name = "b1";
             b1.Size = new Size(111, 36);
             b1.TabIndex = 1;
@@ -52,8 +54,8 @@ namespace Demo.Controls
             // 
             b2.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b2.BorderWidth = 1F;
-            b2.Dock = DockStyle.Left;
             b2.Location = new Point(111, 0);
+            b2.Margin = new Padding(0);
             b2.Name = "b2";
             b2.Size = new Size(109, 36);
             b2.TabIndex = 2;
@@ -63,9 +65,9 @@ namespace Demo.Controls
             // b3
             // 
             b3.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b3.Dock = DockStyle.Left;
             b3.Ghost = true;
             b3.Location = new Point(220, 0);
+            b3.Margin = new Padding(0);
             b3.Name = "b3";
             b3.Size = new Size(91, 36);
             b3.TabIndex = 3;
@@ -75,9 +77,9 @@ namespace Demo.Controls
             // b4
             // 
             b4.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b4.Dock = DockStyle.Left;
             b4.Ghost = true;
             b4.Location = new Point(311, 0);
+            b4.Margin = new Padding(0);
             b4.Name = "b4";
             b4.Size = new Size(90, 36);
             b4.TabIndex = 4;
@@ -89,8 +91,8 @@ namespace Demo.Controls
             // 
             b5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b5.BorderWidth = 1F;
-            b5.Dock = DockStyle.Left;
             b5.Location = new Point(401, 0);
+            b5.Margin = new Padding(0);
             b5.Name = "b5";
             b5.Size = new Size(109, 36);
             b5.TabIndex = 5;
@@ -102,9 +104,9 @@ namespace Demo.Controls
             // 
             b6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b6.BorderWidth = 1F;
-            b6.Dock = DockStyle.Left;
             b6.Ghost = true;
             b6.Location = new Point(510, 0);
+            b6.Margin = new Padding(0);
             b6.Name = "b6";
             b6.Size = new Size(112, 36);
             b6.TabIndex = 6;
@@ -112,19 +114,29 @@ namespace Demo.Controls
             b6.Type = AntdUI.TTypeMini.Error;
             b6.Click += btn_Click;
             // 
+            // vpanel
+            // 
+            vpanel.AutoScroll = true;
+            vpanel.Controls.Add(b1);
+            vpanel.Controls.Add(b2);
+            vpanel.Controls.Add(b3);
+            vpanel.Controls.Add(b4);
+            vpanel.Controls.Add(b5);
+            vpanel.Controls.Add(b6);
+            vpanel.Dock = DockStyle.Fill;
+            vpanel.Location = new Point(0, 0);
+            vpanel.Name = "vpanel";
+            vpanel.Size = new Size(700, 40);
+            vpanel.TabIndex = 0;
+            // 
             // Button1
             // 
-            AutoScroll = true;
-            Controls.Add(b6);
-            Controls.Add(b5);
-            Controls.Add(b4);
-            Controls.Add(b3);
-            Controls.Add(b2);
-            Controls.Add(b1);
+            Controls.Add(vpanel);
             Name = "Button1";
-            Size = new Size(629, 60);
+            Size = new Size(700, 40);
+            vpanel.ResumeLayout(false);
+            vpanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -135,5 +147,6 @@ namespace Demo.Controls
         private AntdUI.Button b4;
         private AntdUI.Button b5;
         private AntdUI.Button b6;
+        private FlowLayoutPanel vpanel;
     }
 }

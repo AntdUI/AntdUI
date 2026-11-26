@@ -36,7 +36,9 @@ namespace Demo.Controls
             b7 = new AntdUI.Button();
             b8 = new AntdUI.Button();
             gridPanel1 = new AntdUI.GridPanel();
+            vpanel = new FlowLayoutPanel();
             gridPanel1.SuspendLayout();
+            vpanel.SuspendLayout();
             SuspendLayout();
             // 
             // b1
@@ -95,13 +97,13 @@ namespace Demo.Controls
             // 
             b5.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b5.BorderWidth = 1F;
-            b5.Dock = DockStyle.Left;
             b5.IconPosition = AntdUI.TAlignMini.Top;
             b5.IconSvg = "SearchOutlined";
             b5.LoadingWaveCount = 4;
             b5.LoadingWaveSize = 6;
             b5.LoadingWaveVertical = true;
             b5.Location = new Point(204, 0);
+            b5.Margin = new Padding(0);
             b5.Name = "b5";
             b5.Size = new Size(59, 55);
             b5.TabIndex = 5;
@@ -113,13 +115,13 @@ namespace Demo.Controls
             // 
             b6.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b6.BorderWidth = 1F;
-            b6.Dock = DockStyle.Left;
             b6.IconPosition = AntdUI.TAlignMini.Bottom;
             b6.IconSvg = "SearchOutlined";
             b6.LoadingWaveCount = 4;
             b6.LoadingWaveSize = 6;
             b6.LoadingWaveVertical = true;
             b6.Location = new Point(263, 0);
+            b6.Margin = new Padding(0);
             b6.Name = "b6";
             b6.Size = new Size(59, 55);
             b6.TabIndex = 6;
@@ -131,13 +133,13 @@ namespace Demo.Controls
             // 
             b7.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b7.BorderWidth = 1F;
-            b7.Dock = DockStyle.Left;
             b7.IconPosition = AntdUI.TAlignMini.Top;
             b7.IconSvg = "SearchOutlined";
             b7.LoadingWaveCount = 4;
             b7.LoadingWaveSize = 6;
             b7.LoadingWaveVertical = true;
             b7.Location = new Point(322, 0);
+            b7.Margin = new Padding(0);
             b7.Name = "b7";
             b7.Size = new Size(59, 55);
             b7.TabIndex = 7;
@@ -148,13 +150,13 @@ namespace Demo.Controls
             // 
             b8.AutoSizeMode = AntdUI.TAutoSize.Auto;
             b8.BorderWidth = 1F;
-            b8.Dock = DockStyle.Left;
             b8.IconPosition = AntdUI.TAlignMini.Bottom;
             b8.IconSvg = "SearchOutlined";
             b8.LoadingWaveCount = 4;
             b8.LoadingWaveSize = 6;
             b8.LoadingWaveVertical = true;
             b8.Location = new Point(381, 0);
+            b8.Margin = new Padding(0);
             b8.Name = "b8";
             b8.Size = new Size(59, 55);
             b8.TabIndex = 8;
@@ -167,26 +169,35 @@ namespace Demo.Controls
             gridPanel1.Controls.Add(b3);
             gridPanel1.Controls.Add(b2);
             gridPanel1.Controls.Add(b1);
-            gridPanel1.Dock = DockStyle.Left;
             gridPanel1.Location = new Point(0, 0);
             gridPanel1.Margin = new Padding(0);
             gridPanel1.Name = "gridPanel1";
             gridPanel1.Size = new Size(204, 80);
             gridPanel1.TabIndex = 1;
             // 
+            // vpanel
+            // 
+            vpanel.AutoScroll = true;
+            vpanel.Controls.Add(gridPanel1);
+            vpanel.Controls.Add(b5);
+            vpanel.Controls.Add(b6);
+            vpanel.Controls.Add(b7);
+            vpanel.Controls.Add(b8);
+            vpanel.Dock = DockStyle.Fill;
+            vpanel.Location = new Point(0, 0);
+            vpanel.Name = "vpanel";
+            vpanel.Size = new Size(612, 80);
+            vpanel.TabIndex = 0;
+            // 
             // Button5
             // 
-            AutoScroll = true;
-            Controls.Add(b8);
-            Controls.Add(b7);
-            Controls.Add(b6);
-            Controls.Add(b5);
-            Controls.Add(gridPanel1);
+            Controls.Add(vpanel);
             Name = "Button5";
             Size = new Size(612, 80);
             gridPanel1.ResumeLayout(false);
+            vpanel.ResumeLayout(false);
+            vpanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -200,5 +211,6 @@ namespace Demo.Controls
         private AntdUI.Button b7;
         private AntdUI.Button b8;
         private AntdUI.GridPanel gridPanel1;
+        private FlowLayoutPanel vpanel;
     }
 }

@@ -61,42 +61,48 @@ namespace Demo.Controls
 
         private void button10_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.success(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
+            if (checkBox1.Checked) AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Success, AntdUI.TAlignFrom.TR).SetEnableSound());
+            else AntdUI.Notification.success(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.error(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
+            if (checkBox1.Checked) AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Error, AntdUI.TAlignFrom.TR).SetEnableSound());
+            else AntdUI.Notification.error(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.warn(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
+            if (checkBox1.Checked) AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Warn, AntdUI.TAlignFrom.TR).SetEnableSound());
+            else AntdUI.Notification.warn(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.info(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
-        }
-
-        private void button14_Click(object sender, EventArgs e)
-        {
-            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Success, AntdUI.TAlignFrom.TR).SetEnableSound());
-        }
-
-        private void button13_Click(object sender, EventArgs e)
-        {
-            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Error, AntdUI.TAlignFrom.TR).SetEnableSound());
-        }
-
-        private void button12_Click(object sender, EventArgs e)
-        {
-            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Warn, AntdUI.TAlignFrom.TR).SetEnableSound());
+            if (checkBox1.Checked) AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Info, AntdUI.TAlignFrom.TR).SetEnableSound());
+            else AntdUI.Notification.info(form, "Notification Title", text, AntdUI.TAlignFrom.TR, Font);
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification Title", text, AntdUI.TType.Info, AntdUI.TAlignFrom.TR).SetEnableSound());
+            // 同 ID 弹出：替换消息内容
+            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification " + DateTime.Now.ToString("HH:mm:ss"), "同一个 ID 弹出会替换消息内容。", AntdUI.TType.Info, AntdUI.TAlignFrom.TR).SetAutoClose(15).SetID("update"));
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            // 同 ID：替换消息内容（高度变化联动刷新队列 Y）
+            AntdUI.Notification.open(new AntdUI.Notification.Config(form, "Notification 更新内容 " + DateTime.Now.ToString("HH:mm:ss"), "这是替换后的内容，高度发生了变化，其余通知应当平滑过渡补位。", AntdUI.TType.Success, AntdUI.TAlignFrom.TR).SetAutoClose(15).SetID("update"));
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            AntdUI.Notification.close_id("update");
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            AntdUI.Notification.close_all();
         }
     }
 }

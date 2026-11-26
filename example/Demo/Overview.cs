@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Demo
@@ -49,7 +48,9 @@ namespace Demo
             if (e.Item is VItem item) OpenPage(item.data.id, item.data.key);
         }
 
-        public void OpenPage(string id, string key)
+        public void OpenPage(string id, string key) => BeginInvoke(() => OpenPageCore(id, key));
+
+        void OpenPageCore(string id, string key)
         {
             var control_add = GetPage(id, key);
             if (control_add == null) return;
@@ -66,13 +67,12 @@ namespace Demo
             windowBar.ShowBack = true;
             OpenPage(control_add);
         }
-        async void OpenPage(Control control_add)
+        void OpenPage(Control control_add)
         {
             control_add.Dock = DockStyle.Fill;
             AntdUI.Win32.WindowTheme(control_add);
             AutoDpi(control_add);
             panel_main.Controls.Add(control_add);
-            await Task.Delay(100);
             panel_main.Dock = DockStyle.Fill;
             control_add.Focus();
         }
@@ -82,7 +82,7 @@ namespace Demo
             switch (id)
             {
                 case "Button":
-                    return Helper.AddPage(id, key, "按钮用于开始一个即时操作。", Button.Page(this));
+                    return new Module(this, "Button", "按钮", "按钮用于开始一个即时操作。", Button.Page(this));
                 case "Icon":
                     return new Controls.Icon(this);
                 case "Avatar":
@@ -126,7 +126,7 @@ namespace Demo
                 case "Notification":
                     return new Controls.Notification(this);
                 case "Menu":
-                    return new Controls.Menu(this);
+                    return new Module(this, "Menu", "导航菜单", "为页面和功能提供导航的菜单列表。", Demo.Menu.Page(this));
                 case "Segmented":
                     return new Controls.Segmented(this);
                 case "Modal":
@@ -267,6 +267,7 @@ namespace Demo
             {
                 if (windowBar.Tag is Control control)
                 {
+                    if (control is Module module && module.Back()) return;
                     control.Dispose();
                     Controls.Remove(control);
                 }
@@ -666,9 +667,14 @@ namespace Demo
             Name = name;
             Text = text;
             Control = control;
+            H = control.Height;
         }
         public string Name { get; set; }
         public string Text { get; set; }
         public UserControl Control { get; set; }
+
+        public int H { get; set; }
+        public Bitmap Image { get; set; }
+        public float Dpi { get; set; } = 1F;
     }
 }

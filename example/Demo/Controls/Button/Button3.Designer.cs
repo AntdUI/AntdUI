@@ -32,15 +32,17 @@ namespace Demo.Controls
             b3 = new AntdUI.Button();
             b4 = new AntdUI.Button();
             b5 = new AntdUI.Button();
+            vpanel = new FlowLayoutPanel();
+            vpanel.SuspendLayout();
             SuspendLayout();
             // 
             // b1
             // 
             b1.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b1.Dock = DockStyle.Left;
             b1.IconSvg = "DownloadOutlined";
             b1.LoadingWaveVertical = true;
             b1.Location = new Point(0, 0);
+            b1.Margin = new Padding(0);
             b1.Name = "b1";
             b1.Size = new Size(36, 36);
             b1.TabIndex = 1;
@@ -50,12 +52,12 @@ namespace Demo.Controls
             // b2
             // 
             b2.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b2.Dock = DockStyle.Left;
             b2.IconSvg = "DownloadOutlined";
-            b2.RespondRealAreas = true;
             b2.LoadingWaveVertical = true;
             b2.Location = new Point(36, 0);
+            b2.Margin = new Padding(0);
             b2.Name = "b2";
+            b2.RespondRealAreas = true;
             b2.Shape = AntdUI.TShape.Circle;
             b2.Size = new Size(36, 36);
             b2.TabIndex = 2;
@@ -65,12 +67,12 @@ namespace Demo.Controls
             // b3
             // 
             b3.AutoSizeMode = AntdUI.TAutoSize.Height;
-            b3.Dock = DockStyle.Left;
             b3.IconSvg = "DownloadOutlined";
-            b3.RespondRealAreas = true;
             b3.LoadingWaveVertical = true;
             b3.Location = new Point(72, 0);
+            b3.Margin = new Padding(0);
             b3.Name = "b3";
+            b3.RespondRealAreas = true;
             b3.Shape = AntdUI.TShape.Round;
             b3.Size = new Size(67, 36);
             b3.TabIndex = 3;
@@ -80,11 +82,11 @@ namespace Demo.Controls
             // b4
             // 
             b4.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b4.Dock = DockStyle.Left;
             b4.IconSvg = "DownloadOutlined";
-            b4.RespondRealAreas = true;
             b4.Location = new Point(139, 0);
+            b4.Margin = new Padding(0);
             b4.Name = "b4";
+            b4.RespondRealAreas = true;
             b4.Shape = AntdUI.TShape.Round;
             b4.Size = new Size(98, 36);
             b4.TabIndex = 4;
@@ -95,9 +97,9 @@ namespace Demo.Controls
             // b5
             // 
             b5.AutoSizeMode = AntdUI.TAutoSize.Auto;
-            b5.Dock = DockStyle.Left;
             b5.IconSvg = "DownloadOutlined";
             b5.Location = new Point(237, 0);
+            b5.Margin = new Padding(0);
             b5.Name = "b5";
             b5.Size = new Size(98, 36);
             b5.TabIndex = 5;
@@ -105,18 +107,28 @@ namespace Demo.Controls
             b5.Type = AntdUI.TTypeMini.Primary;
             b5.Click += btn_Click;
             // 
+            // vpanel
+            // 
+            vpanel.AutoScroll = true;
+            vpanel.Controls.Add(b1);
+            vpanel.Controls.Add(b2);
+            vpanel.Controls.Add(b3);
+            vpanel.Controls.Add(b4);
+            vpanel.Controls.Add(b5);
+            vpanel.Dock = DockStyle.Fill;
+            vpanel.Location = new Point(0, 0);
+            vpanel.Name = "vpanel";
+            vpanel.Size = new Size(700, 40);
+            vpanel.TabIndex = 0;
+            // 
             // Button3
             // 
-            AutoScroll = true;
-            Controls.Add(b5);
-            Controls.Add(b4);
-            Controls.Add(b3);
-            Controls.Add(b2);
-            Controls.Add(b1);
+            Controls.Add(vpanel);
             Name = "Button3";
-            Size = new Size(629, 60);
+            Size = new Size(700, 40);
+            vpanel.ResumeLayout(false);
+            vpanel.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -126,5 +138,6 @@ namespace Demo.Controls
         private AntdUI.Button b3;
         private AntdUI.Button b4;
         private AntdUI.Button b5;
+        private FlowLayoutPanel vpanel;
     }
 }

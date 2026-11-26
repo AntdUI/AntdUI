@@ -31,7 +31,7 @@ namespace AntdUI
         ScrollBar ScrollBar;
         public LayeredFormMenuDown(Menu control, int radius, Rectangle rect, IList<MenuItem> items, bool up = false)
         {
-            CloseMode = CloseMode.Leave;
+            CloseMode = CloseMode.Click;
             ColorScheme = control.ColorScheme;
             cname = control.Name;
             isdark = Config.IsDark || control.ColorScheme == TAMode.Dark;

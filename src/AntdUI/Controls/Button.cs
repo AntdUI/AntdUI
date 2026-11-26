@@ -223,11 +223,24 @@ namespace AntdUI
 
         #endregion
 
+        #region 波浪
+
+        int waveSize = 4;
         /// <summary>
         /// 波浪大小
         /// </summary>
         [Description("波浪大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(4)]
-        public int WaveSize { get; set; } = 4;
+        public int WaveSize
+        {
+            get => waveSize;
+            set
+            {
+                if (waveSize == value) return;
+                waveSize = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(WaveSize));
+            }
+        }
 
         /// <summary>
         /// 波浪颜色
@@ -242,17 +255,58 @@ namespace AntdUI
         [Description("波浪渐变色"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
         public string? WaveColorExtend { get; set; }
 
+        bool waveShadow = false;
         /// <summary>
         /// 波浪投影
         /// </summary>
         [Description("波浪投影"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(false)]
-        public bool WaveShadow { get; set; }
+        public bool WaveShadow
+        {
+            get => waveShadow;
+            set
+            {
+                if (waveShadow == value) return;
+                waveShadow = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(WaveShadow));
+            }
+        }
 
+        bool wavePadding = true;
+        /// <summary>
+        /// 波浪投影边距
+        /// </summary>
+        [Description("波浪投影边距"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(true)]
+        public bool WavePadding
+        {
+            get => wavePadding;
+            set
+            {
+                if (wavePadding == value) return;
+                wavePadding = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(WavePadding));
+            }
+        }
+
+        int? waveShadowSize;
         /// <summary>
         /// 波浪投影大小
         /// </summary>
         [Description("波浪投影大小"), Category(nameof(CategoryAttribute.Appearance)), DefaultValue(null)]
-        public int? WaveShadowSize { get; set; }
+        public int? WaveShadowSize
+        {
+            get => waveShadowSize;
+            set
+            {
+                if (waveShadowSize == value) return;
+                waveShadowSize = value;
+                if (BeforeAutoSize()) Invalidate();
+                OnPropertyChanged(nameof(WaveShadowSize));
+            }
+        }
+
+        #endregion
 
         int radius = 6;
         /// <summary>
@@ -1068,7 +1122,7 @@ namespace AntdUI
 
         public virtual void ClickAnimation()
         {
-            if (WaveSize > 0 && Config.HasAnimation(nameof(Button), Name))
+            if (waveSize > 0 && Config.HasAnimation(nameof(Button), Name))
             {
                 ThreadClick?.Dispose();
                 AnimationClickValue = 0;
@@ -1257,7 +1311,7 @@ namespace AntdUI
         {
             init = true;
             var g = e.Canvas;
-            Rectangle rect = e.Rect.PaddingRect(Padding), rect_read = rect.ReadRect((WaveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
+            Rectangle rect = e.Rect.PaddingRect(GetRealPadding()), rect_read = rect.ReadRect((waveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
             if (rect_read.Width == 0 || rect_read.Height == 0) return;
             float _radius = (shape == TShape.Round || shape == TShape.Circle) ? rect_read.Height : radius * Dpi;
             if (backImage != null) g.Image(rect_read, backImage, backFit, _radius, shape);
@@ -1298,7 +1352,7 @@ namespace AntdUI
                     {
                         if (!ghost)
                         {
-                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, Colour.FillQuaternary.Get(ColorScheme, nameof(Button), Name), _radius);
+                            if (waveSize > 0) PaintShadow(g, rect, rect_read, path, Colour.FillQuaternary.Get(ColorScheme, nameof(Button), Name), _radius);
                             g.Fill(defaultback ?? Colour.DefaultBg.Get(ColorScheme, nameof(Button), Name), path);
                         }
                         if (borderWidth > 0)
@@ -1430,7 +1484,7 @@ namespace AntdUI
                     {
                         if (enabled)
                         {
-                            if (WaveSize > 0) PaintShadow(g, rect, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
+                            if (waveSize > 0) PaintShadow(g, rect, rect_read, path, _back.rgba(Config.Mode == TMode.Dark ? 0.15F : 0.1F), _radius);
 
                             if (toggle)
                             {
@@ -1494,14 +1548,14 @@ namespace AntdUI
         /// </summary>
         protected virtual void PaintShadow(Canvas g, Rectangle rect_t, Rectangle rect, GraphicsPath path, Color color, float radius)
         {
-            float wave = WaveSize * Dpi, wavez2 = wave / 2f;
+            float wave = waveSize * Dpi, wavez2 = wave / 2f;
             if (loading)
             {
                 int width2 = rect.Width * 2;
                 var progX = (int)(width2 * AnimationLoadingValue);
-                if (WaveShadow)
+                if (waveShadow)
                 {
-                    int tmpWave = (int)(WaveShadowSize.HasValue ? (WaveShadowSize.Value * Dpi) : wave);
+                    int tmpWave = (int)(waveShadowSize.HasValue ? (waveShadowSize.Value * Dpi) : wave);
                     var rect_client = ClientRectangle;
                     using (var bmp = new Bitmap(rect_client.Width, rect_client.Height))
                     {
@@ -1528,9 +1582,9 @@ namespace AntdUI
             }
             else
             {
-                if (WaveShadow)
+                if (waveShadow)
                 {
-                    int tmpWave = (int)(WaveShadowSize.HasValue ? (WaveShadowSize.Value * Dpi) : wave);
+                    int tmpWave = (int)(waveShadowSize.HasValue ? (waveShadowSize.Value * Dpi) : wave);
                     var rect_client = ClientRectangle;
                     using (var bmp = new Bitmap(rect_client.Width, rect_client.Height))
                     {
@@ -1588,9 +1642,9 @@ namespace AntdUI
         }
         void PaintTextLoading(Canvas g, string? text, Color color, Rectangle rect_read, bool enabled, float radius)
         {
-            if (enabled && (hasFocus && Config.FocusBorderEnabled) && WaveSize > 0)
+            if (enabled && (hasFocus && Config.FocusBorderEnabled) && waveSize > 0)
             {
-                float wave = (WaveSize * Dpi / 2), wave2 = wave * 2, r = radius + wave;
+                float wave = (waveSize * Dpi / 2), wave2 = wave * 2, r = radius + wave;
                 var rect_focus = new RectangleF(rect_read.X - wave, rect_read.Y - wave, rect_read.Width + wave2, rect_read.Height + wave2);
                 using (var path_focus = Helper.PathJoin(rect_focus, r, shape, joinMode, joinLeft, joinRight))
                 {
@@ -2086,7 +2140,20 @@ namespace AntdUI
             }
         }
 
-        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(Padding).ReadRect((WaveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
+        public override Rectangle ReadRectangle => ClientRectangle.PaddingRect(GetRealPadding()).ReadRect((waveSize + borderWidth / 2F) * Dpi, shape, joinMode, joinLeft, joinRight);
+
+        Padding GetRealPadding()
+        {
+            if (waveShadow && wavePadding)
+            {
+                int wave = (int)(waveShadowSize.HasValue ? (waveShadowSize.Value * Dpi) : waveSize * Dpi);
+                int spread = Helper.BlurCSSRadius(wave);
+                if (spread <= 0) return Padding;
+                var pad = Padding;
+                return new Padding(pad.Left + spread, pad.Top, pad.Right + spread, pad.Bottom + spread);
+            }
+            return Padding;
+        }
 
         public override GraphicsPath RenderRegion => Helper.PathJoin(ReadRectangle, radius, Dpi, shape, joinMode, joinLeft, joinRight);
 
@@ -2217,6 +2284,12 @@ namespace AntdUI
             base.OnFontChanged(e);
         }
 
+        protected override void OnPaddingChanged(EventArgs e)
+        {
+            BeforeAutoSize();
+            base.OnPaddingChanged(e);
+        }
+
         public override Size GetPreferredSize(Size proposedSize)
         {
             switch (autoSize)
@@ -2237,7 +2310,7 @@ namespace AntdUI
                     Size result;
                     var text = toggle ? (ToggleText ?? Text) : Text;
                     var font_size = MeasureText(g, text, out int txt_height);
-                    int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(WaveSize * Dpi), wave2 = wave;
+                    int icon_size = (int)(txt_height * iconratio), gap = (int)(txt_height * 1.02F), wave = (int)(waveSize * Dpi), wave2 = wave;
                     int height = Math.Max(font_size.Height, icon_size);
                     if (Shape == TShape.Circle || string.IsNullOrEmpty(text) || displayStyle == TButtonDisplayStyle.Image)
                     {
@@ -2271,7 +2344,7 @@ namespace AntdUI
                         }
                         else result = new Size(font_size.Width + gap + wave + wave2, height + gap + wave);
                     }
-                    return result.DeflateSize(Padding);
+                    return result.DeflateSize(GetRealPadding());
                 });
             }
         }

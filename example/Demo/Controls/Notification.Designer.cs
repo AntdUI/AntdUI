@@ -29,13 +29,14 @@ namespace Demo.Controls
         {
             header1 = new AntdUI.PageHeader();
             panel1 = new System.Windows.Forms.Panel();
-            panel4 = new System.Windows.Forms.Panel();
+            panel4 = new FlowLayoutPanel();
             button11 = new AntdUI.Button();
             button12 = new AntdUI.Button();
             button13 = new AntdUI.Button();
             button14 = new AntdUI.Button();
             divider3 = new AntdUI.Divider();
             panel3 = new System.Windows.Forms.Panel();
+            checkBox1 = new AntdUI.Checkbox();
             button7 = new AntdUI.Button();
             button8 = new AntdUI.Button();
             button9 = new AntdUI.Button();
@@ -91,53 +92,61 @@ namespace Demo.Controls
             panel4.Controls.Add(button13);
             panel4.Controls.Add(button14);
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 342);
+            panel4.Location = new Point(0, 385);
             panel4.Name = "panel4";
             panel4.Size = new Size(543, 63);
-            panel4.TabIndex = 6;
+            panel4.TabIndex = 3;
             // 
             // button11
             // 
+            button11.AutoSizeMode = AntdUI.TAutoSize.Width;
             button11.BorderWidth = 2F;
-            button11.Location = new Point(347, 8);
+            button11.LocalizationText = "Notification.{id}";
+            button11.Location = new Point(3, 3);
             button11.Name = "button11";
-            button11.Size = new Size(110, 40);
+            button11.Size = new Size(94, 40);
             button11.TabIndex = 1;
-            button11.Text = "Info";
-            button11.Type = AntdUI.TTypeMini.Info;
+            button11.Text = "同ID弹出";
+            button11.Type = AntdUI.TTypeMini.Primary;
             button11.Click += button11_Click;
             // 
             // button12
             // 
+            button12.AutoSizeMode = AntdUI.TAutoSize.Width;
             button12.BorderWidth = 2F;
-            button12.Location = new Point(236, 8);
+            button12.LocalizationText = "Notification.{id}";
+            button12.Location = new Point(103, 3);
             button12.Name = "button12";
-            button12.Size = new Size(110, 40);
-            button12.TabIndex = 1;
-            button12.Text = "Warning";
-            button12.Type = AntdUI.TTypeMini.Warn;
+            button12.Size = new Size(93, 40);
+            button12.TabIndex = 2;
+            button12.Text = "更新内容";
+            button12.Type = AntdUI.TTypeMini.Primary;
             button12.Click += button12_Click;
             // 
             // button13
             // 
+            button13.AutoSizeMode = AntdUI.TAutoSize.Width;
             button13.BorderWidth = 2F;
-            button13.Location = new Point(125, 8);
+            button13.LocalizationText = "Notification.{id}";
+            button13.Location = new Point(202, 3);
             button13.Name = "button13";
-            button13.Size = new Size(110, 40);
-            button13.TabIndex = 1;
-            button13.Text = "Error";
+            button13.Size = new Size(108, 40);
+            button13.TabIndex = 3;
+            button13.Text = "关闭指定id";
             button13.Type = AntdUI.TTypeMini.Error;
             button13.Click += button13_Click;
             // 
             // button14
             // 
+            button14.AutoSizeMode = AntdUI.TAutoSize.Width;
             button14.BorderWidth = 2F;
-            button14.Location = new Point(14, 8);
+            button14.LocalizationText = "Notification.{id}";
+            button14.Location = new Point(316, 3);
             button14.Name = "button14";
-            button14.Size = new Size(110, 40);
-            button14.TabIndex = 1;
-            button14.Text = "Success";
-            button14.Type = AntdUI.TTypeMini.Success;
+            button14.Size = new Size(93, 40);
+            button14.TabIndex = 4;
+            button14.Text = "关闭全部";
+            button14.Type = AntdUI.TTypeMini.Error;
             button14.Click += button14_Click;
             // 
             // divider3
@@ -145,15 +154,16 @@ namespace Demo.Controls
             divider3.Dock = DockStyle.Top;
             divider3.Font = new Font("Microsoft YaHei UI", 10F);
             divider3.LocalizationText = "Notification.{id}";
-            divider3.Location = new Point(0, 314);
+            divider3.Location = new Point(0, 357);
             divider3.Name = "divider3";
             divider3.Orientation = AntdUI.TOrientation.Left;
             divider3.Size = new Size(543, 28);
-            divider3.TabIndex = 5;
-            divider3.Text = "Windows 消息框声音";
+            divider3.TabIndex = 0;
+            divider3.Text = "同ID / 关闭";
             // 
             // panel3
             // 
+            panel3.Controls.Add(checkBox1);
             panel3.Controls.Add(button7);
             panel3.Controls.Add(button8);
             panel3.Controls.Add(button9);
@@ -161,8 +171,18 @@ namespace Demo.Controls
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 251);
             panel3.Name = "panel3";
-            panel3.Size = new Size(543, 63);
-            panel3.TabIndex = 4;
+            panel3.Size = new Size(543, 106);
+            panel3.TabIndex = 2;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSizeMode = AntdUI.TAutoSize.Auto;
+            checkBox1.LocalizationText = "Notification.{id}";
+            checkBox1.Location = new Point(14, 54);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(198, 42);
+            checkBox1.TabIndex = 10;
+            checkBox1.Text = "Windows 消息框声音";
             // 
             // button7
             // 
@@ -170,7 +190,7 @@ namespace Demo.Controls
             button7.Location = new Point(347, 8);
             button7.Name = "button7";
             button7.Size = new Size(110, 40);
-            button7.TabIndex = 1;
+            button7.TabIndex = 4;
             button7.Text = "Info";
             button7.Type = AntdUI.TTypeMini.Info;
             button7.Click += button7_Click;
@@ -181,7 +201,7 @@ namespace Demo.Controls
             button8.Location = new Point(236, 8);
             button8.Name = "button8";
             button8.Size = new Size(110, 40);
-            button8.TabIndex = 1;
+            button8.TabIndex = 3;
             button8.Text = "Warning";
             button8.Type = AntdUI.TTypeMini.Warn;
             button8.Click += button8_Click;
@@ -192,7 +212,7 @@ namespace Demo.Controls
             button9.Location = new Point(125, 8);
             button9.Name = "button9";
             button9.Size = new Size(110, 40);
-            button9.TabIndex = 1;
+            button9.TabIndex = 2;
             button9.Text = "Error";
             button9.Type = AntdUI.TTypeMini.Error;
             button9.Click += button9_Click;
@@ -217,7 +237,7 @@ namespace Demo.Controls
             divider2.Name = "divider2";
             divider2.Orientation = AntdUI.TOrientation.Left;
             divider2.Size = new Size(543, 28);
-            divider2.TabIndex = 3;
+            divider2.TabIndex = 0;
             divider2.Text = "四种样式";
             // 
             // panel2
@@ -233,7 +253,7 @@ namespace Demo.Controls
             panel2.Location = new Point(0, 28);
             panel2.Name = "panel2";
             panel2.Size = new Size(543, 195);
-            panel2.TabIndex = 2;
+            panel2.TabIndex = 1;
             // 
             // button4
             // 
@@ -242,7 +262,7 @@ namespace Demo.Controls
             button4.Location = new Point(169, 69);
             button4.Name = "button4";
             button4.Size = new Size(147, 46);
-            button4.TabIndex = 1;
+            button4.TabIndex = 4;
             button4.Text = "bottomRight";
             button4.Type = AntdUI.TTypeMini.Primary;
             button4.Click += button4_Click;
@@ -254,7 +274,7 @@ namespace Demo.Controls
             button6.Location = new Point(169, 129);
             button6.Name = "button6";
             button6.Size = new Size(106, 46);
-            button6.TabIndex = 1;
+            button6.TabIndex = 6;
             button6.Text = "bottom";
             button6.Type = AntdUI.TTypeMini.Primary;
             button6.Click += button6_Click;
@@ -266,7 +286,7 @@ namespace Demo.Controls
             button2.Location = new Point(169, 9);
             button2.Name = "button2";
             button2.Size = new Size(116, 46);
-            button2.TabIndex = 1;
+            button2.TabIndex = 2;
             button2.Text = "topRight";
             button2.Type = AntdUI.TTypeMini.Primary;
             button2.Click += button2_Click;
@@ -278,7 +298,7 @@ namespace Demo.Controls
             button5.Location = new Point(14, 129);
             button5.Name = "button5";
             button5.Size = new Size(75, 46);
-            button5.TabIndex = 1;
+            button5.TabIndex = 5;
             button5.Text = "top";
             button5.Type = AntdUI.TTypeMini.Primary;
             button5.Click += button5_Click;
@@ -290,7 +310,7 @@ namespace Demo.Controls
             button3.Location = new Point(14, 69);
             button3.Name = "button3";
             button3.Size = new Size(135, 46);
-            button3.TabIndex = 1;
+            button3.TabIndex = 3;
             button3.Text = "bottomLeft";
             button3.Type = AntdUI.TTypeMini.Primary;
             button3.Click += button3_Click;
@@ -328,7 +348,9 @@ namespace Demo.Controls
             Size = new Size(543, 516);
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ResumeLayout(false);
@@ -352,11 +374,12 @@ namespace Demo.Controls
         private AntdUI.Button button9;
         private AntdUI.Button button10;
         private AntdUI.Divider divider2;
-        private System.Windows.Forms.Panel panel4;
+        private AntdUI.Checkbox checkBox1;
+        private AntdUI.Divider divider3;
+        private System.Windows.Forms.FlowLayoutPanel panel4;
         private AntdUI.Button button11;
         private AntdUI.Button button12;
         private AntdUI.Button button13;
         private AntdUI.Button button14;
-        private AntdUI.Divider divider3;
     }
 }

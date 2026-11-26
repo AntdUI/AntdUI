@@ -1,5 +1,17 @@
 [Home](Home.md)・[UpdateLog](UpdateLog.md)・[Config](Config.md)・[Theme](Theme.md)
 
+### `2.4.21` 2026-11-26
+
+- ➕ Tag aligns with most Button properties
+- ➕ DatePicker/TimePicker add ValueToString method
+- ➕ Input adds AcceptsEnter
+- ✍️ Optimize Z-order of Drawer/Popover/Modal
+- ✍️ Fix missing badge in Menu dropdown popup
+- ✍️ Fix incorrect fixed width of Table's last column
+- ✍️ Fix Table editing not refreshing
+- ✍️ Unify font units
+- 🧹 Refactor Message/Notification
+
 ### `2.4.20` 2026-11-20
 
 > 🎉 NET 11.0

@@ -21,22 +21,26 @@ namespace Demo.Controls
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.success(form, "This is a success message", Font);
+            if (checkBox1.Checked) AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a success message", AntdUI.TType.Success).SetEnableSound());
+            else AntdUI.Message.success(form, "This is a success message", Font);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.error(form, "This is a error message", Font);
+            if (checkBox1.Checked) AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a error message", AntdUI.TType.Error).SetEnableSound());
+            else AntdUI.Message.error(form, "This is a error message", Font);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.warn(form, "This is a warn message", Font);
+            if (checkBox1.Checked) AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a warn message", AntdUI.TType.Warn).SetEnableSound());
+            else AntdUI.Message.warn(form, "This is a warn message", Font);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.info(form, "Hello, Ant Design!", Font);
+            if (checkBox1.Checked) AntdUI.Message.open(new AntdUI.Message.Config(form, "Hello, Ant Design!", AntdUI.TType.Info).SetEnableSound());
+            else AntdUI.Message.info(form, "Hello, Ant Design!", Font);
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -104,24 +108,45 @@ namespace Demo.Controls
             }, Font);
         }
 
-        private void button12_Click(object sender, EventArgs e)
+        private void button9_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a success message", AntdUI.TType.Success).SetEnableSound());
-        }
-
-        private void button11_Click(object sender, EventArgs e)
-        {
-            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a error message", AntdUI.TType.Error).SetEnableSound());
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "这是一条被替换的长消息内容，宽度与高度都发生了变化，其余消息应当平滑过渡补位。", AntdUI.TType.Warn)
+            {
+                AutoClose = 10,
+                MaxWidth = 320
+            }.SetID("replace"));
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.open(new AntdUI.Message.Config(form, "This is a warn message", AntdUI.TType.Warn).SetEnableSound());
+            AntdUI.Message.open(new AntdUI.Message.Config(form, "初始内容", AntdUI.TType.Success)
+            {
+                AutoClose = 10
+            }.SetID("replace"));
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void button11_Click(object sender, EventArgs e)
         {
-            AntdUI.Message.open(new AntdUI.Message.Config(form, "Hello, Ant Design!", AntdUI.TType.Info).SetEnableSound());
+            AntdUI.Message.close_id("replace");
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            AntdUI.Message.close_all();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            // 并发弹出：立即显示，无队列堵塞
+            int count = AntdUI.Message.contains("concurrent") ? 1 : 0;
+            for (int i = 0; i < 5; i++)
+            {
+                int no = i + count;
+                AntdUI.Message.open(new AntdUI.Message.Config(form, "并发消息 " + (no + 1) + " - " + DateTime.Now.ToString("HH:mm:ss.fff"), AntdUI.TType.Info)
+                {
+                    AutoClose = 10
+                }.SetID("concurrent" + no));
+            }
         }
     }
 }

@@ -209,6 +209,15 @@ namespace Demo
                     return "Toggle Button";
                 case "Button.dAnimate":
                     return "Animate Button";
+                case "Button.dWaveAnimate":
+                    return "Wave Animate Button";
+                case "Button.b1":
+                    return "Static Wave Shadow";
+                case "Button.b2":
+                case "Button.b3":
+                    return "Rainbow Wave Shadow";
+                case "Button.b4":
+                    return "Long Rainbow Wave Shadow";
 
                 case "ButtonTipAgain":
                     return "Click again for a surprise. 😁";
@@ -405,6 +414,16 @@ namespace Demo
                     return "Menu";
                 case "Menu.Description":
                     return "A versatile menu for navigation.";
+                case "Menu.dTop":
+                    return "Top Navigation";
+                case "Menu.dMnemonic":
+                    return "Mnemonic (Alt + key)";
+                case "Menu.dInline":
+                    return "Inline Menu";
+                case "Menu.dInlineCollapse":
+                    return "Collapsed Inline Menu";
+                case "Menu.dVertical":
+                    return "Vertical Menu";
                 case "Menu.divider1":
                     return "Top Navigation";
                 case "Menu.divider2":
@@ -430,7 +449,17 @@ namespace Demo
                 case "Message.divider2":
                     return "Message with loading indicator";
                 case "Message.divider3":
-                    return "System Sound";
+                    return "Concurrent / Replace / Close";
+                case "Message.button13":
+                    return "Popup 5 messages concurrently";
+                case "Message.button9":
+                    return "Replace with long text";
+                case "Message.button10":
+                    return "Replace with short text";
+                case "Message.button11":
+                    return "Close specified ID";
+                case "Message.button12":
+                    return "Close all";
 
                 //Modal ----------------------------
                 case "Modal":
@@ -450,6 +479,16 @@ namespace Demo
                 case "Notification.divider2":
                     return "More types";
                 case "Notification.divider3":
+                    return "Same ID / Close";
+                case "Notification.button11":
+                    return "Popup with the same ID";
+                case "Notification.button12":
+                    return "Update content";
+                case "Notification.button13":
+                    return "Close specified ID";
+                case "Notification.button14":
+                    return "Close all";
+                case "Notification.checkBox1":
                     return "System Sound";
 
                 //PageHeader ----------------------------
